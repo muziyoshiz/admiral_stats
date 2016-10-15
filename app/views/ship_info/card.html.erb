@@ -1,0 +1,200 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+
+  <div class="container">
+    <div class="dropdown">
+      <%= form_tag({ action: :card }, { id: 'rangeForm' }) do %>
+          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%
+              case @range
+                when :month
+                  concat '過去 1 ヶ月'
+                when :all
+                  concat '全期間'
+              end
+            %>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#" onclick="$('#range').val('month'); $('#rangeForm').submit()">過去 1 ヶ月</a></li>
+            <li><a href="#" onclick="$('#range').val('all'); $('#rangeForm').submit()">全期間</a></li>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="chart_num" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart_rate" style="width:100%; height:400px;"></div>
+<p>
+  ※注：カード入手率は、以下の実装済みカード数に基づいて計算しています。そのため、カード入手率は減少することもあります。
+</p>
+
+<hr>
+
+<div id="chart_impl" style="width:100%; height:400px;"></div>
+
+<script type="application/javascript">
+  // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
+  // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
+  Highcharts.setOptions({
+    global : {
+      useUTC : false
+    }
+  });
+
+  $(function () {
+    $('#chart_num').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'カード入手数'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '枚数'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_num.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart_rate').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'カード入手率'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: 'パーセント'
+        },
+        labels: {
+          format: '{value} %',
+        },
+        min: 0,
+        max: 100,
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_rate.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart_impl').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '実装済みカード数'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '枚数'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_impl.to_json %>
+    });
+  });
+</script>

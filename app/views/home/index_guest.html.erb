@@ -1,0 +1,91 @@
+<div class="page-header">
+  <h2>Admiral Stats</h2>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <%= render( partial: 'notice' ) %>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Admiral Stats って何？</h3>
+    <p>
+      Admiral Stats は艦これアーケードのプレイデータを表示するサイトです。<br>
+      <%= link_to 'SEGA 公式のプレイヤーズサイト', sega_url, :target => '_blank' %>
+      が対応していない、時系列での可視化に対応しています。また、Lv99 到達日の予想機能なども備えています。
+    </p>
+    <h4 class="text-info">サンプル 1：カードの入手履歴</h4>
+    <p>
+      <%= image_tag 'home/sample_home.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+    <h4 class="text-info">サンプル 2：カードの入手数・入手率のグラフ</h4>
+    <p>
+      <%= image_tag 'home/sample_chart_num.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+    <h4 class="text-info">サンプル 3：レベル・経験値のグラフ</h4>
+    <p>
+      <%= image_tag 'home/sample_chart_level.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+    <h4 class="text-info">サンプル 4：カード入手状況の一覧表示</h4>
+    <p>
+      <%= image_tag 'home/sample_ship_list.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h3>ログイン／ユーザ登録</h3>
+    <p>
+      ログインには Twitter のアカウントが必要です。初回ログイン時に Admiral Stats へのユーザ登録が行われます。
+    </p>
+    <p>
+      Admiral Stats は Twitter アカウントをログインのみに用います。ユーザ登録前に、
+      <%= link_to 'Admiral Stats について', :controller => 'about' %> のプライバシーポリシーおよび免責事項をご確認ください。
+    </p>
+    <p>
+      <%= link_to 'Twitter アカウントでログイン／ユーザ登録', root_url + 'auth/twitter', class: 'btn btn-primary' %>
+    </p>
+
+    <hr>
+
+    <h3>データのアップロード方法は？</h3>
+    <p>
+      艦これ Arcade をプレイするたびに、SEGA 公式のプレイヤーズサイトの情報が更新されます。
+    </p>
+    <p>
+      情報が更新されるたびに、以下の手順で、プレイヤーズサイトからデータをダウンロードし、Admiral Stats
+      へアップロードしてください。プレイのたびにアップロードを繰り返すことで、時系列データが溜まっていきます。
+    </p>
+    <ol class="guest">
+      <li>
+        SEGA 公式のプレイヤーズサイトからの、データのエクスポート（ダウンロード）
+        <ul>
+          <li>
+            <%= link_to 'プレイヤーズサイト', sega_url, :target => '_blank' %>
+            はデータのエクスポート機能を提供していないため、何らかの非公式な手段でデータをエクスポートする必要があります。
+          </li>
+          <li>
+            現在の Admiral Stats は <%= link_to_exporter_url %> でエクスポートした JSON ファイルに対応しています。
+            <%= link_to_exporter_url %> の利用方法は、リンク先をご参照ください。
+          </li>
+        </ul>
+      </li>
+      <li>
+        Admiral Stats への、データのインポート（アップロード）
+        <ul>
+          <li>
+            手順 1 でダウンロードした JSON ファイルを、Admiral Stats の「インポート」ページからアップロードできます。
+          </li>
+          <li>
+            アップロード完了すると、各種グラフや一覧表が、自動的に更新されます。
+          </li>
+        </ul>
+      </li>
+    </ol>
+    <p>
+      <%= image_tag 'home/admiral_stats_concept.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+  </div>
+</div>

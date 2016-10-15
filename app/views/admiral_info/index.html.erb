@@ -1,0 +1,381 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+
+  <div class="container">
+    <div class="dropdown">
+      <%= form_tag({ action: :index }, { id: 'rangeForm' }) do %>
+          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%
+              case @range
+                when :month
+                  concat '過去 1 ヶ月'
+                when :all
+                  concat '全期間'
+              end
+            %>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#" onclick="$('#range').val('month'); $('#rangeForm').submit()">過去 1 ヶ月</a></li>
+            <li><a href="#" onclick="$('#range').val('all'); $('#rangeForm').submit()">全期間</a></li>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="chart-level-exp" style="width:100%; height:400px;"></div>
+
+<p>
+  ※注：上記の艦隊司令部経験値は、艦娘と同じ経験値テーブルを使って計算しています。
+</p>
+
+<hr>
+
+<div id="chart-material" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-consumable" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-result-point" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-rank" style="width:100%; height:400px;"></div>
+
+<p>
+  ※注1：順位が表示されるのは 3,000 位くらいまでのようなので、「圏外」だった場合は 3,100 位として表示しています。<br/>
+  ※注2：月初は戦果と暫定順位を取得できない（値が "--" になる）ようです。値が "--" の場合は、グラフにプロットしないようにしています。
+</p>
+
+<script type="application/javascript">
+  // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
+  // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
+  Highcharts.setOptions({
+    global : {
+      useUTC : false
+    }
+  });
+
+  $(function () {
+    $('#chart-level-exp').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '艦隊司令部レベル・経験値'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: [{
+        labels: {
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        },
+        title: {
+          text: 'レベル',
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        },
+        min: 0
+      },{
+        labels: {
+          style: {
+            color: Highcharts.getOptions().colors[1]
+          }
+        },
+        title: {
+          text: '経験値',
+          style: {
+            color: Highcharts.getOptions().colors[1]
+          }
+        },
+        min: 0,
+        opposite: true
+      }],
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_level_exp.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-material').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '資源'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '備蓄量'
+        },
+        plotLines: [{
+          value: <%== @material_max.to_json %>,
+          color: '#C22C64',
+          dashStyle: 'shortdash',
+          width: 2,
+          label: {
+            text: <%== "最大備蓄可能各資源量(Lv. #{@level_max}): #{@material_max}".to_json %>,
+            align: 'center',
+            style: {
+              color: '#C22C64'
+            }
+          }
+        }],
+        min: 0,
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_material.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-consumable').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '資源以外の消耗品'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: [{
+        labels: {
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        },
+        title: {
+          text: '修復バケツ',
+          style: {
+            color: Highcharts.getOptions().colors[0]
+          }
+        },
+        min: 0
+      },{
+        labels: {
+          style: {
+            color: Highcharts.getOptions().colors[1]
+          }
+        },
+        title: {
+          text: '家具コイン',
+          style: {
+            color: Highcharts.getOptions().colors[1]
+          }
+        },
+        min: 0
+      },{
+        labels: {
+          style: {
+            color: Highcharts.getOptions().colors[2]
+          },
+          format: '{value} pt',
+        },
+        title: {
+          text: '戦略ポイント',
+          style: {
+            color: Highcharts.getOptions().colors[2]
+          }
+        },
+        min: 0,
+        opposite: true
+      }],
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_consumable.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-result-point').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '戦果'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '戦果'
+        },
+        min: 0,
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_result_point.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-rank').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '暫定順位'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        reversed: true,
+        title: {
+          text: '暫定順位'
+        },
+        max: <%== @rank_max.to_json %>,
+        min: 1,
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_rank.to_json %>
+    });
+  });
+</script>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= display_meta_tags(default_meta_tags) %>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag    'application', media: 'all' %>
+    <%= javascript_include_tag 'application' %>
+    <%= analytics_init if GoogleAnalytics.valid_tracker? %>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <!-- 画面右上に表示されるアイコンの横線を表す（3つ書けば3本線） -->
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li <%== 'class="active"' if current_page?(:controller => 'home') %>>
+              <%= link_to 'ホーム', :controller => 'home' %>
+            </li>
+            <% unless logged_in? %>
+                <li>
+                  <%= link_to 'ログイン', root_url + 'auth/twitter' %>
+                </li>
+            <% end %>
+            <% if logged_in? %>
+              <li <%== 'class="active"' if current_page?(:controller => 'import') %>>
+                <%= link_to 'インポート', import_url %>
+              </li>
+              <li <%== 'class="active"' if current_page?(:controller => 'admiral_info') %>>
+                <%= link_to '提督情報', :controller => 'admiral_info' %>
+              </li>
+              <li <%== 'class="active"' if current_page?(:controller => 'ship_list') %>>
+                <%= link_to '艦娘一覧', :controller => 'ship_list' %>
+              </li>
+              <li class="dropdown <%== 'active' if controller.controller_name == 'ship_info' %>">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘情報 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to 'レベル・経験値（艦娘別）', :controller => 'ship_info', :action => 'level' %></li>
+                  <li><%= link_to 'レベル・経験値・★5艦娘数（艦種別）', :controller => 'ship_info', :action => 'level_summary' %></li>
+                  <li><%= link_to 'カード入手数・入手率', :controller => 'ship_info', :action => 'card' %></li>
+                </ul>
+              </li>
+            <% end %>
+            <li class="dropdown <%== 'active' if controller.controller_name == 'global' %>">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">全提督との比較 <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><%= link_to '艦娘カード入手率', :controller => 'global', :action => 'ship_card_ownership' %></li>
+              </ul>
+            </li>
+            <% if logged_in? %>
+              <li <%== 'class="active"' if current_page?(:controller => 'friend') %>>
+                <%= link_to '友軍艦隊', :controller => 'friend' %>
+              </li>
+            <% end %>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li <%== 'class="active"' if current_page?(:controller => 'about') %>>
+              <%= link_to 'Admiral Stats について', :controller => 'about' %>
+            </li>
+            <% if logged_in? %>
+                <li><%= link_to 'ログアウト', logout_path %></li>
+            <% end %>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      <%= yield %>
+    </div>
+
+    <div class="footer">
+      <!-- TODO フッターを用意する -->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<div class="page-header">
+  <h2>Admiral Stats</h2>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <% if @histories.blank? %>
+          <div class="panel-heading">
+            <h3 class="panel-title">はじめての方へ</h3>
+          </div>
+          <div class="panel-body">
+            <p>
+              Admiral Stats は、<%= link_to '艦これ Arcade のプレイヤーズサイト', sega_url, :target => '_blank' %>
+              からエクスポートできる自分のプレイデータを、時系列で可視化するツールです。
+              <br>
+              カードの枚数が増えていく様子や、艦娘のレベルが上がっていく様子を見るのが楽しい、という提督のために作りました。
+            </p>
+            SEGA ID が未登録の方は、まずは SEGA ID を登録して、プレイヤーズサイトにログインできることを確認してください。
+            <br>
+            そのあとで <%= link_to '「インポート」', import_url %> の手順に従い、自分のプレイデータを Admiral Stats にインポートしてみてください。
+          </div>
+      <% else %>
+          <%= render( partial: 'notice' ) %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render( partial: 'history', locals: { histories: @histories } ) if @histories %>

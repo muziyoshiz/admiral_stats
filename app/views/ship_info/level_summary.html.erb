@@ -1,0 +1,356 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+
+  <div class="container">
+    <div class="dropdown">
+      <%= form_tag({ action: :level_summary }, { id: 'rangeForm' }) do %>
+          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%
+              case @range
+                when :month
+                  concat '過去 1 ヶ月'
+                when :all
+                  concat '全期間'
+              end
+            %>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#" onclick="$('#range').val('month'); $('#rangeForm').submit()">過去 1 ヶ月</a></li>
+            <li><a href="#" onclick="$('#range').val('all'); $('#rangeForm').submit()">全期間</a></li>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="chart-total-level" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-average-level" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-total-exp" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-average-exp" style="width:100%; height:400px;"></div>
+
+<p>
+  ※注：上記の経験値はレベルから逆算したものであり、細かな経験値上昇は含んでおりません。
+</p>
+
+<hr>
+
+<div id="chart-5stars" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-5stars-kai" style="width:100%; height:400px;"></div>
+
+<script type="application/javascript">
+  // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
+  // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
+  Highcharts.setOptions({
+    global : {
+      useUTC : false
+    }
+  });
+
+  $(function () {
+    $('#chart-total-level').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '合計レベル'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: 'レベル'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_total_level.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-average-level').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '平均レベル'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: 'レベル'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_average_level.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-total-exp').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '合計経験値'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '経験値'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_total_exp.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-average-exp').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '平均経験値'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '経験値'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_average_exp.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-5stars').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '★5艦娘数（ノーマル）'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '艦娘数'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_5stars.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-5stars-kai').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '★5艦娘数（改）'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '艦娘数'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_5stars_kai.to_json %>
+    });
+  });
+</script>

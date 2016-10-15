@@ -1,0 +1,226 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+
+  <div class="container">
+    <div class="dropdown">
+      <%= form_tag({ action: :level }, { id: 'rangeForm' }) do %>
+          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <%= range_to_s(@range) %>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="#" onclick="$('#range').val('month'); $('#rangeForm').submit()">過去 1 ヶ月</a></li>
+            <li><a href="#" onclick="$('#range').val('all'); $('#rangeForm').submit()">全期間</a></li>
+          </ul>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="chart-level" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-exp" style="width:100%; height:400px;"></div>
+<p>
+  ※注：上記の経験値はレベルから逆算したものであり、細かな経験値上昇は含んでおりません。
+</p>
+
+<hr>
+
+<h3>レベル 99 到達予想日</h3>
+
+<p>
+  <%= range_to_s(@range) %> のデータに基づく予想日です。この期間内にレベルが上がっていない艦娘については予想できません。
+</p>
+
+<div class="container">
+  <div class="table-responsive">
+    <table id="table-ship-level" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">図鑑 No.</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レベル</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">経験値</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 50</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 70</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 90</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 99</th>
+      </tr>
+      </thead>
+      <tfoot>
+      <tr>
+        <th class="text-left">図鑑 No.</th>
+        <th class="text-left">艦名</th>
+        <th class="text-left">レベル</th>
+        <th class="text-left">経験値</th>
+        <th class="text-left">レベル 50</th>
+        <th class="text-left">レベル 70</th>
+        <th class="text-left">レベル 90</th>
+        <th class="text-left">レベル 99</th>
+      </tr>
+      </tfoot>
+      <tbody>
+      <% @forecasts.keys.sort.each do |book_no| %>
+          <% forecast = @forecasts[book_no] %>
+          <tr>
+            <td class="numeric"><%= book_no %></td>
+            <td class="text-left"><%= forecast[:name] %></td>
+            <td class="numeric"><%= forecast[:end].level %></td>
+            <td class="numeric"><%= number_with_delimiter(forecast[:end].level_to_exp) %></td>
+            <% if forecast[:lv50_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv50_soon] %>">
+                  <%= forecast[:lv50_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv50_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <% if forecast[:lv70_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv70_soon] %>">
+                  <%= forecast[:lv70_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv70_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <% if forecast[:lv90_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv90_soon] %>">
+                  <%= forecast[:lv90_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv90_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <% if forecast[:lv99_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv99_soon] %>">
+                  <%= forecast[:lv99_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv99_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="application/javascript">
+  // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
+  // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
+  Highcharts.setOptions({
+    global : {
+      useUTC : false
+    }
+  });
+
+  $(function () {
+    $('#chart-level').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: 'レベル'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: 'レベル'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_level.to_json %>
+    });
+  });
+
+  $(function () {
+    $('#chart-exp').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        type: 'line'
+      },
+      title: {
+        text: '経験値'
+      },
+      xAxis: {
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          second: '%H:%M:%S',
+          minute: '%H:%M',
+          hour: '%H:%M',
+          day: '%m月%d日',
+          week: '%m月%d日',
+          month: '%Y-%m',
+          year: '%Y'
+        },
+        title: {
+          text: null
+        }
+      },
+      yAxis: {
+        title: {
+          text: '経験値'
+        },
+        min: 0
+      },
+      tooltip: {
+        dateTimeLabelFormats: {
+          millisecond: "%m月%d日 %H:%M",
+          second: "%m月%d日 %H:%M",
+          minute: "%m月%d日 %H:%M",
+          hour: "%m月%d日 %H:%M",
+          day: "%Y年%m月%d日",
+          week: "%Y年%m月%d日",
+          month: "%Y-%m",
+          year: "%Y"
+        }
+      },
+      series: <%== @series_exp.to_json %>
+    });
+  });
+
+  $(document).ready(function() {
+    $('#table-ship-level').DataTable({
+      "paging": false,
+      "autoWidth": false,
+      "order": [[ 2, "desc" ], [ 0, "asc"]],
+    });
+  } );
+</script>

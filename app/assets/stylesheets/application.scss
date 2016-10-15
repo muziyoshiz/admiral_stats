@@ -1,0 +1,73 @@
+// "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
+@import "bootstrap-sprockets";
+// navbar をレスポンシブデザイン対応に変更する閾値
+$grid-float-breakpoint: 1000px;
+@import "bootstrap";
+@import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
+
+// navbar にメニューが縦表示されたときに、縦スクロールが不要なように最大値を増やす
+// デフォルトは 340px
+// 340px で 8 項目表示されたので、10 項目まで表示できるように 425px まで増やす
+.navbar-fixed-top .navbar-collapse { max-height: 425px; }
+
+// For fixed navbar (height: 50px)
+body { padding-top: 50px; }
+
+// Right aligning for numeric columns
+td.numeric { text-align: right; }
+
+// 艦娘一覧のセル
+td.acquired { text-align: center; background-color: #5CB85C; color: #FFFFFF; }
+td.none     { text-align: center; background-color: #CCCCCC; color: #000000; }
+td.star     { text-align: center; }
+td.not-implemented              { background-color: #CCCCCC; color: #000000; }
+i.star      { color: #FFBF00; }
+
+// 艦娘カードの入手率のセル
+td.rate-common    { text-align: center; }
+td.rate-rare      { text-align: center; color: #31708F; background-color: #D9EDF7; }
+td.rate-veryrare  { text-align: center; color: #8A6D3B; background-color: #FCF8E3; }
+td.rate-tuchinoko { text-align: center; color: #A94442; background-color: #F2DEDE; }
+
+// Lv 99 到達予想日のセル
+// bootstrap に元々ある定義の優先度が強いため、ここまで指定しないとこちらが優先されない
+table#table-ship-level tbody>tr>td.achieved { text-align: center; vertical-align: middle; }
+table#table-ship-level tbody>tr>td.soon     { border-color: #5CB85C; border-width: 3px; }
+table#table-ship-level tbody>tr>td span.exp-to-next { font-size: 0.9em; color: #31708F; }
+
+// 活動記録のセル
+tr.history td.holo      { color: #8A6D3B; }
+tr.history td.chuha     { color: #A94442; }
+tr.history td.kai       { color: #31708F; background-color: #D9EDF7; }
+tr.history td.kai-holo  { color: #8A6D3B; background-color: #FCF8E3; }
+tr.history td.kai-chuha { color: #A94442; background-color: #F2DEDE; }
+
+// リストのマージン
+// リストの1段目
+@mixin li-first {
+  margin-bottom: 9px;
+}
+// リストの2段目
+@mixin li-second {
+  margin-top: 3px;
+  margin-bottom: 6px;
+}
+
+// Admiral Stats について、のリスト
+ul.about li {
+  @include li-first;
+  ul li {
+    @include li-second;
+  }
+}
+
+// ゲスト用の説明ページのリスト
+ol.guest li {
+  @include li-first;
+  ul li {
+    @include li-second;
+  }
+}
+
+// フッター
+div.footer { margin-top: 20px; }

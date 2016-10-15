@@ -1,0 +1,31 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">このページについて</h3>
+      </div>
+      <div class="panel-body">
+        このページにグラフを表示するためには、<%= link_to '「インポート」', import_url %> にて、種別「艦娘一覧」の
+        JSON ファイルをアップロードする必要があります。
+        <br>
+        以下は、ファイルのアップロード後に表示されるグラフのサンプルです。
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>サンプル</h3>
+
+<div class="row">
+  <%= image_tag 'ship_info/chart_total_level.png', height: '400', class: 'center-block' %>
+</div>
+
+<hr>
+
+<div class="row">
+  <%= image_tag 'ship_info/chart_total_exp.png', height: '400', class: 'center-block' %>
+</div>
