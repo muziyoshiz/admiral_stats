@@ -1,5 +1,7 @@
 # Admiral Stats
 
+[![Join the chat at https://gitter.im/muziyoshiz/admiral_stats](https://badges.gitter.im/muziyoshiz/admiral_stats.svg)](https://gitter.im/muziyoshiz/admiral_stats?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 艦これアーケードのプレイデータを可視化するための Web アプリケーションです。ユーザとして使いたい場合は https://www.admiral-stats.com/ で運用中のサービスをご利用ください。
 
 これ以降は、Admiral Stats の開発に参加したい方や、動作の詳細に興味がある方に向けた情報です。
