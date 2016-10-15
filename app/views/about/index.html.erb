@@ -1,8 +1,18 @@
 <div class="page-header">
   <h2><%= title %></h2>
   <p>
-    Admiral Stats は <%= link_to_twitter_muziyoshiz %> が開発し、ボランティアで運営しています。<br/>
-    Admiral Stats 専用アカウント <%= link_to_twitter_admiral_stats %> で更新情報を配信しています。不具合報告などもこのアカウントで受け付けています。
+    Admiral Stats は <%= link_to_twitter_muziyoshiz %> が開発し、ボランティアで運営しています。
+    <ul>
+      <li>
+        <%= link_to 'Twitter (@admiral_stats)', twitter_admiral_stats_url, :target => '_blank' %>：更新情報の配信アカウント。不具合報告なども受け付けています。
+      </li>
+      <li>
+        <%= link_to 'Gitter (muziyoshiz/admiral_stats)', gitter_url, :target => '_blank' %>：GitHub アカウントがあればログインできるチャットです。ご意見・ご要望・雑談など。
+      </li>
+      <li>
+        <%= link_to 'GitHub (muziyoshiz/admiral_stats)', github_url, :target => '_blank' %>：このサイトのソースコードです。プルリク歓迎。
+      </li>
+    </ul>
   </p>
 </div>
 

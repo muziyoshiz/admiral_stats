@@ -28,6 +28,16 @@ module ApplicationHelper
     'https://twitter.com/admiral_stats'
   end
 
+  # Admiral Stats 本体の GitHub リポジトリの URL を返します。
+  def github_url
+    'https://github.com/muziyoshiz/admiral_stats'
+  end
+
+  # Admiral Stats 用のチャットルームの URL を返します。
+  def gitter_url
+    'https://gitter.im/muziyoshiz/admiral_stats'
+  end
+
   def link_to_exporter_url
     link_to 'admiral_stats_exporter', exporter_url, :target => '_blank'
   end
