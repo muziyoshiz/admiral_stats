@@ -23,48 +23,51 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li <%== 'class="active"' if current_page?(:controller => 'home') %>>
-              <%= link_to 'ホーム', :controller => 'home' %>
+            <li <%== 'class="active"' if current_page?(controller: 'home') %>>
+              <%= link_to 'ホーム', controller: 'home' %>
             </li>
             <% unless logged_in? %>
                 <li>
                   <%= link_to 'ログイン', root_url + 'auth/twitter' %>
                 </li>
             <% end %>
+            <li <%== 'class="active"' if current_page?(controller: 'manual', action: 'exporter') %>>
+              <%= link_to '使い方', controller: 'manual', action: 'exporter' %>
+            </li>
             <% if logged_in? %>
-              <li <%== 'class="active"' if current_page?(:controller => 'import') %>>
+              <li <%== 'class="active"' if current_page?(controller: 'import') %>>
                 <%= link_to 'インポート', import_url %>
               </li>
-              <li <%== 'class="active"' if current_page?(:controller => 'admiral_info') %>>
-                <%= link_to '提督情報', :controller => 'admiral_info' %>
+              <li <%== 'class="active"' if current_page?(controller: 'admiral_info') %>>
+                <%= link_to '提督情報', controller: 'admiral_info' %>
               </li>
               <li <%== 'class="active"' if current_page?(:controller => 'ship_list') %>>
-                <%= link_to '艦娘一覧', :controller => 'ship_list' %>
+                <%= link_to '艦娘一覧', controller: 'ship_list' %>
               </li>
               <li class="dropdown <%== 'active' if controller.controller_name == 'ship_info' %>">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘情報 <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  <li><%= link_to 'レベル・経験値（艦娘別）', :controller => 'ship_info', :action => 'level' %></li>
-                  <li><%= link_to 'レベル・経験値・★5艦娘数（艦種別）', :controller => 'ship_info', :action => 'level_summary' %></li>
-                  <li><%= link_to 'カード入手数・入手率', :controller => 'ship_info', :action => 'card' %></li>
+                  <li><%= link_to 'レベル・経験値（艦娘別）', controller: 'ship_info', action: 'level' %></li>
+                  <li><%= link_to 'レベル・経験値・★5艦娘数（艦種別）', controller: 'ship_info', action: 'level_summary' %></li>
+                  <li><%= link_to 'カード入手数・入手率', controller: 'ship_info', action: 'card' %></li>
                 </ul>
               </li>
             <% end %>
             <li class="dropdown <%== 'active' if controller.controller_name == 'global' %>">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">全提督との比較 <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><%= link_to '艦娘カード入手率', :controller => 'global', :action => 'ship_card_ownership' %></li>
+                <li><%= link_to '艦娘カード入手率', controller: 'global', action: 'ship_card_ownership' %></li>
               </ul>
             </li>
             <% if logged_in? %>
-              <li <%== 'class="active"' if current_page?(:controller => 'friend') %>>
-                <%= link_to '友軍艦隊', :controller => 'friend' %>
+              <li <%== 'class="active"' if current_page?(controller: 'friend') %>>
+                <%= link_to '友軍艦隊', controller: 'friend' %>
               </li>
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li <%== 'class="active"' if current_page?(:controller => 'about') %>>
-              <%= link_to 'Admiral Stats について', :controller => 'about' %>
+            <li <%== 'class="active"' if current_page?(controller: 'about') %>>
+              <%= link_to 'Admiral Stats について', controller: 'about' %>
             </li>
             <% if logged_in? %>
                 <li><%= link_to 'ログアウト', logout_path %></li>
