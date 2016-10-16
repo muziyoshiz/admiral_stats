@@ -44,6 +44,9 @@ set :assets_roles, [ :web ]
 # 保存する asset バージョン数
 set :keep_assets, 2
 
+# デプロイ時に、deployment グループの gem も除外する
+set :bundle_without, %w{development test deployment}.join(' ')
+
 # Passenger (mod_rails) をアップロードするために restart.txt を配置
 namespace :deploy do
   desc "Restarting mod_rails with restart.txt"

@@ -41,12 +41,13 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-# Capistrano
-# 本番環境のデプロイサーバに Capistrano がインストールされるように、:development グループの外に出した
-# Web サーバにも Capistrano がインストールされてしまうが、その分のオーバヘッドは許容する
-gem 'capistrano', '~> 3.1'
-gem 'capistrano-rails', '~> 1.1'
-gem 'capistrano-rvm'
+# Group for deployment server in production environment
+group :deployment do
+  # Capistrano
+  gem 'capistrano', '~> 3.1'
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-rvm'
+end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
