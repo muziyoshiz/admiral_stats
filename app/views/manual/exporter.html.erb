@@ -2,18 +2,7 @@
   <h2><%= title %></h2>
 </div>
 
-<h3>利用の流れ</h3>
-
 <div class="container">
-  <p>
-    <%= image_tag 'home/admiral_stats_concept.png', class: 'img-responsive img-thumbnail', width: 600 %>
-  </p>
-  <p>
-    1. 公式サイトからプレイデータをエクスポート
-  </p>
-  <p>
-    2. エクスポートしたプレイデータを、「インポート」の画面でアップロード
-  </p>
   <div class="row">
     <div class="col-sm-10">
       <div class="panel panel-danger">
@@ -21,11 +10,29 @@
           <h3 class="panel-title">注意事項</h3>
         </div>
         <div class="panel-body">
-          （非公式ツールである旨の説明）
+          Admiral Stats および Admiral Stats Exporter（提督情報エクスポータ）は非公式なツールです。<br>
+          本ツールの開発者は、このツールを利用することによるいかなる損害についても、一切責任を負いません。以下の説明をお読みいただいた上で、自己責任にてご利用ください。
         </div>
       </div>
     </div>
   </div>
+</div>
+
+<h3 style="margin-bottom: 18px;">Admiral Stats 利用の流れ</h3>
+
+<div class="container">
+  <p>
+    Admiral Stats は、公式サイトのプレイデータを使って、グラフや艦娘一覧を表示します。<br>
+    Admiral Stats から公式サイトに直接繋ぐことはできないため、以下の手順でプレイデータをアップロードしてもらう必要があります。
+  </p>
+  <ul>
+    <li>手順 1. エクスポータを使って、公式サイトからプレイデータをダウンロードする</li>
+    <li>手順 2. エクスポートしたデータを、Admiral Stats の「インポート」の画面でアップロードする</li>
+    <li>艦これアーケードをプレイするたびに、この手順 1 〜 2 を繰り返す</li>
+  </ul>
+  <p>
+    <%= image_tag 'home/admiral_stats_concept.png', class: 'img-responsive img-thumbnail', width: 600 %>
+  </p>
 </div>
 
 <hr>
@@ -34,7 +41,7 @@
 
 <div class="container">
   <p>
-    現在は、3種類のエクスポータを提供しています。Admiral Stats を使いたい環境に応じて、好きなエクスポータを選んでください。<br>
+    Admiral Stats を使いたい環境に応じて、好きなエクスポータを選んでください。<br>
     手軽に使うだけならブックマークレット版、PC 上にきちんとプレイデータを溜めたい方には PowerShell 版や Ruby 版をお勧めします。
   </p>
 
