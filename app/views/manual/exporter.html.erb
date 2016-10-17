@@ -2,7 +2,6 @@
   <h2><%= title %></h2>
 </div>
 
-
 <h3>利用の流れ</h3>
 
 <div class="container">
@@ -38,14 +37,12 @@
     現在は、3種類のエクスポータを提供しています。Admiral Stats を使いたい環境に応じて、好きなエクスポータを選んでください。<br>
     手軽に使うだけならブックマークレット版、PC 上にきちんとプレイデータを溜めたい方には PowerShell 版や Ruby 版をお勧めします。
   </p>
-</div>
 
-<div class="container">
-  <div class="table-responsive">
+  <div class="table-responsive-wrappable">
     <table class="table table-striped">
       <thead>
       <tr>
-        <th class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1">エクスポータ</th>
+        <th class="col-xl-2 col-lg-2 col-md-2 col-sm-1 col-xs-1">種類</th>
         <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">対応 OS</th>
         <th class="col-xl-9 col-lg-9 col-md-9 col-sm-10 col-xs-10">特徴</th>
       </tr>
@@ -58,6 +55,7 @@
           <ul style="margin-left: -20px; margin-bottom: 0px;">
             <li><strong class="text-primary">インストールは最も簡単</strong></li>
             <li>スマホでも使える</li>
+            <li>1 個の SEGA ID に複数の Aime カード（複数の提督）を紐付けていても OK</li>
             <li>ダウンロード先フォルダはブラウザ次第のため、ファイルが散らばりがち</li>
           </ul>
         </td>
@@ -79,7 +77,7 @@
           <ul style="margin-left: -20px; margin-bottom: 0px;">
             <li>インストールは最も難しいが、Ruby が動作する OS 全般で動く</li>
             <li>ダウンロード先フォルダが固定で、ファイルが散らばらない</li>
-            <li><strong class="text-primary">実験的な機能（Admiral Stats へのインポート自動化など）は Ruby 版から追加予定</strong></li>
+            <li><strong class="text-primary">実験的な機能は Ruby 版から追加予定</strong></li>
           </ul>
         </td>
       </tr>
@@ -88,92 +86,240 @@
   </div>
 </div>
 
-<hr>
-
-<h3>エクスポータ（ブックマークレット版）の使い方</h3>
-
-<h4>インストール方法</h4>
+<h3>ブックマークレット版を動作確認済みのブラウザ</h3>
 
 <div class="container">
   <p>
-    以下のいずれかのリンクを、ブラウザのブックマークツールバーにドラッグアンドドロップしてください。これでインストール完了です。
+    2016-10-16 時点の最新版で動作確認した結果です。<br>
+    Safari 以外なら大体動くようです。iOS については手元に検証機がないので未確認です。
   </p>
-  <div class="well">
-    <p>
-      <%= link_to 'ASE（Admiral Stats エクスポータ）3ファイル版', "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter.js');", class: 'btn btn-primary' %>
-    </p>
-    現在の Admiral Stats がサポートしている、3種類のプレイデータ（基本情報、艦娘図鑑、艦娘一覧）をダウンロードします。
-  </div>
-  <div class="well">
-    <p>
-      <%= link_to 'ASE（Admiral Stats エクスポータ）全ファイル版', "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter_all.js');", class: 'btn btn-primary' %>
-    </p>
-    現在はサポートしていませんが、将来的にサポートする可能性のある、すべてのプレイデータをダウンロードします。
-  </div>
-  <p>
-    Android の場合は、<strong class="text-danger">ドラッグアンドドロップでのブックマークレット登録ができません。</strong><br>
-    そのため、Windows/MacOS の Chrome でブックマークレットを登録してから、それを Chrome の機能で Android に同期してください。
-  </p>
-</div>
 
-<h4>実行方法</h4>
-
-<div class="container">
-  <h5>ログイン</h5>
-  <div class="container">
-    <p>
-      まず、<%= link_to 'SEGA 公式のプレイヤーズサイトのログイン画面', 'https://kancolle-arcade.net/ac/#/top', target: '_blank' %> からログインします。
-    </p>
-    <p>
-      <%= image_tag 'manual/sega_top.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
-    </p>
-  </div>
-
-  <h5>エクスポートしたい提督情報の選択（※ 一部の提督に限る）</h5>
-  <div class="container">
-    <p>
-      1個の SEGA ID に2個以上の提督情報を紐付けている場合に限り、ログイン直後に以下のようなページが表示されます。<br>
-      エクスポートしたい提督情報を選んで、「決定」ボタンを押してください。
-    </p>
-    <p>
-      <%= image_tag 'manual/sega_registration.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
-    </p>
-  </div>
-
-  <h5>ブックマークレットの実行</h5>
-  <div class="container">
-    <p>
-      ログイン完了すると、以下のような海域情報のページが表示されます。この画面で先ほど登録したブックマークレットをクリックしてください。<br>
-      プレイデータを含むファイルが、自動的にダウンロードされます。
-    </p>
-    <p>
-      <%= image_tag 'manual/sega_area.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
-    </p>
-  </div>
-
-  <h5>エクスポートしたプレイデータのアップロード</h5>
-  <div class="container">
-    <p>
-      最後に、<%= link_to_if_logged_in 'Admiral Stats の「インポート」ページ', import_url %> に移動して、ファイルをアップロードすれば作業完了！<br>
-      艦これアーケードをプレイするたびにプレイデータをインポートしていけば、艦娘カードの枚数やレベルがどれくらいのペースで増えているか確認できるようになります。
-    </p>
-    <p>
-      <%= image_tag 'manual/import.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
-    </p>
+  <div class="table-responsive-wrappable">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">OS</th>
+        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">動作した</th>
+        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">動作しなかった</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Windows</td>
+        <td>Chrome, Firefox, Edge, Internet Explorer 11</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>MacOS</td>
+        <td>Chrome, Firefox</td>
+        <td>Safari</td>
+      </tr>
+      <tr>
+        <td>Android</td>
+        <td>Chrome</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>iOS</td>
+        <td>？</td>
+        <td>？</td>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </div>
 
 <hr>
 
-<h3>エクスポータ（PowerShell 版、Ruby 版）の使い方</h3>
+<h3 style="margin-bottom: 18px;">エクスポータの使い方</h3>
 
-<h4>インストール・実行方法</h4>
+<ul class="nav nav-pills" style="margin-bottom: 18px;">
+  <li class="active"><a href="#bookmarklet-pc" data-toggle="tab">ブックマークレット版（PC）</a></li>
+  <li><a href="#bookmarklet-sp" data-toggle="tab">ブックマークレット版（スマホ）</a></li>
+  <li><a href="#ruby-powershell" data-toggle="tab">Ruby 版 / PowerShell 版</a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane in active" id="bookmarklet-pc">
+    <h4>インストール方法</h4>
 
-<div class="container">
-  <p>
-    <%= link_to 'エクスポータの配布サイト(GitHub)', exporter_url, target: '_blank' %> に詳しい説明を掲載していますので、こちらをご覧ください。
-  </p>
-  <p>
-    <%= link_to image_tag('manual/github_exporter.png', class: 'img-responsive img-thumbnail', width: 600), exporter_url, target: '_blank' %>
-  </p>
+    <div class="container">
+      <p>
+        以下のいずれかのリンクを、ブラウザのブックマークツールバーにドラッグ＆ドロップしてみてください。これでインストール完了です。
+      </p>
+      <div class="well">
+        <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
+        <p><%= link_to 'as-exporter 提督情報エクスポータ',
+                       "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter.js');",
+                       class: 'btn btn-success', onclick: 'return false;' %></p>
+        現在の Admiral Stats がサポートしているプレイデータ（基本情報、艦娘図鑑、艦娘一覧）のみをダウンロードします。
+      </div>
+      <div class="well">
+        <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
+        <p><%= link_to 'as-exporter 提督情報エクスポータ（すべて）',
+                       "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter_all.js');",
+                       class: 'btn btn-success', onclick: 'return false;' %></p>
+        Admiral Stats が将来的にサポートする可能性のある、すべてのプレイデータをダウンロードします。
+      </div>
+    </div>
+
+    <h4>実行方法</h4>
+
+    <div class="container">
+      <h5>ログイン</h5>
+      <div class="container">
+        <p>
+          まず、<%= link_to 'SEGA 公式のプレイヤーズサイトのログイン画面', 'https://kancolle-arcade.net/ac/#/top', target: '_blank' %> からログインします。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_top.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
+        </p>
+      </div>
+
+      <h5>エクスポートしたい提督情報の選択（※ 一部の提督に限る）</h5>
+      <div class="container">
+        <p>
+          1個の SEGA ID に2個以上の提督情報を紐付けている場合に限り、ログイン直後に以下のようなページが表示されます。<br>
+          エクスポートしたい提督情報を選んで、「決定」ボタンを押してください。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_registration.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
+        </p>
+      </div>
+
+      <h5>ブックマークレットの実行</h5>
+      <div class="container">
+        <p>
+          ログイン完了すると、以下のような海域情報のページが表示されます。この画面で先ほど登録したブックマークレットをクリックしてください。<br>
+          プレイデータを含むファイルが、自動的にダウンロードされます。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_area.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
+        </p>
+      </div>
+
+      <h5>エクスポートしたプレイデータのアップロード</h5>
+      <div class="container">
+        <p>
+          最後に、<%= link_to_if_logged_in 'Admiral Stats の「インポート」ページ', import_url %> に移動して、ファイルをアップロードすれば作業完了です！<br>
+          艦これアーケードをプレイするたびにプレイデータをインポートしていけば、艦娘カードの入手率や、艦隊の成長ペースを確認できるようになります。
+        </p>
+        <p>
+          <%= image_tag 'manual/import.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane in active" id="bookmarklet-sp">
+    <h4>インストール方法</h4>
+
+    <div class="container">
+      <p>
+        Android の場合は、<strong class="text-danger">ドラッグ＆ドロップでのブックマークレット登録ができません。</strong>
+        <br>
+        そのため、ブックマークレットの登録だけは PC を使うのが簡単です。
+        <ul>
+          <li>手順 1. 以下のいずれかのリンクを、Chrome のブックマークツールバーにドラッグ＆ドロップする</li>
+          <li>手順 2. Chrome の機能で、登録したブックマークレットを、スマホの Chrome に同期する</li>
+        </ul>
+      </p>
+      <div class="well">
+        <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
+        <p><%= link_to 'as-exporter 提督情報エクスポータ',
+                       "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter.js');",
+                       class: 'btn btn-success', onclick: 'return false;' %></p>
+        現在の Admiral Stats がサポートしているプレイデータ（基本情報、艦娘図鑑、艦娘一覧）のみをダウンロードします。
+      </div>
+      <div class="well">
+        <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
+        <p><%= link_to 'as-exporter 提督情報エクスポータ（すべて）',
+                       "javascript:(function(u){var%20s=document.createElement('script');s.charset='UTF-8';s.src=u;document.body.appendChild(s)})('https://www.admiral-stats.com/bookmarklets/exporter_all.js');",
+                       class: 'btn btn-success', onclick: 'return false;' %></p>
+        Admiral Stats が将来的にサポートする可能性のある、すべてのプレイデータをダウンロードします。
+      </div>
+      <p>
+        どうしても PC を使えない場合は、以下の手順でもブックマークを登録できます。
+      <ul>
+        <li>手順 1. 適当なページでブックマークを作る</li>
+        <li>手順 2. いずれかのリンクの上で長押しして、「リンクアドレスをコピー」を選択</li>
+        <li>手順 3. 手順 1 で作ったブックマークを編集し、手順 2 でコピーしたリンクを URL 欄に貼り付け</li>
+      </ul>
+      </p>
+    </div>
+
+    <h4>実行方法</h4>
+
+    <div class="container">
+      <h5>ログイン</h5>
+      <div class="container">
+        <p>
+          まず、<%= link_to 'SEGA 公式のプレイヤーズサイトのログイン画面', 'https://kancolle-arcade.net/ac/#/top', target: '_blank' %> からログインします。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_top_sp.jpg', class: 'img-responsive img-thumbnail', width: 300 %>
+        </p>
+      </div>
+
+      <h5>エクスポートしたい提督情報の選択（※ 一部の提督に限る）</h5>
+      <div class="container">
+        <p>
+          1個の SEGA ID に2個以上の提督情報を紐付けている場合に限り、ログイン直後に以下のようなページが表示されます。<br>
+          エクスポートしたい提督情報を選んで、「決定」ボタンを押してください。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_registration_sp.jpg', class: 'img-responsive img-thumbnail', width: 300 %>
+        </p>
+      </div>
+
+      <h5>ブックマークレットの実行</h5>
+      <div class="container">
+        <p>
+          ログイン完了すると、以下のような海域情報のページが表示されます。この画面で先ほど登録したブックマークレットを実行します。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_area_sp.jpg', class: 'img-responsive img-thumbnail', width: 300 %>
+        </p>
+        <p>
+          Android 版の Chrome では、<strong class="text-danger">ブックマーク一覧からブックマークレットを実行することができません。</strong><br>
+          その代わりにアドレスバーに "as-exporter" と入力していくと、入力予測にブックマークレットが表示されるので、それを選択してください。<br>
+          プレイデータを含むファイルが、自動的にダウンロードされます。
+        </p>
+        <p>
+          <%= image_tag 'manual/sega_bookmarklet_sp.jpg', class: 'img-responsive img-thumbnail', width: 300 %>
+        </p>
+      </div>
+
+      <h5>エクスポートしたプレイデータのアップロード</h5>
+      <div class="container">
+        <p>
+          最後に、<%= link_to_if_logged_in 'Admiral Stats の「インポート」ページ', import_url %> に移動して、ファイルをアップロードすれば作業完了です！<br>
+          艦これアーケードをプレイするたびにプレイデータをインポートしていけば、艦娘カードの入手率や、艦隊の成長ペースを確認できるようになります。
+        </p>
+        <p>
+          <%= image_tag 'manual/import_sp.jpg', class: 'img-responsive img-thumbnail', width: 300 %>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane" id="ruby-powershell">
+    <h4>インストール・実行方法</h4>
+    <div class="container">
+      <p>
+        <%= link_to 'エクスポータの配布サイト(GitHub)', exporter_url, target: '_blank' %> に詳しい説明を掲載していますので、こちらをご覧ください。
+      </p>
+      <p>
+        <%= image_tag 'manual/github_exporter.png', class: 'img-responsive img-thumbnail', width: 600 %>
+      </p>
+    </div>
+
+    <h4>エクスポートしたプレイデータのアップロード方法</h4>
+    <div class="container">
+      <p>
+        エクスポートが完了したら、<%= link_to_if_logged_in 'Admiral Stats の「インポート」ページ', import_url %> に移動して、ファイルをアップロードすれば作業完了です！<br>
+        艦これアーケードをプレイするたびにプレイデータをインポートしていけば、艦娘カードの入手率や、艦隊の成長ペースを確認できるようになります。
+      </p>
+      <p>
+        <%= image_tag 'manual/import.jpg', class: 'img-responsive img-thumbnail', width: 600 %>
+      </p>
+    </div>
+  </div>
 </div>
