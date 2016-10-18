@@ -18,19 +18,19 @@
 
   <h2><%= title %></h2>
   <p class="lead">
-    <%= link_to '艦これ Arcade のプレイヤーズサイト', sega_url, :target => '_blank' %>
-    の表示データを、以下のいずれかの方法で Admiral Stats にインポートしてください。
+    <%= link_to '公式プレイヤーズサイト', sega_url, :target => '_blank' %>
+    のプレイデータを、以下のいずれかの方法でインポートしてください。
     <br>
-    現時点では、<%= link_to_exporter_url %> でエクスポートした JSON ファイルのみに対応しています。
+    プレイデータの入手方法については <%= link_to '「使い方」のページ', controller: 'manual', action: 'exporter' %> の説明をお読みください。
   </p>
 </div>
 
 <h3>A. JSON ファイルのアップロード</h3>
 <p>
-  admiral_stats_exporter（Ruby 版または PowerShell 版）でエクスポートした JSON ファイルをアップロードします。<br/>
+  admiral_stats_exporter（提督情報エクスポータ）でエクスポートした JSON ファイルをアップロードします。<br/>
   <strong class="text-info">2016年10月3日より、ファイルの種別を自動判別できるようになりました。異なる種別のファイルも同時にインポートできます。</strong>
   <br>
-  （※参考： <%= link_to 'admiral_stats_exporter の利用方法', exporter_url, :target => '_blank' %>）
+  （※参考：<%= link_to '提督情報エクスポータの使い方', { controller: 'manual', action: 'exporter' }, target: '_blank' %>）
 </p>
 
 <div class="container">

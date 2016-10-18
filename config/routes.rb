@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   # 過去のお知らせ
   get 'notice', to: 'notice#index', as: :notice
 
+  # 使い方
+  get 'manual/exporter', to: 'manual#exporter'
+
   # インポート
   get 'import', to: 'import#index', as: :import
   post 'import/file', to: 'import#file'

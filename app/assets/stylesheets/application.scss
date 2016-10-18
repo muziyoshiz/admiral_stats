@@ -1,7 +1,7 @@
 // "bootstrap-sprockets" must be imported before "bootstrap" and "bootstrap/variables"
 @import "bootstrap-sprockets";
 // navbar をレスポンシブデザイン対応に変更する閾値
-$grid-float-breakpoint: 1000px;
+$grid-float-breakpoint: 1200px;
 @import "bootstrap";
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
 
@@ -41,6 +41,15 @@ tr.history td.chuha     { color: #A94442; }
 tr.history td.kai       { color: #31708F; background-color: #D9EDF7; }
 tr.history td.kai-holo  { color: #8A6D3B; background-color: #FCF8E3; }
 tr.history td.kai-chuha { color: #A94442; background-color: #F2DEDE; }
+
+// table-responsive の折り返しを許可するバージョン
+.table-responsive-wrappable {
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  -webkit-overflow-scrolling: touch;
+}
 
 // リストのマージン
 // リストの1段目

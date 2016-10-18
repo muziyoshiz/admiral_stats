@@ -28,6 +28,7 @@ SitemapGenerator::Sitemap.create do
   #     add article_path(article), :lastmod => article.updated_at
   #   end
   add '/global/ship_card_ownership', :priority => 0.8, :changefreq => 'always'
+  add '/manual/exporter'
   add '/notice'
   add '/about'
 end
