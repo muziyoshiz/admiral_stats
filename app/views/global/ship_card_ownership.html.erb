@@ -96,16 +96,11 @@
 
 <script type="application/javascript">
   $(document).ready(function() {
-    var table = $('#table-ship-book').DataTable({
-      "paging": false,
-      "autoWidth": false,
+    var table = $('#table-ship-book').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "aoColumnDefs": [
         <!-- 艦番号で数値通りにソートするための設定 -->
         { "iDataSort": 3, "aTargets": [ 2 ] },
       ],
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Japanese.json"
-      }
-    });
+    }));
   });
 </script>

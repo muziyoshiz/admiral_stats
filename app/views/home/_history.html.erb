@@ -30,17 +30,13 @@
 
 <script type="application/javascript">
   $(document).ready(function() {
-    $('#table-history').DataTable({
+    $('#table-history').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "paging": true,
-      "autoWidth": false,
       "sorting": [ 0, "desc" ],
       "aoColumnDefs": [
         <!-- インデックスでソートするための設定 -->
         { "iDataSort": 1, "aTargets": [ 0 ] },
       ],
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Japanese.json"
-      }
-    });
+    }));
   } );
 </script>

@@ -155,9 +155,7 @@
 
 <script type="application/javascript">
   $(document).ready(function() {
-    var table = $('#table-ship-book').DataTable({
-      "paging": false,
-      "autoWidth": false,
+    var table = $('#table-ship-book').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "aoColumnDefs": [
         <!-- 艦番号で数値通りにソートするための設定 -->
         { "iDataSort": 3, "aTargets": [ 2 ] },
@@ -170,10 +168,7 @@
         <!-- デフォルト状態で星の数の列を隠すための設定 -->
         { "bVisible": false, "aTargets": [ 12, 14 ] }
       ],
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Japanese.json"
-      }
-    });
+    }));
 
     // カラム表示のトグル切り替え
     // 6 〜 11 列目：カード

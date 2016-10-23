@@ -23,3 +23,15 @@
 //= require highcharts/modules/offline-exporting
 
 //= require_tree .
+
+// DataTables のデフォルト設定
+var ADMIRAL_STATS_DATATABLES_DEFAULT = {
+  // 1ページに表示したいデータが多いため、デフォルトはページング無効とする
+  "paging": false,
+  "autoWidth": false,
+  // 表示の日本語化
+  "language": {
+    "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Japanese.json"
+  },
+};
+

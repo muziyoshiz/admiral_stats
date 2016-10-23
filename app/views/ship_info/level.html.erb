@@ -217,13 +217,8 @@
   });
 
   $(document).ready(function() {
-    $('#table-ship-level').DataTable({
-      "paging": false,
-      "autoWidth": false,
+    $('#table-ship-level').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "order": [[ 2, "desc" ], [ 0, "asc"]],
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Japanese.json"
-      }
-    });
+    }));
   } );
 </script>
