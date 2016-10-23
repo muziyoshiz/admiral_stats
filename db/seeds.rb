@@ -938,8 +938,11 @@ ship_masters = [
         ship_class_index: 1,
         ship_type: '軽空母',
         ship_name: '祥鳳',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2016-10-27：4隻追加（翔鶴、瑞鶴、瑞鳳、祥鳳のノーマルのみ）
+        implemented_at: '2016-10-27T07:00:00+09:00',
     },
     {
         book_no: 95,
@@ -1060,8 +1063,11 @@ ship_masters = [
         ship_class_index: 1,
         ship_type: '正規空母',
         ship_name: '翔鶴',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2016-10-27：4隻追加（翔鶴、瑞鶴、瑞鳳、祥鳳のノーマルのみ）
+        implemented_at: '2016-10-27T07:00:00+09:00',
     },
     {
         book_no: 107,
@@ -1070,7 +1076,8 @@ ship_masters = [
         ship_type: '正規空母',
         ship_name: '瑞鶴',
         variation_num: 3,
-        
+        # 2016-10-27：4隻追加（翔鶴、瑞鶴、瑞鳳、祥鳳のノーマルのみ）
+        implemented_at: '2016-10-27T07:00:00+09:00',
     },
     {
         book_no: 108,
@@ -1116,7 +1123,8 @@ ship_masters = [
         ship_type: '軽空母',
         ship_name: '瑞鳳',
         variation_num: 3,
-        
+        # 2016-10-27：4隻追加（翔鶴、瑞鶴、瑞鳳、祥鳳のノーマルのみ）
+        implemented_at: '2016-10-27T07:00:00+09:00',
     },
     {
         book_no: 113,
