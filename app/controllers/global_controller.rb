@@ -3,6 +3,14 @@ class GlobalController < ApplicationController
     set_meta_tags title: '艦これアーケードの艦娘カード入手率',
                   description: 'Admiral Stats に艦これアーケードのプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。'
 
+    # 集計データのある限定海域
+    @campaigns = CampaignMaster.find_by_sql(
+        [ 'SELECT * FROM campaign_masters cm' +
+              ' WHERE cm.started_at <= ?' +
+              ' AND EXISTS (SELECT * FROM campaign_ship_card_ownerships o WHERE cm.campaign_no = o.campaign_no)' +
+              ' ORDER BY cm.campaign_no', Time.now ]
+    ).to_a
+
     # URL パラメータ 'all' が true の場合は、未配備の艦娘も表示
     if ActiveRecord::Type::Boolean.new.deserialize(params[:all])
       @ships = ShipMaster.all.to_a
@@ -58,9 +66,17 @@ class GlobalController < ApplicationController
   end
 
   # 特定の限定海域に関する情報を表示する
-  def campaign
+  def campaign_ship_card_ownership
+    # 集計データのある限定海域
+    @campaigns = CampaignMaster.find_by_sql(
+        [ 'SELECT * FROM campaign_masters cm' +
+              ' WHERE cm.started_at <= ?' +
+              ' AND EXISTS (SELECT * FROM campaign_ship_card_ownerships o WHERE cm.campaign_no = o.campaign_no)' +
+              ' ORDER BY cm.campaign_no', Time.now ]
+    ).to_a
+
     # 指定された No. の限定海域が存在するかチェック
-    @campaign = CampaignMaster.where('campaign_no = ? AND started_at <= ?', params[:campaign_no], Time.now).first
+    @campaign = @campaigns.select{|c| c.campaign_no == params[:campaign_no].to_i }.first
     unless @campaign
       redirect_to home_url
       return
@@ -69,8 +85,12 @@ class GlobalController < ApplicationController
     set_meta_tags title: "艦これアーケードの艦娘カード入手率（#{@campaign.campaign_name}）",
                   description: "期間限定海域「#{@campaign.campaign_name}」出撃後のプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。"
 
+    # この期間限定海域の報酬艦の図鑑 No.
+    @reward_book_noes = ShipMaster.where('implemented_at >= ? AND implemented_at < ?',
+                                     @campaign.started_at, @campaign.ended_at).map{|s| s.book_no }
+
     # この期間限定海域の期間に実装されていた艦娘のみを表示
-    @ships = ShipMaster.where('implemented_at <= ?', @campaign.ended_at).to_a
+    @ships = ShipMaster.where('implemented_at < ?', @campaign.ended_at).to_a
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
     kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
