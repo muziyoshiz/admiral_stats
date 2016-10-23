@@ -10,7 +10,6 @@ class CampaignMaster < ApplicationRecord
                 greater_than_or_equal_to: 1,
             }
 
-
   # 期間限定海域名
   validates :campaign_name,
             presence: true,
