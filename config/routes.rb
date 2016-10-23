@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   # 全提督との比較
   get 'global/ship_card_ownership', to: 'global#ship_card_ownership'
+  get 'global/campaign/:campaign_no', to: 'global#campaign'
 
   get 'friend', to: 'friend#index'
 
@@ -37,7 +38,7 @@ Rails.application.routes.draw do
   # デバッグ用のログイン（development のみ有効）
   get 'sessions/debug_create/:uid/:nickname', to: 'sessions#debug_create'
 
-  root to: 'home#index'
+  root to: 'home#index', as: :home
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
   get '*unmatched_route', to: 'application#redirect_to_home'
