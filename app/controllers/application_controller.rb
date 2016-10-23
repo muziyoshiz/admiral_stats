@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_admiral, :logged_in?
 
   def redirect_to_home
-    redirect_to home_url
+    redirect_to controller: 'home', action: 'index'
   end
 
   private

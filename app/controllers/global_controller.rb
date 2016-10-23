@@ -78,7 +78,7 @@ class GlobalController < ApplicationController
     # 指定された No. の限定海域が存在するかチェック
     @campaign = @campaigns.select{|c| c.campaign_no == params[:campaign_no].to_i }.first
     unless @campaign
-      redirect_to home_url
+      redirect_to root_url
       return
     end
 

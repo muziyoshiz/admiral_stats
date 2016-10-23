@@ -38,7 +38,8 @@ Rails.application.routes.draw do
   # デバッグ用のログイン（development のみ有効）
   get 'sessions/debug_create/:uid/:nickname', to: 'sessions#debug_create'
 
-  root to: 'home#index', as: :home
+  # 以下の記載を追加すると root_url メソッドも自動設定される
+  root to: 'home#index'
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
   get '*unmatched_route', to: 'application#redirect_to_home'

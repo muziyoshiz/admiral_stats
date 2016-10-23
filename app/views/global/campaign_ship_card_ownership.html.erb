@@ -13,7 +13,7 @@
         <ul>
           <li>期間限定海域「<%= @campaign.campaign_name %>」出撃後のプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
           <li>自分で建造・ドロップしたカードだけでなく、買ったり借りたりして読み込んだカードも「入手」に含みます。これは、公式プレイヤーズサイトの仕様による制限です。</li>
-          <li>集計結果は毎日 3:00 頃に自動更新されます。</li>
+          <li>イベント開催中と、その終了日の翌日まで、毎日 3:00 頃に自動集計されます。</li>
           <% if logged_in? %>
               <li>あなたが入手済みのカードは <i class="glyphicon glyphicon-star star"></i> 付きで表示しています。</li>
           <% else %>
@@ -43,6 +43,10 @@
           <li><%= link_to "「#{c.campaign_name}」参加提督", controller: 'global', action: 'campaign_ship_card_ownership', campaign_no: c.campaign_no %></li>
       <% end %>
     </ul>
+  </div>
+  <div style="margin-top: 6px; margin-bottom: 6px;">
+    <a class="select-new-ships btn btn-primary">新艦娘のみ表示</a>
+    <a class="select-all-ships btn btn-default">全艦娘の表示</a>
   </div>
 </div>
 
@@ -120,5 +124,16 @@
         { "iDataSort": 3, "aTargets": [ 2 ] },
       ],
     }));
+
+    $('a.select-new-ships').on('click', function (e) {
+      e.preventDefault();
+      // 隠しクエリに対して検索することで、新艦娘に絞り込んだ状態で表示
+      table.search('新艦娘').draw();
+    });
+    $('a.select-all-ships').on('click', function (e) {
+      e.preventDefault();
+      // 検索条件のリセット
+      table.search('').draw();
+    });
   });
 </script>
