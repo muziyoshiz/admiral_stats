@@ -119,31 +119,9 @@
   });
 
   $(function () {
-    $('#chart-level').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: 'レベル'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         title: {
@@ -151,48 +129,14 @@
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_level.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-exp').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '経験値'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         title: {
@@ -200,20 +144,8 @@
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_exp.to_json %>
-    });
+    }));
   });
 
   $(document).ready(function() {

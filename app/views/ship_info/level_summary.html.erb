@@ -61,276 +61,84 @@
   });
 
   $(function () {
-    $('#chart-total-level').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-total-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '合計レベル'
       },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
-      },
       yAxis: {
         title: {
           text: 'レベル'
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_total_level.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-average-level').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-average-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '平均レベル'
       },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
-      },
       yAxis: {
         title: {
           text: 'レベル'
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_average_level.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-total-exp').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-total-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '合計経験値'
       },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
-      },
       yAxis: {
         title: {
           text: '経験値'
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_total_exp.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-average-exp').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-average-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '平均経験値'
       },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
-      },
       yAxis: {
         title: {
           text: '経験値'
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_average_exp.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-5stars').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-5stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（ノーマル）'
       },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
-      },
       yAxis: {
         title: {
           text: '艦娘数'
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_5stars.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-5stars-kai').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-5stars-kai').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（改）'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         title: {
@@ -338,19 +146,7 @@
         },
         min: 0
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_5stars_kai.to_json %>
-    });
+    }));
   });
 </script>

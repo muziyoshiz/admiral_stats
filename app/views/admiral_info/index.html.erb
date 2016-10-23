@@ -62,31 +62,9 @@
   });
 
   $(function () {
-    $('#chart-level-exp').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-level-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '艦隊司令部レベル・経験値'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: [{
         labels: {
@@ -116,48 +94,14 @@
         min: 0,
         opposite: true
       }],
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_level_exp.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-material').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-material').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '資源'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         title: {
@@ -178,48 +122,14 @@
         }],
         min: 0,
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_material.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-consumable').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-consumable').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '資源以外の消耗品'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: [{
         labels: {
@@ -263,48 +173,14 @@
         min: 0,
         opposite: true
       }],
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_consumable.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-result-point').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-result-point').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '戦果'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         title: {
@@ -312,48 +188,14 @@
         },
         min: 0,
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_result_point.to_json %>
-    });
+    }));
   });
 
   $(function () {
-    $('#chart-rank').highcharts({
-      exporting: {
-        sourceHeight: 400,
-        sourceWidth: 800,
-      },
-      chart: {
-        type: 'line'
-      },
+    $('#chart-rank').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '暫定順位'
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          second: '%H:%M:%S',
-          minute: '%H:%M',
-          hour: '%H:%M',
-          day: '%m月%d日',
-          week: '%m月%d日',
-          month: '%Y-%m',
-          year: '%Y'
-        },
-        title: {
-          text: null
-        }
       },
       yAxis: {
         reversed: true,
@@ -363,19 +205,7 @@
         max: <%== @rank_max.to_json %>,
         min: 1,
       },
-      tooltip: {
-        dateTimeLabelFormats: {
-          millisecond: "%m月%d日 %H:%M",
-          second: "%m月%d日 %H:%M",
-          minute: "%m月%d日 %H:%M",
-          hour: "%m月%d日 %H:%M",
-          day: "%Y年%m月%d日",
-          week: "%Y年%m月%d日",
-          month: "%Y-%m",
-          year: "%Y"
-        }
-      },
       series: <%== @series_rank.to_json %>
-    });
+    }));
   });
 </script>

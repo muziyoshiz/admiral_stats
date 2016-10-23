@@ -35,3 +35,40 @@ var ADMIRAL_STATS_DATATABLES_DEFAULT = {
   },
 };
 
+// Highcharts で時系列データを表示する際のデフォルト設定
+var ADMIRAL_STATS_HIGHCHARTS_DEFAULT = {
+  exporting: {
+    sourceHeight: 400,
+    sourceWidth: 800,
+  },
+  chart: {
+    type: 'line'
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: {
+      second: '%H:%M:%S',
+      minute: '%H:%M',
+      hour: '%H:%M',
+      day: '%m月%d日',
+      week: '%m月%d日',
+      month: '%Y-%m',
+      year: '%Y'
+    },
+    title: {
+      text: null
+    }
+  },
+  tooltip: {
+    dateTimeLabelFormats: {
+      millisecond: "%m月%d日 %H:%M",
+      second: "%m月%d日 %H:%M",
+      minute: "%m月%d日 %H:%M",
+      hour: "%m月%d日 %H:%M",
+      day: "%Y年%m月%d日",
+      week: "%Y年%m月%d日",
+      month: "%Y-%m",
+      year: "%Y"
+    }
+  },
+}
