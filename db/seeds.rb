@@ -2647,15 +2647,15 @@ ship_masters.each do |ship_master|
   ShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
 end
 
-campaign_masters = [
+event_masters = [
     {
-        campaign_no: 1,
-        campaign_name: '敵艦隊前線泊地殴り込み',
+        event_no: 1,
+        event_name: '敵艦隊前線泊地殴り込み',
         started_at: '2016-10-27T07:00:00+09:00',
         ended_at: '2016-11-25T23:59:59+09:00',
     }
 ]
 
-campaign_masters.each do |campaign_master|
-  CampaignMaster.where(campaign_no: campaign_master[:campaign_no]).first_or_initialize.update(campaign_master)
+event_masters.each do |event_master|
+  EventMaster.where(event_no: event_master[:event_no]).first_or_initialize.update(event_master)
 end

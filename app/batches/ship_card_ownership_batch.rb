@@ -47,16 +47,16 @@ class ShipCardOwnershipBatch
       # 開始日の2日後から集計開始し、終了日の翌日明朝まで集計処理を実行する
       # 10/27(木) 7:00 〜 11/25(金) 23:59 なら、10/29(土) 3:00 に最初の集計、11/26(土) 3:00 に最後の集計
       t = Time.current - 1.days
-      campaigns = CampaignMaster.where('started_at <= ? AND ? < ended_at', t, t)
+      events = EventMaster.where('started_at <= ? AND ? < ended_at', t, t)
 
-      campaigns.each do |campaign|
-        Rails.logger.info("Ship Card Ownership (Campaign No. #{campaign.campaign_no}) Batch started")
+      events.each do |event|
+        Rails.logger.info("Ship Card Ownership (Event No. #{event.event_no}) Batch started")
 
         # バッチ実行時のアクティブユーザ数を数える
         # 限定海域の開催期間中に、1回以上、艦娘図鑑ファイルをアップロードしているユーザを、アクティブユーザと見なす
         # 開催終了後にエクスポートすることも考えて、終了時刻には猶予をもたせる
         # SELECT count(distinct admiral_id) FROM ship_card_timestamps WHERE exported_at >= started_at;
-        no_of_active_users = ShipCardTimestamp.select(:admiral_id).where('exported_at >= ?', campaign.started_at).distinct.count
+        no_of_active_users = ShipCardTimestamp.select(:admiral_id).where('exported_at >= ?', event.started_at).distinct.count
 
         # 上記のアクティブユーザの各カードの枚数を数える
         ship_cards = ShipCard.find_by_sql(
@@ -64,15 +64,15 @@ class ShipCardOwnershipBatch
                 'SELECT book_no, card_index, COUNT(*) AS no_of_owners FROM ship_cards sc WHERE EXISTS ' +
                     '(SELECT * FROM ship_card_timestamps sct WHERE sc.admiral_id = sct.admiral_id AND sct.exported_at >= ?) ' +
                     'GROUP BY book_no, card_index',
-                campaign.started_at
+                event.started_at
             ]
         )
 
-        # 計測結果を campaign_ship_card_ownerships テーブルに格納する
-        CampaignShipCardOwnership.transaction do
+        # 計測結果を event_ship_card_ownerships テーブルに格納する
+        EventShipCardOwnership.transaction do
           ship_cards.each do |card|
-            CampaignShipCardOwnership.create!(
-                :campaign_no => campaign.campaign_no,
+            EventShipCardOwnership.create!(
+                :event_no => event.event_no,
                 :book_no => card.book_no,
                 :card_index => card.card_index,
                 :no_of_owners => card.no_of_owners,
@@ -82,10 +82,10 @@ class ShipCardOwnershipBatch
           end
         end
 
-        Rails.logger.info("Ship Card Ownership (Campaign No. #{campaign.campaign_no}) Batch finished successfully")
+        Rails.logger.info("Ship Card Ownership (Event No. #{event.event_no}) Batch finished successfully")
       end
     rescue => e
-      Rails.logger.error("Ship Card Ownership (Campaign) Batch failed")
+      Rails.logger.error("Ship Card Ownership (Event) Batch failed")
       Rails.logger.error(e)
     end
 

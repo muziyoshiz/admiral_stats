@@ -1,6 +1,6 @@
-class CampaignShipCardOwnership < ApplicationRecord
-  # 期間限定海域 No. （例：第壱回なら 1）
-  validates :campaign_no,
+class EventShipCardOwnership < ApplicationRecord
+  # イベント No. （例：第壱回なら 1）
+  validates :event_no,
             presence: true,
             numericality: {
                 only_integer: true,
@@ -44,5 +44,5 @@ class CampaignShipCardOwnership < ApplicationRecord
   # 計測時刻
   validates :reported_at,
             presence: true,
-            uniqueness: { scope: [ :campaign_no, :book_no, :card_index ] }
+            uniqueness: { scope: [ :event_no, :book_no, :card_index ] }
 end

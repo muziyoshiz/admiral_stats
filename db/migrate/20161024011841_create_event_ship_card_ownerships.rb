@@ -1,9 +1,9 @@
-class CreateCampaignShipCardOwnerships < ActiveRecord::Migration[5.0]
+class CreateEventShipCardOwnerships < ActiveRecord::Migration[5.0]
   def change
     # 特定のイベント参加者に限定した、艦娘カードの所有者数の計測結果
-    create_table :campaign_ship_card_ownerships do |t|
-      # 期間限定海域 No. （例：第壱回なら 1）
-      t.integer  :campaign_no,        :null => false
+    create_table :event_ship_card_ownerships do |t|
+      # イベント No. （例：第壱回なら 1）
+      t.integer  :event_no,           :null => false
 
       # 艦娘図鑑の図鑑 No.
       t.integer  :book_no,            :null => false
@@ -22,7 +22,7 @@ class CreateCampaignShipCardOwnerships < ActiveRecord::Migration[5.0]
       t.datetime :reported_at,        :null => false
 
       # Index name is too long; the limit is 64 characters エラーを回避するために、インデックス名を指定
-      t.index [:campaign_no, :book_no, :card_index, :reported_at], :unique => true, :name => 'index_campaign_ship_card_ownerships'
+      t.index [:event_no, :book_no, :card_index, :reported_at], :unique => true, :name => 'index_event_ship_card_ownerships'
     end
   end
 end

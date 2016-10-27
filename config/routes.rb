@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   # 全提督との比較
   get 'global/ship_card_ownership', to: 'global#ship_card_ownership'
-  get 'global/ship_card_ownership/campaign/:campaign_no', to: 'global#campaign_ship_card_ownership'
+  get 'global/ship_card_ownership/event/:event_no', to: 'global#event_ship_card_ownership'
 
   get 'friend', to: 'friend#index'
 

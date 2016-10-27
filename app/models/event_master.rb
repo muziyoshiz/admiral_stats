@@ -1,8 +1,8 @@
-class CampaignMaster < ApplicationRecord
-  self.primary_key = 'campaign_no'
+class EventMaster < ApplicationRecord
+  self.primary_key = 'event_no'
 
-  # 期間限定海域 No. （例：第壱回なら 1）
-  validates :campaign_no,
+  # イベント No. （例：第壱回なら 1）
+  validates :event_no,
             presence: true,
             uniqueness: true,
             numericality: {
@@ -11,7 +11,7 @@ class CampaignMaster < ApplicationRecord
             }
 
   # 期間限定海域名
-  validates :campaign_name,
+  validates :event_name,
             presence: true,
             length: { minimum: 1, maximum: 32 }
 

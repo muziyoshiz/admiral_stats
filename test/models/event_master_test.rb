@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CampaignMasterTest < ActiveSupport::TestCase
+class EventMasterTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

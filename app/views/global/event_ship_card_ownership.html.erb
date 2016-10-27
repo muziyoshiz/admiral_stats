@@ -11,7 +11,7 @@
       </div>
       <div class="panel-body">
         <ul>
-          <li>期間限定海域「<%= @campaign.campaign_name %>」出撃後のプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
+          <li>期間限定海域「<%= @event.event_name %>」出撃後のプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
           <li>自分で建造・ドロップしたカードだけでなく、買ったり借りたりして読み込んだカードも「入手」に含みます。これは、公式プレイヤーズサイトの仕様による制限です。</li>
           <li>イベント開催中と、その終了日の翌日まで、毎日 3:00 頃に自動集計されます。</li>
           <% if logged_in? %>
@@ -34,13 +34,13 @@
 <div class="container">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      「<%= @campaign.campaign_name %>」参加提督
+      「<%= @event.event_name %>」参加提督
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       <li><%= link_to '提督全体', controller: 'global', action: 'ship_card_ownership' %></li>
-      <% @campaigns.each do |c| %>
-          <li><%= link_to "「#{c.campaign_name}」参加提督", controller: 'global', action: 'campaign_ship_card_ownership', campaign_no: c.campaign_no %></li>
+      <% @events.each do |e| %>
+          <li><%= link_to "「#{e.event_name}」参加提督", controller: 'global', action: 'event_ship_card_ownership', event_no: e.event_no %></li>
       <% end %>
     </ul>
   </div>

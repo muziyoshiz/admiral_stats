@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161023091841) do
+ActiveRecord::Schema.define(version: 20161024011841) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -37,20 +37,20 @@ ActiveRecord::Schema.define(version: 20161023091841) do
     t.index ["twitter_uid"], name: "index_admirals_on_twitter_uid", unique: true, using: :btree
   end
 
-  create_table "campaign_masters", primary_key: "campaign_no", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "campaign_name", limit: 32, null: false
-    t.datetime "started_at",               null: false
-    t.datetime "ended_at",                 null: false
+  create_table "event_masters", primary_key: "event_no", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "event_name", limit: 32, null: false
+    t.datetime "started_at",            null: false
+    t.datetime "ended_at",              null: false
   end
 
-  create_table "campaign_ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "campaign_no",        null: false
+  create_table "event_ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "event_no",           null: false
     t.integer  "book_no",            null: false
     t.integer  "card_index",         null: false
     t.integer  "no_of_owners",       null: false
     t.integer  "no_of_active_users", null: false
     t.datetime "reported_at",        null: false
-    t.index ["campaign_no", "book_no", "card_index", "reported_at"], name: "index_campaign_ship_card_ownerships", unique: true, using: :btree
+    t.index ["event_no", "book_no", "card_index", "reported_at"], name: "index_event_ship_card_ownerships", unique: true, using: :btree
   end
 
   create_table "ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
