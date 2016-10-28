@@ -1,6 +1,6 @@
 <div class="page-header">
   <h2><%= title %></h2>
-  （更新時刻：<%= @last_reported_at.strftime("%Y年%m月%d日 %H:%M") %>）
+  （開催期間：<%= @event.started_at.strftime("%Y年%m月%d日 %H:%M") %> 〜 <%= @event.ended_at.strftime("%Y年%m月%d日 %H:%M") %>、更新時刻：<%= @last_reported_at.strftime("%Y年%m月%d日 %H:%M") %>）
 </div>
 
 <div class="row">
