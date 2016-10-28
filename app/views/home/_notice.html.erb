@@ -3,7 +3,7 @@
 </div>
 <div class="panel-body">
   <ul>
-    <% if true %>
+    <% if false %>
         <%# 大型アップデート前のみ表示するメッセージ %>
         <li>
           艦これアーケードのアップデート直後は、仕様変更により Admiral Stats や <%= link_to_exporter_url %> が動作しない可能性があります。
@@ -12,13 +12,13 @@
         </li>
     <% end %>
     <li>
+      2016年10月29日更新：<%= link_to 'イベントに出撃した提督全体での艦娘カード入手率', controller: 'global', action: 'event_ship_card_ownership', event_no: 1 %> のページを追加しました。
+    </li>
+    <li>
       2016年10月27日更新：Ruby版、PowerShell版、ブックマークレット版（全プレイデータ）のエクスポータに、イベント海域情報のエクスポート機能を追加しました。Admiral Stats での表示機能はまだありません。
     </li>
     <li>
       2016年10月19日更新：<%= link_to 'ブックマークレット版のエクスポータを「使い方」ページで公開しました。', controller: 'manual', action: 'exporter' %>Android でも動きます。iOS は駄目でした……。
-    </li>
-    <li>
-      2016年10月15日更新：このサイトのソースコードを <%= link_to 'GitHub', github_url, :target => '_blank' %> にて公開しました。詳細は <%= link_to 'こちらのブログ記事', 'http://muziyoshiz.hatenablog.com/entry/2016/10/15/152851', :target => '_blank' %> を参照。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
