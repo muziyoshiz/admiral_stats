@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   # 全提督との比較
   get 'global/ship_card_ownership', to: 'global#ship_card_ownership'
+  get 'global/ship_card_ownership/event/:event_no', to: 'global#event_ship_card_ownership'
 
   get 'friend', to: 'friend#index'
 
@@ -37,6 +38,7 @@ Rails.application.routes.draw do
   # デバッグ用のログイン（development のみ有効）
   get 'sessions/debug_create/:uid/:nickname', to: 'sessions#debug_create'
 
+  # 以下の記載を追加すると root_url メソッドも自動設定される
   root to: 'home#index'
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト

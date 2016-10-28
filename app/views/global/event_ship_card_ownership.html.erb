@@ -1,6 +1,6 @@
 <div class="page-header">
   <h2><%= title %></h2>
-  （更新時刻：<%= @last_reported_at.strftime("%Y年%m月%d日 %H:%M") %>）
+  （開催期間：<%= @event.started_at.strftime("%Y年%m月%d日 %H:%M") %> 〜 <%= @event.ended_at.strftime("%Y年%m月%d日 %H:%M") %>、更新時刻：<%= @last_reported_at.strftime("%Y年%m月%d日 %H:%M") %>）
 </div>
 
 <div class="row">
@@ -11,9 +11,9 @@
       </div>
       <div class="panel-body">
         <ul>
-          <li>Admiral Stats にプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
+          <li>期間限定海域「<%= @event.event_name %>」出撃後のプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
           <li>自分で建造・ドロップしたカードだけでなく、買ったり借りたりして読み込んだカードも「入手」に含みます。これは、公式プレイヤーズサイトの仕様による制限です。</li>
-          <li>集計結果は毎日 3:00 頃に自動更新されます。</li>
+          <li>イベント開催中と、その終了日の翌日まで、毎日 3:00 頃に自動集計されます。</li>
           <% if logged_in? %>
               <li>あなたが入手済みのカードは <i class="glyphicon glyphicon-star star"></i> 付きで表示しています。</li>
           <% else %>
@@ -32,7 +32,7 @@
 <div class="container">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      提督全体
+      「<%= @event.event_name %>」参加提督
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -41,6 +41,10 @@
           <li><%= link_to "「#{e.event_name}」参加提督", controller: 'global', action: 'event_ship_card_ownership', event_no: e.event_no %></li>
       <% end %>
     </ul>
+  </div>
+  <div style="margin-top: 6px; margin-bottom: 6px;">
+    <a class="select-new-ships btn btn-primary">新艦娘のみ表示</a>
+    <a class="select-all-ships btn btn-default">全艦娘の表示</a>
   </div>
 </div>
 
@@ -61,6 +65,7 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1">改</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1">改ホロ</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1">改中破</th>
+        <th class="hidden">フラグ（検索用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -77,6 +82,7 @@
         <th class="text-left">改</th>
         <th class="text-left">改ホロ</th>
         <th class="text-left">改中破</th>
+        <th class="hidden">フラグ（検索用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -100,6 +106,7 @@
                     </td>
                 <% end %>
             <% end %>
+            <th class="hidden"><%= @reward_book_noes.include?(ship.book_no) ? '新艦娘' : '' %></th>
           </tr>
       <% end %>
       </tbody>
@@ -115,5 +122,16 @@
         { "iDataSort": 3, "aTargets": [ 2 ] },
       ],
     }));
+
+    $('a.select-new-ships').on('click', function (e) {
+      e.preventDefault();
+      // 隠しクエリに対して検索することで、新艦娘に絞り込んだ状態で表示
+      table.search('新艦娘').draw();
+    });
+    $('a.select-all-ships').on('click', function (e) {
+      e.preventDefault();
+      // 検索条件のリセット
+      table.search('').draw();
+    });
   });
 </script>
