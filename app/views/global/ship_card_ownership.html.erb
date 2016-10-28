@@ -18,11 +18,9 @@
               <li>あなたが入手済みのカードは <i class="glyphicon glyphicon-star star"></i> 付きで表示しています。</li>
           <% else %>
               <li>
-                是非あなたのプレイデータもアップロードしてください！　このツールの使い方は
-                <%= link_to 'ホーム画面', :controller => 'home' %>
-                と
-                <%= link_to 'エクスポータのサイト', exporter_url, :target => '_blank' %>
-                にあります。
+                是非あなたのプレイデータもアップロードしてみてください！　使い方については
+                <%= link_to 'ホーム画面', root_url %> や
+                <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。
               </li>
           <% end %>
         </ul>
