@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024011841) do
+ActiveRecord::Schema.define(version: 20161028041228) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -41,6 +41,17 @@ ActiveRecord::Schema.define(version: 20161024011841) do
     t.string   "event_name", limit: 32, null: false
     t.datetime "started_at",            null: false
     t.datetime "ended_at",              null: false
+  end
+
+  create_table "event_progress_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "admiral_id",                    null: false
+    t.integer  "event_no",                      null: false
+    t.string   "level",               limit: 8, null: false
+    t.integer  "cleared_area_sub_id",           null: false
+    t.integer  "current_loop_counts",           null: false
+    t.integer  "cleared_loop_counts",           null: false
+    t.datetime "exported_at",                   null: false
+    t.index ["admiral_id", "event_no", "level", "exported_at"], name: "index_event_progress_statuses", unique: true, using: :btree
   end
 
   create_table "event_ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
