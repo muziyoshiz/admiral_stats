@@ -14,6 +14,11 @@ class ImportController < ApplicationController
   # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 350 = 2,555,000 とする。
   MAX_SHIP_STATUSES_COUNT = 2555000
 
+  # event_progress_statuses テーブルの、1 提督あたりのレコード数上限
+  # イベント年4回、イベント期間1ヶ月、甲乙丙の3レベル、1日20回エクスポートしたと仮定して、
+  # 1年分で 4 * 30 * 3 * 20 = 7200 とする。
+  MAX_EVENT_PROGRESS_STATUSES_COUNT = 7200
+
   def index
     set_meta_tags title: 'インポート'
   end
@@ -80,6 +85,8 @@ class ImportController < ApplicationController
             ft = 'ship_book'
           when /^CharacterList_info_/
             ft = 'ship_list'
+          when /^Event_info/
+            ft = 'event_info'
           else
             @messages << "ファイル種別を自動判別できなかったため、無視されました。（ファイル名：#{file_name}）"
             next
@@ -93,6 +100,8 @@ class ImportController < ApplicationController
           succeeded = save_ship_cards(current_admiral.id, exported_at, json, api_version, file_name)
         when 'ship_list'
           succeeded = save_ship_statuses(current_admiral.id, exported_at, json, api_version, file_name)
+        when 'event_info'
+          succeeded = save_event_progress_statuses(current_admiral.id, exported_at, json, api_version, file_name)
       end
 
       break unless succeeded
@@ -136,19 +145,19 @@ class ImportController < ApplicationController
         # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
         # また、INSERT されないにも関わらずインデックスのみが作られた。
         AdmiralStatus.create!(
-            :admiral_id => admiral_id,
-            :fuel => info.fuel,
-            :ammo => info.ammo,
-            :steel => info.steel,
-            :bauxite => info.bauxite,
-            :bucket => info.bucket,
-            :level => info.level,
-            :room_item_coin => info.room_item_coin,
-            :result_point => info.result_point,
-            :rank => info.rank,
-            :title_id => info.title_id,
-            :strategy_point => info.strategy_point,
-            :exported_at => exported_at,
+            admiral_id: admiral_id,
+            fuel: info.fuel,
+            ammo: info.ammo,
+            steel: info.steel,
+            bauxite: info.bauxite,
+            bucket: info.bucket,
+            level: info.level,
+            room_item_coin: info.room_item_coin,
+            result_point: info.result_point,
+            rank: info.rank,
+            title_id: info.title_id,
+            strategy_point: info.strategy_point,
+            exported_at: exported_at,
         )
       end
 
@@ -200,17 +209,17 @@ class ImportController < ApplicationController
             else
               # レコードがなければ新規作成
               ShipCard.create!(
-                  :admiral_id => admiral_id,
-                  :book_no => info.book_no,
-                  :card_index => index,
-                  :first_exported_at => exported_at,
+                  admiral_id: admiral_id,
+                  book_no: info.book_no,
+                  card_index: index,
+                  first_exported_at: exported_at,
               )
             end
           end
         end
 
         # すべての処理に成功したら、タイムスタンプを登録
-        ShipCardTimestamp.create!( :admiral_id => admiral_id, :exported_at => exported_at )
+        ShipCardTimestamp.create!( admiral_id: admiral_id, exported_at: exported_at )
       end
 
       @messages << "艦娘図鑑のインポートに成功しました。（ファイル名：#{file_name}）"
@@ -243,12 +252,12 @@ class ImportController < ApplicationController
           # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
           # また、INSERT されないにも関わらずインデックスのみが作られた。
           ShipStatus.create!(
-              :admiral_id => admiral_id,
-              :book_no => info.book_no,
-              :remodel_level => info.remodel_lv,
-              :level => info.lv,
-              :star_num => info.star_num,
-              :exported_at => exported_at,
+              admiral_id: admiral_id,
+              book_no: info.book_no,
+              remodel_level: info.remodel_lv,
+              level: info.lv,
+              star_num: info.star_num,
+              exported_at: exported_at,
           )
         end
       end
@@ -257,6 +266,50 @@ class ImportController < ApplicationController
     rescue => e
       logger.debug(e)
       @error = "艦娘一覧のインポートに失敗しました。（ファイル名：#{file_name}、原因：#{e.message}）"
+      return false
+    end
+
+    true
+  end
+
+  # イベント進捗情報の JSON データを元に、event_progress_statuses レコードの追加
+  def save_event_progress_statuses(admiral_id, exported_at, json, api_version, file_name)
+    if EventProgressStatus.where(admiral_id: admiral_id, exported_at: exported_at).exists?
+      @messages << "同じ時刻のイベント進捗情報がインポート済みのため、無視されました。（ファイル名：#{file_name}）"
+      return true
+    end
+
+    count = EventProgressStatus.where(admiral_id: admiral_id).count
+    if count >= MAX_EVENT_PROGRESS_STATUSES_COUNT
+      logger.error("Max event_progress_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count}")
+      @error = 'イベント進捗情報のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
+      return false
+    end
+
+    begin
+      EventProgressStatus.transaction do
+        event_info_list = AdmiralStatsParser.parse_event_info(json, api_version)
+
+        event_no = event_info_list.map{|info| info.event_no }.max
+        levels = event_info_list.map{|info| info.level }.uniq
+
+        levels.each do |level|
+          EventProgressStatus.create!(
+              admiral_id: admiral_id,
+              event_no: event_no,
+              level: level,
+              cleared_area_sub_id: EventInfo.cleared_area_sub_id(event_info_list, level),
+              current_loop_counts: EventInfo.current_loop_counts(event_info_list, level),
+              cleared_loop_counts: EventInfo.cleared_loop_counts(event_info_list, level),
+              exported_at: exported_at,
+          )
+        end
+      end
+
+      @messages << "イベント進捗情報のインポートに成功しました。（ファイル名：#{file_name}）"
+    rescue => e
+      logger.debug(e)
+      @error = "イベント進捗情報のインポートに失敗しました。（ファイル名：#{file_name}、原因：#{e.message}）"
       return false
     end
 

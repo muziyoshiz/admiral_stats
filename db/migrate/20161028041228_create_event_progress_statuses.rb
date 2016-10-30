@@ -1,5 +1,6 @@
 class CreateEventProgressStatuses < ActiveRecord::Migration[5.0]
   def change
+    # イベント進捗情報
     create_table :event_progress_statuses do |t|
       # 提督 ID
       t.integer  :admiral_id,          :null => false
