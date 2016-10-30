@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   # 提督情報
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
+  get 'admiral_info/event(/:event_no)', to: 'admiral_info#event'
 
   # 艦娘一覧
   get 'ship_list', to: 'ship_list#index'
