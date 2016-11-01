@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20161101130313) do
     t.integer  "admiral_id",                            null: false
     t.integer  "event_no",                              null: false
     t.string   "level",                       limit: 8, null: false
+    t.boolean  "opened",                                null: false
     t.integer  "current_loop_counts",                   null: false
     t.integer  "cleared_loop_counts",                   null: false
     t.integer  "cleared_stage_no",                      null: false
