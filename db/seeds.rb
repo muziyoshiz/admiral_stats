@@ -2659,3 +2659,82 @@ event_masters = [
 event_masters.each do |event_master|
   EventMaster.where(event_no: event_master[:event_no]).first_or_initialize.update(event_master)
 end
+
+event_stage_masters = [
+    {
+        event_no: 1,
+        level: 'HEI',
+        stage_no: 1,
+        stage_mission_name: '前哨戦',
+        ene_military_gauge_val: 1000,
+    },
+    {
+        event_no: 1,
+        level: 'HEI',
+        stage_no: 2,
+        stage_mission_name: '警戒線突破',
+        ene_military_gauge_val: 1000,
+    },
+    {
+        event_no: 1,
+        level: 'HEI',
+        stage_no: 3,
+        stage_mission_name: '湾内突入！',
+        ene_military_gauge_val: 1200,
+    },
+    {
+        event_no: 1,
+        level: 'HEI',
+        stage_no: 4,
+        stage_mission_name: '敵泊地強襲！',
+        ene_military_gauge_val: 2000,
+    },
+    {
+        event_no: 1,
+        level: 'HEI',
+        stage_no: 5,
+        stage_mission_name: '掃討戦',
+        ene_military_gauge_val: 0,
+    },
+    {
+        event_no: 1,
+        level: 'OTU',
+        stage_no: 1,
+        stage_mission_name: '前哨戦',
+        ene_military_gauge_val: 1500,
+    },
+    {
+        event_no: 1,
+        level: 'OTU',
+        stage_no: 2,
+        stage_mission_name: '警戒線突破',
+        ene_military_gauge_val: 1500,
+    },
+    {
+        event_no: 1,
+        level: 'OTU',
+        stage_no: 3,
+        stage_mission_name: '湾内突入！',
+        ene_military_gauge_val: 1800,
+    },
+    {
+        event_no: 1,
+        level: 'OTU',
+        stage_no: 4,
+        stage_mission_name: '敵泊地強襲！',
+        ene_military_gauge_val: 2500,
+    },
+    {
+        event_no: 1,
+        level: 'OTU',
+        stage_no: 5,
+        stage_mission_name: '掃討戦',
+        ene_military_gauge_val: 0,
+    },
+]
+
+event_stage_masters.each do |master|
+  EventStageMaster.where(event_no: master[:event_no], level: master[:level], stage_no: master[:stage_no]).first_or_initialize.update(master)
+end
+
+

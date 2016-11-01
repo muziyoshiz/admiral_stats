@@ -62,7 +62,7 @@ gem 'jquery-datatables-rails', '~> 3.4.0'
 # The gem version mirrors the included version of Highcharts
 gem 'highcharts-rails', '~> 4.2.5'
 
-gem 'admiral_stats_parser', '0.1.5'
+gem 'admiral_stats_parser', '0.1.6'
 
 # Twitter Oauth
 gem 'omniauth'

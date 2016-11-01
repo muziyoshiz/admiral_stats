@@ -133,7 +133,7 @@ class ImportController < ApplicationController
 
     count = AdmiralStatus.where(admiral_id: admiral_id).count
     if count >= MAX_ADMIRAL_STATUSES_COUNT
-      logger.error("Max admiral_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count}")
+      logger.error("Max admiral_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
       @error = '基本情報のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
       return false
     end
@@ -181,7 +181,7 @@ class ImportController < ApplicationController
 
     count = ShipCardTimestamp.where(admiral_id: admiral_id).count
     if count >= MAX_SHIP_CARD_TIMESTAMPS_COUNT
-      logger.error("Max ship_card_timestamps count exceeded (admiral_id: #{admiral_id}, count: #{count}")
+      logger.error("Max ship_card_timestamps count exceeded (admiral_id: #{admiral_id}, count: #{count})")
       @error = '艦娘図鑑のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
       return false
     end
@@ -241,7 +241,7 @@ class ImportController < ApplicationController
 
     count = ShipStatus.where(admiral_id: admiral_id).count
     if count >= MAX_SHIP_STATUSES_COUNT
-      logger.error("Max ship_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count}")
+      logger.error("Max ship_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
       @error = '艦娘一覧のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
       return false
     end
@@ -281,26 +281,35 @@ class ImportController < ApplicationController
 
     count = EventProgressStatus.where(admiral_id: admiral_id).count
     if count >= MAX_EVENT_PROGRESS_STATUSES_COUNT
-      logger.error("Max event_progress_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count}")
+      logger.error("Max event_progress_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
       @error = 'イベント進捗情報のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
       return false
     end
 
     begin
+      event_info_list = AdmiralStatsParser.parse_event_info(json, api_version)
+
+      # event_master に登録されていない event_no は拒否する
+      event_no = event_info_list.map{|info| info.event_no }.max
+      event = EventMaster.where(event_no: event_no).first
+      unless event
+        logger.error("Unregistered event_no (admiral_id: #{admiral_id}, event_no: #{event_no})")
+        @error = 'Admiral Stats にこのイベントの情報が未登録です。プレイデータの誤登録を防ぐために、インポートを中断しました。'
+        return false
+      end
+
       EventProgressStatus.transaction do
-        event_info_list = AdmiralStatsParser.parse_event_info(json, api_version)
+        event.levels.each do |level|
+          summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, api_version)
 
-        event_no = event_info_list.map{|info| info.event_no }.max
-        levels = event_info_list.map{|info| info.level }.uniq
-
-        levels.each do |level|
           EventProgressStatus.create!(
               admiral_id: admiral_id,
               event_no: event_no,
               level: level,
-              cleared_area_sub_id: EventInfo.cleared_area_sub_id(event_info_list, level),
-              current_loop_counts: EventInfo.current_loop_counts(event_info_list, level),
-              cleared_loop_counts: EventInfo.cleared_loop_counts(event_info_list, level),
+              current_loop_counts: summary[:current_loop_counts],
+              cleared_loop_counts: summary[:cleared_loop_counts],
+              cleared_stage_no: summary[:cleared_stage_no],
+              current_military_gauge_left: summary[:current_military_gauge_left],
               exported_at: exported_at,
           )
         end

@@ -19,14 +19,6 @@ class EventProgressStatus < ApplicationRecord
             presence: true,
             format: { with: /\A(HEI|OTU|KOU)\z/ }
 
-  # その周回で攻略済みのサブ海域番号（未攻略なら 0）
-  validates :cleared_area_sub_id,
-            presence: true,
-            numericality: {
-                only_integer: true,
-                greater_than_or_equal_to: 0,
-            }
-
   # 現在の周回数（1〜）
   validates :current_loop_counts,
             presence: true,
@@ -37,6 +29,25 @@ class EventProgressStatus < ApplicationRecord
 
   # 最終ステージまで攻略済みの周回数（0〜）
   validates :cleared_loop_counts,
+            presence: true,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+            }
+
+  # 現在の周回で攻略済みのステージ番号（0 〜）
+  # E-1 未攻略なら 0
+  # E-1 攻略済みなら、丙 E-1 でも、乙 E-1 でも 1
+  validates :cleared_stage_no,
+            presence: true,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+            }
+
+  # 攻略中のステージの海域ゲージの現在値（0〜）
+  # 全ステージ攻略後、および掃討戦攻略前の場合は 0
+  validates :current_military_gauge_left,
             presence: true,
             numericality: {
                 only_integer: true,
