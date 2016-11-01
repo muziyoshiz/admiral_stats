@@ -19,6 +19,10 @@ class EventProgressStatus < ApplicationRecord
             presence: true,
             format: { with: /\A(HEI|OTU|KOU)\z/ }
 
+  # 難易度が解放済みかどうか
+  validates :opened,
+            inclusion: { in: [ true, false ] }
+
   # 現在の周回数（1〜）
   validates :current_loop_counts,
             presence: true,

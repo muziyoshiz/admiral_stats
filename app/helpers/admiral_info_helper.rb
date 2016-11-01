@@ -1,5 +1,7 @@
 module AdmiralInfoHelper
   def event_progress_status_to_text(stages, status)
+    return '未開放' unless status.opened?
+
     retval = "#{status.current_loop_counts} 周目 "
 
     if status.current_loop_counts == status.cleared_loop_counts

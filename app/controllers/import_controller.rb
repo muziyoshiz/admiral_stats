@@ -306,6 +306,7 @@ class ImportController < ApplicationController
               admiral_id: admiral_id,
               event_no: event_no,
               level: level,
+              opened: summary[:opened],
               current_loop_counts: summary[:current_loop_counts],
               cleared_loop_counts: summary[:cleared_loop_counts],
               cleared_stage_no: summary[:cleared_stage_no],
