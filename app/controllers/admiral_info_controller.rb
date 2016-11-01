@@ -145,38 +145,13 @@ class AdmiralInfoController < ApplicationController
 
     set_meta_tags title: "イベントの進捗（#{@event.event_name}）"
 
-    # 積集合を取ることで、難易度の並び順を保つ
-#    @levels = %w(HEI OTU KOU) & EventProgressStatus.select(:level).where(admiral_id: current_admiral.id).distinct
-    @levels = %w(HEI OTU)
+    # 履歴表示のために、新しい順にソート
+    @statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no).order(exported_at: :desc).to_a
 
-    @statuses = {}
-    @current_loop_counts = {}
-    @cleared_loop_counts = {}
-    # cleared_area_sub_id を、E-1 なら 1、E-2 なら 2 といったステージ番号に変換したもの
-    @cleared_stage_no = {}
-
-    @levels.each do |level|
-      # 履歴表示のために、新しい順にソート
-      @statuses[level] = EventProgressStatus.where(
-          admiral_id: current_admiral.id, event_no: @event.event_no, level: level).order(exported_at: :desc).to_a
-
-      latest = @statuses[level].first
-      @current_loop_counts[level] = latest.current_loop_counts
-      @cleared_loop_counts[level] = latest.cleared_loop_counts
-
-      # その難易度の E-1 に対応する area_sub_id
-      case level
-        when 'HEI'
-          first_area_sub_id = 1
-        when 'OTU'
-          first_area_sub_id = 6
-      end
-
-      if latest.cleared_area_sub_id == 0
-        @cleared_stage_no[level] = 0
-      else
-        @cleared_stage_no[level] = latest.cleared_area_sub_id - first_area_sub_id + 1
-      end
+    # イベント進捗情報がなければ、処理を終了
+    if @statuses.blank?
+      render :action => 'event_blank'
+      return
     end
   end
 end
