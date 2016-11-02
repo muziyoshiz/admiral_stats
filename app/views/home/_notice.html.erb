@@ -12,10 +12,13 @@
         </li>
     <% end %>
     <li>
+      2016年11月3日更新：イベント進捗情報のインポートに対応しました。イベント期間終了後も、<%= link_to_if_logged_in '「イベントの進捗」', controller: 'admiral_info', action: 'event' %> のページで周回数などを確認できます。
+    </li>
+    <li>
       2016年10月29日更新：<%= link_to 'イベントに出撃した提督全体での艦娘カード入手率', controller: 'global', action: 'event_ship_card_ownership', event_no: 1 %> のページを追加しました。
     </li>
     <li>
-      2016年10月27日更新：Ruby版、PowerShell版、ブックマークレット版（全プレイデータ）のエクスポータに、イベント海域情報のエクスポート機能を追加しました。Admiral Stats での表示機能はまだありません。
+      2016年10月27日更新：Ruby版、PowerShell版、ブックマークレット版（全プレイデータ）のエクスポータに、イベント進捗情報のエクスポート機能を追加しました。
     </li>
     <li>
       2016年10月19日更新：<%= link_to 'ブックマークレット版のエクスポータを「使い方」ページで公開しました。', controller: 'manual', action: 'exporter' %>Android でも動きます。iOS は駄目でした……。

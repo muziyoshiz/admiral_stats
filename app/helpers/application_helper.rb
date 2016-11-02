@@ -8,6 +8,18 @@ module ApplicationHelper
     end
   end
 
+  # イベント難易度を日本語表記に変換します。
+  def difficulty_level_to_text(level)
+    case level
+      when 'HEI'
+        '丙'
+      when 'OTU'
+        '乙'
+      when 'KOU'
+        '甲'
+    end
+  end
+
   # SEGA 公式のプレイヤーズサイトの URL を返します。
   def sega_url
     'https://kancolle-arcade.net/ac/#/top'

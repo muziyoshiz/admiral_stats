@@ -102,7 +102,7 @@ class HomeController < ApplicationController
 
       if desc
         @histories << {
-            :exported_at => card.first_exported_at.strftime("%Y年%m月%d日 %H:%M"),
+            :exported_at => card.first_exported_at.to_s(:datetime),
             :index => index,
             :description => desc,
             :class => clazz,

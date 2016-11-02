@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161024011841) do
+ActiveRecord::Schema.define(version: 20161101130313) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -43,6 +43,19 @@ ActiveRecord::Schema.define(version: 20161024011841) do
     t.datetime "ended_at",              null: false
   end
 
+  create_table "event_progress_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "admiral_id",                            null: false
+    t.integer  "event_no",                              null: false
+    t.string   "level",                       limit: 8, null: false
+    t.boolean  "opened",                                null: false
+    t.integer  "current_loop_counts",                   null: false
+    t.integer  "cleared_loop_counts",                   null: false
+    t.integer  "cleared_stage_no",                      null: false
+    t.integer  "current_military_gauge_left",           null: false
+    t.datetime "exported_at",                           null: false
+    t.index ["admiral_id", "event_no", "level", "exported_at"], name: "index_event_progress_statuses", unique: true, using: :btree
+  end
+
   create_table "event_ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "event_no",           null: false
     t.integer  "book_no",            null: false
@@ -51,6 +64,15 @@ ActiveRecord::Schema.define(version: 20161024011841) do
     t.integer  "no_of_active_users", null: false
     t.datetime "reported_at",        null: false
     t.index ["event_no", "book_no", "card_index", "reported_at"], name: "index_event_ship_card_ownerships", unique: true, using: :btree
+  end
+
+  create_table "event_stage_masters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "event_no",                          null: false
+    t.string  "level",                  limit: 32, null: false
+    t.integer "stage_no",                          null: false
+    t.string  "stage_mission_name",     limit: 32, null: false
+    t.integer "ene_military_gauge_val",            null: false
+    t.index ["event_no", "level", "stage_no"], name: "index_event_stage_masters", unique: true, using: :btree
   end
 
   create_table "ship_card_ownerships", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

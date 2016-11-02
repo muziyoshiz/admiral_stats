@@ -39,7 +39,11 @@
                 <%= link_to 'インポート', import_url %>
               </li>
               <li <%== 'class="active"' if current_page?(controller: 'admiral_info') %>>
-                <%= link_to '提督情報', controller: 'admiral_info' %>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">提督情報 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to '基本情報', controller: 'admiral_info' %></li>
+                  <li><%= link_to 'イベントの進捗', controller: 'admiral_info', action: 'event' %></li>
+                </ul>
               </li>
               <li <%== 'class="active"' if current_page?(:controller => 'ship_list') %>>
                 <%= link_to '艦娘一覧', controller: 'ship_list' %>

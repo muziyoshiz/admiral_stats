@@ -5,6 +5,7 @@ class AdmiralInfoController < ApplicationController
   # @sophiarcp さんの検証結果によると、3000 位近辺がボーダーと思われる
   RANK_KENGAI = 3100
 
+  # 提督の基本情報を表示します。
   def index
     set_meta_tags title: '提督情報'
 
@@ -120,5 +121,71 @@ class AdmiralInfoController < ApplicationController
     # 表示された暫定順位の最大値が「圏外」の場合は、その値を下限に設定する
     # それ以外の場合は Highcharts の自動調整に任せる
     @rank_max = (data_rank.map{|r| r[1] }.max == RANK_KENGAI) ? RANK_KENGAI : nil
+  end
+
+  # イベント進捗情報のサマリを表示します。
+  def event
+    # すでに開始しているイベントを全取得
+    @events = EventMaster.where('started_at <= ?', Time.current).to_a
+    if @events.size == 0
+      redirect_to root_url
+      return
+    end
+
+    # URLパラメータでイベント No. を指定されたらそれを表示し、指定されなければ最新のイベントを表示
+    if params[:event_no]
+      @event = @events.select{|e| e.event_no == params[:event_no].to_i }.first
+      unless @event
+        redirect_to root_url
+        return
+      end
+    else
+      @event = @events.max{|e| e.event_no }
+    end
+
+    set_meta_tags title: "イベントの進捗（#{@event.event_name}）"
+
+    # 履歴表示のために、新しい順にソート
+    @statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no).order(exported_at: :desc).to_a
+
+    # イベント進捗情報がなければ、処理を終了
+    if @statuses.blank?
+      render :action => 'event_blank'
+      return
+    end
+
+    # この期間限定海域での新艦娘
+    @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at)
+
+    # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
+    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+
+    # 取得済みのカードを調べた結果
+    @cards = {}
+
+    @ships.each do |ship|
+      # カードの枚数の配列
+      # 取得済みは :acquired、未取得は :not_acquired、存在しない項目は nil を設定
+      # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
+      if kai_book_numbers.include?(ship.book_no)
+        @cards[ship.book_no] = [nil, nil, nil, :not_acquired, :not_acquired, :not_acquired]
+      else
+        @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
+      end
+
+      # 新艦娘のカードがあるか調べる
+      new_cards = ShipCard.where(admiral_id: current_admiral.id, book_no: ship.book_no)
+      next unless new_cards
+
+      # 新艦娘所持カードのフラグを立てる
+      # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
+      new_cards.each do |card|
+        if kai_book_numbers.include?(card.book_no)
+          @cards[card.book_no][card.card_index + 3] = :acquired
+        else
+          @cards[card.book_no][card.card_index] = :acquired
+        end
+      end
+    end
   end
 end

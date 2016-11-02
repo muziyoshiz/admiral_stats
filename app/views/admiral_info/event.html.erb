@@ -1,0 +1,143 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+  （開催期間：<%= @event.started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
+</div>
+
+<div class="container">
+  <div class="table-responsive-wrappable">
+    <table id="table-current-progress-status" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">難易度</th>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">突破回数</th>
+        <th class="col-xl-6 col-lg-6 col-md-6 col-sm-4 col-xs-2">進捗</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @event.levels.each do |level| %>
+          <%
+            statuses = @statuses.select{|s| s.level == level }
+            stages = @event.stages.select{|s| s.level == level }
+          %>
+          <tr>
+            <td><%= difficulty_level_to_text(level) %></td>
+            <td><%= statuses.first.cleared_loop_counts %> 回</td>
+            <td><%= event_progress_status_to_text(stages, statuses.first) %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="container">
+  <div class="table-responsive">
+    <table id="table-ship-book" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">図鑑 No.</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦型</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦番号</th>
+        <th class="hidden">艦番号（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">N</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">Nホロ</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">N中破</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">改</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">改ホロ</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">改中破</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @ships.each do |ship| %>
+          <tr>
+            <td class="numeric hidden-xs"><%= ship.book_no %></td>
+            <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class %></td>
+            <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class_index %>番艦</td>
+            <td class="hidden"><%= ship.ship_class_index %></td>
+            <td class="text-left hidden-xs"><%= ship.ship_type %></td>
+            <td class="text-left"><%= ship.ship_name %></td>
+            <% 6.times do |idx| %>
+                <% if @cards[ship.book_no][idx].nil? %>
+                    <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
+                <% elsif @cards[ship.book_no][idx] == :acquired %>
+                    <td class="acquired"><i class="glyphicon glyphicon-ok"></i></td>
+                <% else %>
+                    <td></td>
+                <% end %>
+            <% end %>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= link_to '他提督の艦娘カード入手状況', controller: 'global', action: 'event_ship_card_ownership', event_no: @event.event_no, keyword: '新艦娘' %>
+</div>
+
+<hr>
+
+<div class="container">
+  <ul class="nav nav-pills" style="margin-bottom: 18px;">
+    <% @event.levels.each_with_index do |level, idx| %>
+        <li <%== 'class="active"' if idx == 0 %>><a href="#history-<%= level.downcase %>" data-toggle="tab">進捗履歴（<%= difficulty_level_to_text(level) %>）</a></li>
+    <% end %>
+  </ul>
+</div>
+
+<div class="tab-content">
+  <% @event.levels.each_with_index do |level, idx| %>
+      <div class="tab-pane<%== ' in active' if idx == 0 %>" id="history-<%= level.downcase %>">
+        <%
+          statuses = @statuses.select{|s| s.level == level }
+          stages = @event.stages.select{|s| s.level == level }
+        %>
+        <div class="container">
+          <div class="table-responsive-wrappable">
+            <table id="table-history-<%= level.downcase %>" class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+              <tr>
+                <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-4">日時</th>
+                <th class="hidden">日時（ソート用）</th>
+                <th class="text-left col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-8">進捗</th>
+              </tr>
+              </thead>
+              <tfoot>
+              <tr>
+                <th class="text-left">日時</th>
+                <th class="hidden">日時（ソート用）</th>
+                <th class="text-left">進捗</th>
+              </tr>
+              </tfoot>
+              <tbody>
+              <% statuses.each do |status| %>
+                  <tr>
+                    <td class="text-left"><%= status.exported_at.to_s(:datetime) %></td>
+                    <th class="hidden"><%= status.exported_at.to_s %></th>
+                    <td class="text-left"><%= event_progress_status_to_text(stages, status) %></td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  <% end %>
+</div>
+
+<script type="application/javascript">
+  $(document).ready(function() {
+    <% @event.levels.each do |level| %>
+    $('#table-history-<%= level.downcase %>').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
+      "paging": true,
+      "sorting": [ 0, "desc" ],
+      <!-- 進捗履歴に検索は不要と思われるため、無効化 -->
+      "searching": false,
+      "aoColumnDefs": [
+        <!-- インデックスでソートするための設定 -->
+        { "iDataSort": 1, "aTargets": [ 0 ] },
+      ],
+    }));
+    <% end %>
+  } );
+</script>
