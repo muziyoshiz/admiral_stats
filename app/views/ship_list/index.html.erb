@@ -185,5 +185,10 @@
         column.visible( ! column.visible() );
       });
     } );
+
+    var keyword = getUrlParameter('keyword');
+    if (keyword) {
+      table.search(keyword).draw();
+    }
   });
 </script>

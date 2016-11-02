@@ -133,5 +133,10 @@
       // 検索条件のリセット
       table.search('').draw();
     });
+
+    var keyword = getUrlParameter('keyword');
+    if (keyword) {
+      table.search(keyword).draw();
+    }
   });
 </script>
