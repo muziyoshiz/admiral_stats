@@ -18,7 +18,7 @@
             </p>
             SEGA ID が未登録の方は、まずは SEGA ID を登録して、プレイヤーズサイトにログインできることを確認してください。
             <br>
-            そのあとで <%= link_to '「インポート」', import_url %> の手順に従い、自分のプレイデータを Admiral Stats にインポートしてみてください。
+            そのあとで <%= link_to '「使い方」', controller: 'manual', action: 'exporter' %> の手順に従い、自分のプレイデータを Admiral Stats にインポートしてみてください。
           </div>
       <% else %>
           <%= render( partial: 'notice' ) %>

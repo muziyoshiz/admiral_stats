@@ -1,0 +1,25 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">このページについて</h3>
+      </div>
+      <div class="panel-body">
+        このページにデータを表示するためには、<%= link_to '「インポート」', import_url %> にて、種別「イベント進捗情報」の
+        JSON ファイルをアップロードする必要があります。
+        <br>
+        以下は、ファイルのアップロード後に表示されるデータのサンプルです。
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>サンプル</h3>
+
+<div class="row">
+  <%= image_tag 'admiral_info/admiral_info_event.png', width: '800', class: 'center-block' %>
+</div>
