@@ -153,5 +153,39 @@ class AdmiralInfoController < ApplicationController
       render :action => 'event_blank'
       return
     end
+
+    # この期間限定海域での新艦娘
+    @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at)
+
+    # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
+    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+
+    # 取得済みのカードを調べた結果
+    @cards = {}
+
+    @ships.each do |ship|
+      # カードの枚数の配列
+      # 取得済みは :acquired、未取得は :not_acquired、存在しない項目は nil を設定
+      # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
+      if kai_book_numbers.include?(ship.book_no)
+        @cards[ship.book_no] = [nil, nil, nil, :not_acquired, :not_acquired, :not_acquired]
+      else
+        @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
+      end
+
+      # 新艦娘のカードがあるか調べる
+      new_cards = ShipCard.where(admiral_id: current_admiral.id, book_no: ship.book_no)
+      next unless new_cards
+
+      # 新艦娘所持カードのフラグを立てる
+      # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
+      new_cards.each do |card|
+        if kai_book_numbers.include?(card.book_no)
+          @cards[card.book_no][card.card_index + 3] = :acquired
+        else
+          @cards[card.book_no][card.card_index] = :acquired
+        end
+      end
+    end
   end
 end
