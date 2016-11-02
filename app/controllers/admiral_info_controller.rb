@@ -173,8 +173,9 @@ class AdmiralInfoController < ApplicationController
         @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
       end
 
-      # 新艦娘のカードがあるか調べる
-      new_cards = ShipCard.where(admiral_id: current_admiral.id, book_no: ship.book_no)
+      # イベント期間内に入手した、新艦娘のカードがあるか調べる
+      new_cards = ShipCard.where('admiral_id = ? AND book_no = ? AND first_exported_at >= ? AND first_exported_at <= ?',
+                                 current_admiral.id, ship.book_no, @event.started_at, @event.ended_at)
       next unless new_cards
 
       # 新艦娘所持カードのフラグを立てる
