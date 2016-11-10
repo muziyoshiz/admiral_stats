@@ -20,18 +20,33 @@ module GlobalHelper
 
   # 攻略率をグラフ表示するための JSON を返します。
   def data_chart_cleared_rate(total_num, cleared_nums, levels)
-    ret = [
-        { name: '未攻略', y: total_num - cleared_nums.values.sum, color: '#AAAAAA' }
+    res = [
+        { name: '未攻略', y: ((total_num - cleared_nums.values.sum).to_f / total_num * 100).round(1), color: '#AAAAAA' }
     ]
 
     levels.each do |level|
-      ret << {
+      res << {
           name: "「#{difficulty_level_to_text(level)}」攻略済",
-          y: cleared_nums[level],
+          y: (cleared_nums[level].to_f / total_num * 100).round(1),
           color: difficulty_level_to_color(level),
       }
     end
 
-    ret.to_json
+    res.to_json
+  end
+
+  # 周回数をグラフ表示するための JSON を返します。
+  def series_chart_cleared_loop_counts(total_num, cleared_loop_counts, levels)
+    res = []
+
+    levels.each do |level|
+      res << {
+          name: difficulty_level_to_text(level),
+          data: cleared_loop_counts[level].map{|cnt| (cnt.to_f / total_num * 100).round(1) },
+          color: difficulty_level_to_color(level),
+      }
+    end
+
+    res.to_json
   end
 end
