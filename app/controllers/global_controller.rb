@@ -138,4 +138,64 @@ class GlobalController < ApplicationController
       end
     end
   end
+
+  # イベント攻略率を表示する
+  def event
+    # すでに開始しているイベントを全取得
+    @events = EventMaster.where('started_at <= ?', Time.current).to_a
+    if @events.size == 0
+      redirect_to root_url
+      return
+    end
+
+    # URLパラメータでイベント No. を指定されたらそれを表示し、指定されなければ最新のイベントを表示
+    if params[:event_no]
+      @event = @events.select{|e| e.event_no == params[:event_no].to_i }.first
+      unless @event
+        redirect_to root_url
+        return
+      end
+    else
+      @event = @events.max{|e| e.event_no }
+    end
+
+    set_meta_tags title: "イベント攻略率（#{@event.event_name}）"
+
+    # 各提督の、最新のイベント進捗情報を、難易度別に取得
+    @statuses = {}
+    @event.levels.each do |level|
+      @statuses[level] = EventProgressStatus.find_by_sql(
+          [ 'SELECT e1.*, e2.* FROM event_progress_statuses e1 LEFT JOIN ' +
+                '(SELECT id, max(exported_at) AS last_exported_at FROM event_progress_statuses WHERE level = ? GROUP BY admiral_id) e2 ' +
+                'ON e1.id = e2.id WHERE e2.id IS NOT NULL',
+            level ]
+      )
+    end
+
+    # アップロード済みの提督数
+    @total_num = @statuses.map{|level, ss| ss.size }.max
+
+    # クリアした提督数
+    @cleared_nums = {}
+    @event.levels.each do |level|
+      @cleared_nums[level] = @statuses[level].select{|s| s.cleared_loop_counts > 0 }.size
+    end
+    # 丙難易度をクリア済みの人数から、乙難易度をクリア済みの人数を引く
+    higher_level_cleared_nums = 0
+    @event.levels.reverse.each do |level|
+      @cleared_nums[level] -= higher_level_cleared_nums
+      higher_level_cleared_nums = @cleared_nums[level]
+    end
+
+    # クリアした周回数
+    @cleared_loop_counts = {}
+    @event.levels.each do |level|
+      @cleared_loop_counts[level] = []
+      (0..9).each do |cnt|
+        @cleared_loop_counts[level][cnt] = @statuses[level].select{|s| s.cleared_loop_counts == cnt }.size
+      end
+
+      @cleared_loop_counts[level][10] = @statuses[level].select{|s| s.cleared_loop_counts >= 10 }.size
+    end
+  end
 end

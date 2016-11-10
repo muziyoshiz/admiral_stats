@@ -20,6 +20,19 @@ module ApplicationHelper
     end
   end
 
+  # イベント難易度を色設定に変換します。
+  def difficulty_level_to_color(level)
+    case level
+      when 'HEI'
+        '#1AA94D'
+      when 'OTU'
+        '#D5B606'
+      when 'KOU'
+        # TODO 甲難易度が登場したら、プレイヤーズサイトの表示を見て、色を設定する
+        '#AA0000'
+    end
+  end
+
   # SEGA 公式のプレイヤーズサイトの URL を返します。
   def sega_url
     'https://kancolle-arcade.net/ac/#/top'

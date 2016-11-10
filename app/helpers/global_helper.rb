@@ -17,4 +17,21 @@ module GlobalHelper
       'rate-common'
     end
   end
+
+  # 攻略率をグラフ表示するための JSON を返します。
+  def data_chart_cleared_rate(total_num, cleared_nums, levels)
+    ret = [
+        { name: '未攻略', y: total_num - cleared_nums.values.sum, color: '#AAAAAA' }
+    ]
+
+    levels.each do |level|
+      ret << {
+          name: "「#{difficulty_level_to_text(level)}」攻略済",
+          y: cleared_nums[level],
+          color: difficulty_level_to_color(level),
+      }
+    end
+
+    ret.to_json
+  end
 end
