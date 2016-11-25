@@ -33,6 +33,16 @@
 
 <div id="chart-cleared-loop-counts" style="width:100%; height:400px;"></div>
 
+<hr>
+
+<div class="row">
+  <% @event.levels.each do |level| %>
+      <div class="col-md-6">
+        <div id="chart-cleared-loop-counts-<%= level.downcase %>" style="width:100%; height:400px;"></div>
+      </div>
+  <% end %>
+</div>
+
 <script type="application/javascript">
   // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
   // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
@@ -55,7 +65,7 @@
         type: 'pie'
       },
       title: {
-        text: '難易度別攻略率'
+        text: '難易度別攻略率（全難易度）'
       },
       tooltip: {
         headerFormat: '',
@@ -121,4 +131,39 @@
       series: <%== series_chart_cleared_loop_counts(@total_num, @cleared_loop_counts, @event.levels) %>
     });
   });
+
+  <% @event.levels.each do |level| %>
+  $(function () {
+    $('#chart-cleared-loop-counts-<%= level.downcase %>').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 400,
+      },
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: '攻略済み周回数（<%= difficulty_level_to_text(level) %>）'
+      },
+      tooltip: {
+        headerFormat: '',
+        pointFormat: '<b>{point.name}:</b> {point.y} %'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '{point.name}: {point.y} %',
+          }
+        }
+      },
+      series: [{ data: <%== data_chart_cleared_loop_counts(@total_num, @cleared_loop_counts[level]) %> }]
+    });
+  });
+  <% end %>
 </script>

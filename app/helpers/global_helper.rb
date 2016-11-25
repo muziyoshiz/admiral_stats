@@ -18,7 +18,7 @@ module GlobalHelper
     end
   end
 
-  # 攻略率をグラフ表示するための JSON を返します。
+  # 攻略率を円グラフ表示するための JSON を返します。
   def data_chart_cleared_rate(total_num, cleared_nums, levels)
     res = [
         { name: '未攻略', y: ((total_num - cleared_nums.values.sum).to_f / total_num * 100).round(1), color: '#AAAAAA' }
@@ -35,7 +35,32 @@ module GlobalHelper
     res.to_json
   end
 
-  # 周回数をグラフ表示するための JSON を返します。
+  # 周回数を円グラフ表示するための JSON を返します。
+  def data_chart_cleared_loop_counts(total_num, cleared_loop_counts)
+    res = []
+
+    # クリアした提督の総数
+    total_cleared_num = total_num - cleared_loop_counts[0]
+
+    cleared_loop_counts.each_with_index do |num, cnt|
+      next if num == 0 or cnt == 0
+      if cnt < 10
+        res << {
+            name: "#{cnt} 回",
+            y: (num.to_f / total_cleared_num * 100).round(1),
+        }
+      elsif cnt >= 10
+        res << {
+            name: "#{cnt} 回以上",
+            y: (num.to_f / total_cleared_num * 100).round(1),
+        }
+      end
+    end
+
+    res.to_json
+  end
+
+  # 周回数をヒストグラム表示するための JSON を返します。
   def series_chart_cleared_loop_counts(total_num, cleared_loop_counts, levels)
     res = []
 
