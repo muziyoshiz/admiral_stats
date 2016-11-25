@@ -161,13 +161,12 @@ class GlobalController < ApplicationController
 
     set_meta_tags title: "イベント攻略率（#{@event.event_name}）"
 
-    # 各提督の、最新のイベント進捗情報を、難易度別に取得
+    # 各提督の、攻略済み周回数を、難易度別に取得
     @statuses = {}
     @event.levels.each do |level|
       @statuses[level] = EventProgressStatus.find_by_sql(
-          [ 'SELECT e1.*, e2.* FROM event_progress_statuses e1 LEFT JOIN ' +
-                '(SELECT id, max(exported_at) AS last_exported_at FROM event_progress_statuses WHERE level = ? GROUP BY admiral_id) e2 ' +
-                'ON e1.id = e2.id WHERE e2.id IS NOT NULL',
+          [ 'SELECT admiral_id, max(cleared_loop_counts) AS max_cleared_loop_counts ' +
+                'FROM event_progress_statuses WHERE level = ? GROUP BY admiral_id',
             level ]
       )
     end
@@ -178,7 +177,7 @@ class GlobalController < ApplicationController
     # クリアした提督数
     @cleared_nums = {}
     @event.levels.each do |level|
-      @cleared_nums[level] = @statuses[level].select{|s| s.cleared_loop_counts > 0 }.size
+      @cleared_nums[level] = @statuses[level].select{|s| s.max_cleared_loop_counts > 0 }.size
     end
     # 丙難易度をクリア済みの人数から、乙難易度をクリア済みの人数を引く
     higher_level_cleared_nums = 0
@@ -192,14 +191,14 @@ class GlobalController < ApplicationController
     @event.levels.each do |level|
       @cleared_loop_counts[level] = []
       (0..9).each do |cnt|
-        @cleared_loop_counts[level][cnt] = @statuses[level].select{|s| s.cleared_loop_counts == cnt }.size
+        @cleared_loop_counts[level][cnt] = @statuses[level].select{|s| s.max_cleared_loop_counts == cnt }.size
       end
 
-      @cleared_loop_counts[level][10] = @statuses[level].select{|s| s.cleared_loop_counts >= 10 and s.cleared_loop_counts < 20 }.size
-      @cleared_loop_counts[level][11] = @statuses[level].select{|s| s.cleared_loop_counts >= 20 and s.cleared_loop_counts < 30 }.size
-      @cleared_loop_counts[level][12] = @statuses[level].select{|s| s.cleared_loop_counts >= 30 and s.cleared_loop_counts < 40 }.size
-      @cleared_loop_counts[level][13] = @statuses[level].select{|s| s.cleared_loop_counts >= 40 and s.cleared_loop_counts < 50 }.size
-      @cleared_loop_counts[level][14] = @statuses[level].select{|s| s.cleared_loop_counts >= 50 }.size
+      @cleared_loop_counts[level][10] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 10 and s.max_cleared_loop_counts < 20 }.size
+      @cleared_loop_counts[level][11] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 20 and s.max_cleared_loop_counts < 30 }.size
+      @cleared_loop_counts[level][12] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 30 and s.max_cleared_loop_counts < 40 }.size
+      @cleared_loop_counts[level][13] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 40 and s.max_cleared_loop_counts < 50 }.size
+      @cleared_loop_counts[level][14] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 50 }.size
     end
   end
 end
