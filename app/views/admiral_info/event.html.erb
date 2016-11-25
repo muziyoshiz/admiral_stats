@@ -9,7 +9,7 @@
       <thead>
       <tr>
         <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">難易度</th>
-        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">突破回数</th>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">突破周回数</th>
         <th class="col-xl-6 col-lg-6 col-md-6 col-sm-4 col-xs-2">進捗</th>
       </tr>
       </thead>
@@ -21,7 +21,7 @@
           %>
           <tr>
             <td><%= difficulty_level_to_text(level) %></td>
-            <td><%= statuses.first.cleared_loop_counts %> 回</td>
+            <td><%= statuses.first.cleared_loop_counts %> 周</td>
             <td><%= event_progress_status_to_text(stages, statuses.first) %></td>
           </tr>
       <% end %>

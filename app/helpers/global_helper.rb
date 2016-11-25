@@ -46,7 +46,7 @@ module GlobalHelper
       next if num == 0 or cnt == 0
       if cnt < 10
         res << {
-            name: "#{cnt} 回",
+            name: "#{cnt} 周",
             y: (num.to_f / total_cleared_num * 100).round(1),
         }
       elsif cnt >= 10
@@ -57,12 +57,12 @@ module GlobalHelper
         if num == cleared_loop_counts.size - 1
           # 配列の最後は、それ以上すべての回数を表す
           res << {
-              name: "#{cnt_start} 回以上",
+              name: "#{cnt_start} 周以上",
               y: (num.to_f / total_cleared_num * 100).round(1),
           }
         else
           res << {
-              name: "#{cnt_start}〜#{cnt_end} 回",
+              name: "#{cnt_start}〜#{cnt_end} 周",
               y: (num.to_f / total_cleared_num * 100).round(1),
           }
         end
