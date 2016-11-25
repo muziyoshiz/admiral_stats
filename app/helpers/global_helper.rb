@@ -50,10 +50,22 @@ module GlobalHelper
             y: (num.to_f / total_cleared_num * 100).round(1),
         }
       elsif cnt >= 10
-        res << {
-            name: "#{cnt} 回以上",
-            y: (num.to_f / total_cleared_num * 100).round(1),
-        }
+        # 10 以上の場合、10〜19回、などの範囲を表す
+        cnt_start = ((cnt - 10) + 1) * 10
+        cnt_end = ((cnt - 10) + 2) * 10 - 1
+
+        if num == cleared_loop_counts.size - 1
+          # 配列の最後は、それ以上すべての回数を表す
+          res << {
+              name: "#{cnt_start} 回以上",
+              y: (num.to_f / total_cleared_num * 100).round(1),
+          }
+        else
+          res << {
+              name: "#{cnt_start}〜#{cnt_end} 回",
+              y: (num.to_f / total_cleared_num * 100).round(1),
+          }
+        end
       end
     end
 
@@ -65,9 +77,17 @@ module GlobalHelper
     res = []
 
     levels.each do |level|
+      # 0〜9回はすべて表示
+      counts = []
+      (0..9).each do |cnt|
+        counts[cnt] = cleared_loop_counts[level][cnt]
+      end
+      # 10回以上は1個の値にまとめる
+      counts[10] = cleared_loop_counts[level][10..-1].inject{|sum, i| sum + i }
+
       res << {
           name: difficulty_level_to_text(level),
-          data: cleared_loop_counts[level].map{|cnt| (cnt.to_f / total_num * 100).round(1) },
+          data: counts.map{|cnt| (cnt.to_f / total_num * 100).round(1) },
           color: difficulty_level_to_color(level),
       }
     end
