@@ -62,4 +62,16 @@ class EventProgressStatus < ApplicationRecord
   validates :exported_at,
             presence: true,
             uniqueness: { scope: [ :admiral_id, :event_no, :level ] }
+
+  # このイベント進捗情報と引数で与えられたイベント進捗情報を比較して、エクスポート時刻以外の情報が同じ場合に true を返します。
+  def is_comparable_with?(status)
+    self.admiral_id == status.admiral_id and
+        self.event_no == status.event_no and
+        self.level == status.level and
+        self.opened == status.opened and
+        self.current_loop_counts == status.current_loop_counts and
+        self.cleared_loop_counts == status.cleared_loop_counts and
+        self.cleared_stage_no == status.cleared_stage_no and
+        self.current_military_gauge_left == status.current_military_gauge_left
+  end
 end
