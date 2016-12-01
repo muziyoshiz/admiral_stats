@@ -145,14 +145,33 @@ class AdmiralInfoController < ApplicationController
 
     set_meta_tags title: "イベントの進捗（#{@event.event_name}）"
 
-    # 履歴表示のために、新しい順にソート
-    @statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no).order(exported_at: :desc).to_a
+    all_statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no).to_a
 
     # イベント進捗情報がなければ、処理を終了
-    if @statuses.blank?
+    if all_statuses.blank?
       render :action => 'event_blank'
       return
     end
+
+    # イベント履歴の重複を排除した結果を @statuses に格納する
+    # 同じ意味のイベント進捗が複数ある場合は、一番エクスポート時刻が古いものだけ残す
+    @statuses = []
+
+    @event.levels.each do |level|
+      prev_status = nil
+
+      # 特定の難易度のイベント進捗情報を、エクスポート時刻が古い順に取得
+      all_statuses.select{|s| s.level == level }.sort_by{|s| s.exported_at }.each do |s|
+        # すでに同じ内容のイベント進捗情報がある場合は無視
+        next if prev_status and prev_status.is_comparable_with?(s)
+
+        @statuses << s
+        prev_status = s
+      end
+    end
+
+    # 履歴表示のために、新しい順にソート
+    @statuses = @statuses.sort_by{|s| s.exported_at }.reverse
 
     # この期間限定海域での新艦娘
     @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at)
