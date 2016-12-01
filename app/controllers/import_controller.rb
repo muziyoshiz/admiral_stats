@@ -298,9 +298,20 @@ class ImportController < ApplicationController
         return false
       end
 
+      # データがインポートされたかどうか確認するためのフラグ
+      imported = false
+
       EventProgressStatus.transaction do
         event.levels.each do |level|
           summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, api_version)
+
+          # 上記の summary と同じ意味で、かつ exported_at が上記の summary よりも古いイベント進捗履歴が
+          # 存在する場合は、インポートを行わない
+          next if EventProgressStatus.where(
+              'admiral_id = ? AND event_no = ? AND level = ? AND opened = ? AND current_loop_counts = ?' +
+                  ' AND cleared_loop_counts = ? AND cleared_stage_no = ? AND current_military_gauge_left = ? AND exported_at <= ?',
+              admiral_id, event_no, level, summary[:opened], summary[:current_loop_counts],
+              summary[:cleared_loop_counts], summary[:cleared_stage_no], summary[:current_military_gauge_left], exported_at).exists?
 
           EventProgressStatus.create!(
               admiral_id: admiral_id,
@@ -313,10 +324,15 @@ class ImportController < ApplicationController
               current_military_gauge_left: summary[:current_military_gauge_left],
               exported_at: exported_at,
           )
+          imported = true
         end
       end
 
-      @messages << "イベント進捗情報のインポートに成功しました。（ファイル名：#{file_name}）"
+      if imported
+        @messages << "イベント進捗情報のインポートに成功しました。（ファイル名：#{file_name}）"
+      else
+        @messages << "同じ意味を持つ、過去のイベント進捗情報がインポート済みのため、無視されました。（ファイル名：#{file_name}）"
+      end
     rescue => e
       logger.debug(e)
       @error = "イベント進捗情報のインポートに失敗しました。（ファイル名：#{file_name}、原因：#{e.message}）"
