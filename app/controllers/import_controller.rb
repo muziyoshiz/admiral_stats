@@ -289,6 +289,12 @@ class ImportController < ApplicationController
     begin
       event_info_list = AdmiralStatsParser.parse_event_info(json, api_version)
 
+      # イベント開催期間でない場合、event_info_list は空になる
+      if event_info_list.blank?
+        @messages << "イベント進捗情報が空のため、無視されました。（ファイル名：#{file_name}）"
+        return true
+      end
+
       # event_master に登録されていない event_no は拒否する
       event_no = event_info_list.map{|info| info.event_no }.max
       event = EventMaster.where(event_no: event_no).first
