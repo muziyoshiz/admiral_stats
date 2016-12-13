@@ -2260,6 +2260,15 @@ ship_masters = [
         
     },
     {
+        book_no: 233,
+        ship_class: 'Lexington級',
+        ship_class_index: 2,
+        ship_type: '正規空母',
+        ship_name: 'Saratoga',
+        variation_num: 3,
+
+    },
+    {
         book_no: 234,
         ship_class: '睦月型',
         ship_class_index: 1,
@@ -2298,6 +2307,15 @@ ship_masters = [
         variation_num: 3,
         remodel_level: 2,
         
+    },
+    {
+        book_no: 238,
+        ship_class: 'Lexington級',
+        ship_class_index: 2,
+        ship_type: '正規空母',
+        ship_name: 'Saratoga改',
+        variation_num: 3,
+
     },
     {
         book_no: 239,
@@ -2465,13 +2483,22 @@ ship_masters = [
         
     },
     {
+        book_no: 257,
+        ship_class: '白露型',
+        ship_class_index: 8,
+        ship_type: '駆逐艦',
+        ship_name: '山風',
+        variation_num: 6,
+        
+    },
+    {
         book_no: 258,
         ship_class: '白露型',
         ship_class_index: 7,
         ship_type: '駆逐艦',
         ship_name: '海風',
         variation_num: 6,
-        
+
     },
     {
         book_no: 259,
@@ -2600,13 +2627,22 @@ ship_masters = [
         
     },
     {
+        book_no: 272,
+        ship_class: '神風型',
+        ship_class_index: 2,
+        ship_type: '駆逐艦',
+        ship_name: '朝風',
+        variation_num: 6,
+        
+    },
+    {
         book_no: 273,
         ship_class: '神風型',
         ship_class_index: 3,
         ship_type: '駆逐艦',
         ship_name: '春風',
         variation_num: 6,
-        
+
     },
     {
         book_no: 276,
@@ -2642,6 +2678,23 @@ ship_masters = [
         ship_class_index: 10,
         ship_type: '駆逐艦',
         ship_name: '浦波',
+        variation_num: 6,
+    },
+    {
+        book_no: 287,
+        ship_class: '長良型',
+        ship_class_index: 5,
+        ship_type: '軽巡洋艦',
+        ship_name: '鬼怒改二',
+        variation_num: 3,
+        remodel_level: 2,
+    },
+    {
+        book_no: 291,
+        ship_class: 'C.Teste級',
+        ship_class_index: 1,
+        ship_type: '水上機母艦',
+        ship_name: 'Commandant Teste',
         variation_num: 6,
     },
 ]
