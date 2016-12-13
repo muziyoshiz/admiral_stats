@@ -1096,7 +1096,8 @@ ship_masters = [
         ship_type: '軽巡洋艦',
         ship_name: '鬼怒',
         variation_num: 6,
-        
+        # 2016-12-15：3隻追加（鬼怒、阿武隈、夕張）
+        implemented_at: '2016-12-15T07:00:00+09:00',
     },
     {
         book_no: 110,
@@ -1105,7 +1106,8 @@ ship_masters = [
         ship_type: '軽巡洋艦',
         ship_name: '阿武隈',
         variation_num: 6,
-        
+        # 2016-12-15：3隻追加（鬼怒、阿武隈、夕張）
+        implemented_at: '2016-12-15T07:00:00+09:00',
     },
     {
         book_no: 111,
@@ -1114,7 +1116,8 @@ ship_masters = [
         ship_type: '軽巡洋艦',
         ship_name: '夕張',
         variation_num: 6,
-        
+        # 2016-12-15：3隻追加（鬼怒、阿武隈、夕張）
+        implemented_at: '2016-12-15T07:00:00+09:00',
     },
     {
         book_no: 112,
