@@ -114,6 +114,9 @@ class GlobalController < ApplicationController
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     if logged_in?
       ShipCard.where(admiral_id: current_admiral.id).each do |card|
+        # イベント期間中に実装されていなかった艦娘は除外する
+        next unless @cards.keys.include?(card.book_no)
+
         if kai_book_numbers.include?(card.book_no)
           @cards[card.book_no][card.card_index + 3] = :acquired
         else
