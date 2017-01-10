@@ -10,7 +10,7 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <% [:month, :three_months, :half_year, :year, :all].each do |r| %>
+            <% range_symbols.each do |r| %>
                 <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
             <% end %>
           </ul>

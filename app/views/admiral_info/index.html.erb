@@ -6,19 +6,13 @@
       <%= form_tag({ action: :index }, { id: 'rangeForm' }) do %>
           <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
           <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <%
-              case @range
-                when :month
-                  concat '過去 1 ヶ月'
-                when :all
-                  concat '全期間'
-              end
-            %>
+            <%= range_to_s(@range) %>
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="#" onclick="$('#range').val('month'); $('#rangeForm').submit()">過去 1 ヶ月</a></li>
-            <li><a href="#" onclick="$('#range').val('all'); $('#rangeForm').submit()">全期間</a></li>
+            <% range_symbols.each do |r| %>
+                <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
+            <% end %>
           </ul>
       <% end %>
     </div>

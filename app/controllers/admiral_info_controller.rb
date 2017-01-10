@@ -10,16 +10,20 @@ class AdmiralInfoController < ApplicationController
     set_meta_tags title: '提督情報'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and params[:range] == 'all'
-      @range = :all
+    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
+      @range = params[:range].to_sym
+    else
+      @range = :month
+    end
 
+    if @range == :all
       # 提督情報を一括取得
       admiral_statuses = AdmiralStatus.where(admiral_id: current_admiral.id).order(exported_at: :asc)
     else
-      @range = :month
+      beginning_of_range = get_beginning_of_range_by(@range)
 
       # 過去1ヶ月分の提督情報を一括取得
-      admiral_statuses = AdmiralStatus.where(admiral_id: current_admiral.id, exported_at: 1.month.ago..Time.current).
+      admiral_statuses = AdmiralStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           order(exported_at: :asc)
     end
 
@@ -103,8 +107,8 @@ class AdmiralInfoController < ApplicationController
 
       # 暫定順位は REVISION 2 からの実装なので、nil の場合がある
       if status.rank
-        # 暫定順位は '圏外' または 数値 で返されると思われる（'圏外' しか見たこと無いので、あくまで推測）
-        # 中身が数値の場合はその数値をプロットし、それ以外の場合は仮に 100,000 位とする
+        # 暫定順位は '圏外' または 数値 で返される
+        # 中身が数値の場合はその数値をプロットし、それ以外の場合は仮の固定値を代入
         if status.rank =~ /^\d+$/
           data_rank << [ timestamp_js, status.rank.to_i ]
         elsif status.rank == '圏外'
@@ -206,6 +210,25 @@ class AdmiralInfoController < ApplicationController
           @cards[card.book_no][card.card_index] = :acquired
         end
       end
+    end
+  end
+
+  private
+
+  # 範囲を表すシンボルをもとに、その範囲の開始時刻を返します。
+  def get_beginning_of_range_by(range)
+    case range
+      when :month
+        1.month.ago
+      when :three_months
+        3.months.ago
+      when :half_year
+        6.months.ago
+      when :year
+        1.year.ago
+      else
+        # :all などの場合は nil を返す
+        nil
     end
   end
 end
