@@ -544,7 +544,8 @@ ship_masters = [
         ship_type: '重巡洋艦',
         ship_name: '青葉',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 55,
@@ -753,7 +754,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '初春',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 76,
@@ -762,7 +764,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '子日',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 77,
@@ -771,7 +774,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '若葉',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 78,
@@ -780,7 +784,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '初霜',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 79,
@@ -1205,7 +1210,8 @@ ship_masters = [
         ship_type: '重巡洋艦',
         ship_name: '衣笠',
         variation_num: 6,
-        
+        # 2017-01-12：6隻追加（初春、子日、若葉、初霜、青葉、衣笠）
+        implemented_at: '2017-01-12T07:00:00+09:00',
     },
     {
         book_no: 121,
