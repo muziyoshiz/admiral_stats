@@ -322,11 +322,14 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'カード入手数・入手率'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and params[:range] == 'all'
-      @range = :all
+    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
+      @range = params[:range].to_sym
     else
       @range = :month
     end
+
+    # 表示期間が「全期間」以外の場合は、その期間の開始時刻を調べる
+    beginning_of_range = get_beginning_of_range_by(@range)
 
     # 入手済みのカードのデータを全入手
     ship_cards = ShipCard.where(admiral_id: current_admiral.id)
@@ -415,8 +418,8 @@ class ShipInfoController < ApplicationController
     total_rate_data = []
     total_impl_data = []
     timestamps.each do |exported_at|
-      # @range == :month の場合は、1ヶ月以内の結果のみプロット
-      next if @range == :month and exported_at < 1.month.ago
+      # 指定された期間の結果のみプロット
+      next if beginning_of_range and exported_at < beginning_of_range
 
       timestamp = exported_at.to_i * 1000
       num = 6.times.map{|idx| nums[idx][exported_at] }.sum
@@ -432,8 +435,8 @@ class ShipInfoController < ApplicationController
     %w(N Nホロ N中破 改 改ホロ 改中破).each_with_index do |name, idx|
       num_data = []
       timestamps.each do |exported_at|
-        # @range == :month の場合は、1ヶ月以内の結果のみプロット
-        next if @range == :month and exported_at < 1.month.ago
+        # 指定された期間の結果のみプロット
+        next if beginning_of_range and exported_at < beginning_of_range
         num_data << [exported_at.to_i * 1000, nums[idx][exported_at]]
       end
 
@@ -444,8 +447,8 @@ class ShipInfoController < ApplicationController
 
       rate_data = []
       timestamps.each do |exported_at|
-        # @range == :month の場合は、1ヶ月以内の結果のみプロット
-        next if @range == :month and exported_at < 1.month.ago
+        # 指定された期間の結果のみプロット
+        next if beginning_of_range and exported_at < beginning_of_range
         rate_data << [exported_at.to_i * 1000, rates[idx][exported_at]]
       end
 
@@ -457,8 +460,8 @@ class ShipInfoController < ApplicationController
 
       impl_data = []
       timestamps.each do |exported_at|
-        # @range == :month の場合は、1ヶ月以内の結果のみプロット
-        next if @range == :month and exported_at < 1.month.ago
+        # 指定された期間の結果のみプロット
+        next if beginning_of_range and exported_at < beginning_of_range
         impl_data << [exported_at.to_i * 1000, impls[idx][exported_at]]
       end
 
@@ -483,8 +486,8 @@ class ShipInfoController < ApplicationController
       when :year
         1.year.ago
       else
-        # デフォルトは1ヶ月前
-        1.month.ago
+        # :all などの場合は nil を返す
+        nil
     end
   end
 
