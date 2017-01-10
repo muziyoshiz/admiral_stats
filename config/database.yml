@@ -52,4 +52,4 @@ production:
   database: admiral_stats_production
   username: admiral
   password: <%= ENV['ADMIRAL_STATS_DATABASE_PASSWORD'] %>
-  host: as-db01
+  host: as-db1
