@@ -9,21 +9,25 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'レベル・経験値（艦娘別）'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and params[:range] == 'all'
-      @range = :all
+    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
+      @range = params[:range].to_sym
+    else
+      @range = :month
+    end
 
+    if @range == :all
       # 図鑑 No. 順に、レベルの情報を取り出す
       # remodel_level の値にかかわらず、level は同じになるはずなので、GROUP BY で重複排除する
       # TODO MySQL の ONLY_FULL_GROUP_BY 対策
       statuses = ShipStatus.where(admiral_id: current_admiral.id).
           group(:book_no, :exported_at).order(book_no: :asc, exported_at: :asc)
     else
-      @range = :month
+      beginning_of_range = get_beginning_of_range_by(@range)
 
       # 図鑑 No. 順に、レベルの情報を取り出す
       # remodel_level の値にかかわらず、level は同じになるはずなので、GROUP BY で重複排除する
       # TODO MySQL の ONLY_FULL_GROUP_BY 対策
-      statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: 1.month.ago..Time.current).
+      statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           group(:book_no, :exported_at).order(book_no: :asc, exported_at: :asc)
     end
 
@@ -462,6 +466,23 @@ class ShipInfoController < ApplicationController
   end
 
   private
+
+  # 範囲を表すシンボルをもとに、その範囲の開始時刻を返します。
+  def get_beginning_of_range_by(range)
+    case range
+      when :month
+        1.month.ago
+      when :three_months
+        3.months.ago
+      when :half_year
+        6.months.ago
+      when :year
+        1.year.ago
+      else
+        # デフォルトは1ヶ月前
+        1.month.ago
+    end
+  end
 
   # 指定された時刻の時点での総カード枚数を、以下のような形式で返します。
 =begin

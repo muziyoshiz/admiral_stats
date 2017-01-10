@@ -4,6 +4,12 @@ module ShipInfoHelper
     case range
       when :month
         '過去 1 ヶ月'
+      when :three_months
+        '過去 3 ヶ月'
+      when :half_year
+        '過去 6 ヶ月'
+      when :year
+        '過去 1 年'
       when :all
         '全期間'
       else
