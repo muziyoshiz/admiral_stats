@@ -161,20 +161,24 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'レベル・経験値・★5艦娘数（艦種別）'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and params[:range] == 'all'
-      @range = :all
+    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
+      @range = params[:range].to_sym
+    else
+      @range = :month
+    end
 
+    if @range == :all
       # 図鑑 No. 順に、レベルの情報を取り出す
       # book_no が同じでも remodel_level が違うと艦種が変わる艦娘がいる（伊勢、日向）
       # そのため、remodel_level も取得する
       statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
     else
-      @range = :month
+      beginning_of_range = get_beginning_of_range_by(@range)
 
       # 図鑑 No. 順に、レベルの情報を取り出す
       # book_no が同じでも remodel_level が違うと艦種が変わる艦娘がいる（伊勢、日向）
       # そのため、remodel_level も取得する
-      statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: 1.month.ago..Time.current).
+      statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
     end
 

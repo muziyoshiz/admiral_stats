@@ -52,8 +52,8 @@ var ADMIRAL_STATS_HIGHCHARTS_DEFAULT = {
       hour: '%H:%M',
       day: '%m月%d日',
       week: '%m月%d日',
-      month: '%Y-%m',
-      year: '%Y'
+      month: '%m月%d日',
+      year: '%Y年%m月%d日'
     },
     title: {
       text: null
@@ -67,8 +67,8 @@ var ADMIRAL_STATS_HIGHCHARTS_DEFAULT = {
       hour: "%m月%d日 %H:%M",
       day: "%Y年%m月%d日",
       week: "%Y年%m月%d日",
-      month: "%Y-%m",
-      year: "%Y"
+      month: "%Y年%m月%d日",
+      year: "%Y年%m月%d日"
     }
   },
 }
