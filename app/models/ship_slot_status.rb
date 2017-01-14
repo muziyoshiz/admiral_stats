@@ -42,6 +42,14 @@ class ShipSlotStatus < ApplicationRecord
                 less_than_or_equal_to: 2,
             }
 
+  def is_not_equipped_aircraft?
+    self.slot_disp == 1
+  end
+
+  def is_equipped_aircraft?
+    self.slot_disp == 2
+  end
+
   # JSON に含まれる slot_disp の値を、対応する数値に変換して返します。
   def self.convert_slot_disp_to_i(slot_disp)
     case slot_disp

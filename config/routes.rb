@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   # 艦娘一覧
   get 'ship_list', to: 'ship_list#index'
+  get 'ship_list/slot', to: 'ship_list#slot'
 
   # 艦娘情報
   match 'ship_info/level', to: 'ship_info#level', via: [ :get, :post ]

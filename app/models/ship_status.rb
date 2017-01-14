@@ -1,5 +1,6 @@
 class ShipStatus < ApplicationRecord
   belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no
+  has_many :ship_slot_statuses, -> { order(slot_index: :asc) }
 
   # 提督 ID
   validates :admiral_id,

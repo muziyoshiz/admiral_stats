@@ -65,4 +65,21 @@ class ShipListController < ApplicationController
       @is_blank = false
     end
   end
+
+  # 各艦娘の装備スロットの一覧表示です。
+  def slot
+    set_meta_tags title: '艦娘一覧（装備スロット）'
+
+    # 実装済みの艦娘のみ取得
+    @ships = {}
+    ShipMaster.where('implemented_at <= ?', Time.now).each{|ship| @ships[ship.book_no] = ship }
+
+    # ship_statuses の最終エクスポート時刻を取得
+    # ship_statuses がない場合は、返り値は nil
+    last_exported_at = ShipStatus.where(admiral_id: current_admiral.id).maximum('exported_at')
+
+    # ship_slot_statuses レコードも含めて一度に取得
+    @statuses = ShipStatus.includes(:ship_slot_statuses).where(admiral_id: 1, exported_at: last_exported_at).
+        order(book_no: :asc, remodel_level: :asc)
+  end
 end

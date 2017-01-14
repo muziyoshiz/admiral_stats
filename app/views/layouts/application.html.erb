@@ -45,8 +45,12 @@
                   <li><%= link_to 'イベントの進捗', controller: 'admiral_info', action: 'event' %></li>
                 </ul>
               </li>
-              <li <%== 'class="active"' if current_page?(:controller => 'ship_list') %>>
-                <%= link_to '艦娘一覧', controller: 'ship_list' %>
+              <li class="dropdown <%== 'active' if current_page?(:controller => 'ship_list') %>">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘一覧 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to '艦娘一覧', controller: 'ship_list' %></li>
+                  <li><%= link_to '装備スロット', controller: 'ship_list', action: 'slot' %></li>
+                </ul>
               </li>
               <li class="dropdown <%== 'active' if controller.controller_name == 'ship_info' %>">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘情報 <span class="caret"></span></a>
