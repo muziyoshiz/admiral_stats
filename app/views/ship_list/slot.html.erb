@@ -15,6 +15,22 @@
         </div>
       </div>
     </div>
+<% else %>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">このデータについて</h3>
+          </div>
+          <div class="panel-body">
+            <ul>
+              <li>ノーマル艦娘と改艦娘は装備スロットが分かれているため、両方とも表示しています。</li>
+              <li>すでに改カードを入手している艦娘の、ノーマルカードの装備を強調表示しています。装備の整理にお役立てください。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
 <% end %>
 
 <div class="container" style="margin-top: 10px;">
@@ -26,6 +42,12 @@
   </a>
   <a id="button-kai-only" class="btn btn-default">
     改のみ表示
+  </a>
+  <a id="button-ignore-unused-normal" class="btn btn-default">
+    改を優先して表示
+  </a>
+  <a id="button-unused-normal-only" class="btn btn-default">
+    改がいるノーマル艦娘のみ表示
   </a>
 </div>
 
@@ -43,6 +65,7 @@
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット2</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット3</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット4</th>
+        <th class="hidden">表示を優先すべき艦がいるか（フィルタ用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -56,12 +79,14 @@
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット2</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット3</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット4</th>
+        <th class="hidden">表示を優先すべき艦がいるか（フィルタ用）</th>
       </tr>
       </tfoot>
       <tbody>
       <% @statuses.each do |status| %>
           <% ship = @ships[status.book_no] %>
-          <tr>
+          <% kai_exists = kai_exists_for?(status, @ships, @statuses) %>
+          <tr <%== 'class="unused-normal"' if kai_exists %>>
             <td class="numeric"><%= ship.book_no %></td>
             <td class="text-left hidden-xs"><%= ship.ship_type_by_status(status) %></td>
             <td class="text-left"><%= ship.ship_name %></td>
@@ -76,18 +101,22 @@
             <% 4.times.each do |idx| %>
                 <% slot = status.ship_slot_statuses[idx] %>
                 <% if slot and slot.slot_index == idx %>
-                    <td class="text-left">
-                      <%= slot.slot_equip_name %>
+                    <td class="text-left slot">
+                      <span class="slot-equip-name">
+                        <%= slot.slot_equip_name %>
+                        <% if slot.is_equipped_aircraft? %>
+                            (<%= slot.slot_amount %>)
+                        <% end %>
+                      </span>
                       <% if slot.is_not_equipped_aircraft? %>
                           <span class="not-equipped">(<%= slot.slot_amount %>)</span>
-                      <% elsif slot.is_equipped_aircraft? %>
-                          (<%= slot.slot_amount %>)
                       <% end %>
                     </td>
                 <% else %>
                     <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
                 <% end %>
             <% end %>
+            <td class="hidden"><%= kai_exists %></td>
           </tr>
       <% end %>
       </tbody>
@@ -107,17 +136,32 @@
     $('#button-all').on('click', function (e) {
       e.preventDefault();
       <!-- 検索条件をリセット -->
-      table.columns(3).search('').draw();
+      table.columns(3).search('');
+      table.columns(9).search('').draw();
     });
 
     $('#button-normal-only').on('click', function (e) {
       e.preventDefault();
-      table.columns(3).search('N').draw();
+      table.columns(3).search('N');
+      table.columns(9).search('').draw();
     });
 
     $('#button-kai-only').on('click', function (e) {
       e.preventDefault();
-      table.columns(3).search('改').draw();
+      table.columns(3).search('改');
+      table.columns(9).search('').draw();
+    });
+
+    $('#button-ignore-unused-normal').on('click', function (e) {
+      e.preventDefault();
+      table.columns(3).search('');
+      table.columns(9).search('false').draw();
+    });
+
+    $('#button-unused-normal-only').on('click', function (e) {
+      e.preventDefault();
+      table.columns(3).search('');
+      table.columns(9).search('true').draw();
     });
   });
 </script>
