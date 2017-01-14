@@ -70,7 +70,7 @@
             <td class="numeric"><%= book_no %></td>
             <td class="text-left"><%= forecast[:name] %></td>
             <td class="numeric"><%= forecast[:end].level %></td>
-            <td class="numeric"><%= number_with_delimiter(forecast[:end].level_to_exp) %></td>
+            <td class="numeric"><%= number_with_delimiter(forecast[:end].estimated_exp) %></td>
             <% if forecast[:lv50_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv50_soon] %>">
                   <%= forecast[:lv50_at].to_s(:date) %>

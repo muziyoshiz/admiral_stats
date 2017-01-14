@@ -68,7 +68,7 @@ class ShipInfoController < ApplicationController
       levels[s.book_no] << [s.exported_at.to_i * 1000, s.level]
 
       exps[s.book_no] ||= []
-      exps[s.book_no] << [s.exported_at.to_i * 1000, s.level_to_exp]
+      exps[s.book_no] << [s.exported_at.to_i * 1000, s.estimated_exp]
     end
 
     @series_level = []
@@ -117,30 +117,30 @@ class ShipInfoController < ApplicationController
       s_begin, s_end = forecast[:begin], forecast[:end]
 
       # 1 秒あたりの増加経験値 = 経験値の差 / 経過時間(秒、float 型)
-      exp_per_sec = (s_end.level_to_exp - s_begin.level_to_exp).to_f / (s_end.exported_at - s_begin.exported_at)
+      exp_per_sec = (s_end.estimated_exp - s_begin.estimated_exp).to_f / (s_end.exported_at - s_begin.exported_at)
 
       # Lv 50 到達予想時間（Lv 70 の経験値は 122,500）
       if s_end.level < 50
-        forecast[:lv50_at] = s_begin.exported_at + (122500 - s_begin.level_to_exp) / exp_per_sec
-        forecast[:lv50_rest] = 122500 - s_end.level_to_exp
+        forecast[:lv50_at] = s_begin.exported_at + (122500 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv50_rest] = 122500 - s_end.estimated_exp
       end
 
       # Lv 70 到達予想時間（Lv 70 の経験値は 265,000）
       if s_end.level < 70
-        forecast[:lv70_at] = s_begin.exported_at + (265000 - s_begin.level_to_exp) / exp_per_sec
-        forecast[:lv70_rest] = 265000 - s_end.level_to_exp
+        forecast[:lv70_at] = s_begin.exported_at + (265000 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv70_rest] = 265000 - s_end.estimated_exp
       end
 
       # Lv 90 到達予想時間（Lv 90 の経験値は 545,500）
       if s_end.level < 90
-        forecast[:lv90_at] = s_begin.exported_at + (545500 - s_begin.level_to_exp) / exp_per_sec
-        forecast[:lv90_rest] = 545000 - s_end.level_to_exp
+        forecast[:lv90_at] = s_begin.exported_at + (545500 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv90_rest] = 545000 - s_end.estimated_exp
       end
 
       # Lv 99 到達予想時間（Lv 99 の経験値は 1,000,000）
       if s_end.level < 99
-        forecast[:lv99_at] = s_begin.exported_at + (1000000 - s_begin.level_to_exp) / exp_per_sec
-        forecast[:lv99_rest] = 1000000 - s_end.level_to_exp
+        forecast[:lv99_at] = s_begin.exported_at + (1000000 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv99_rest] = 1000000 - s_end.estimated_exp
       end
     end
 
@@ -224,7 +224,7 @@ class ShipInfoController < ApplicationController
         type_levels[s.exported_at] += s.level
 
         type_exps[s.exported_at] ||= 0
-        type_exps[s.exported_at] += s.level_to_exp
+        type_exps[s.exported_at] += s.estimated_exp
       end
 
       # 合計レベルおよび経験値の計算
