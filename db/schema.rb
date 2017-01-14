@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170111020505) do
+ActiveRecord::Schema.define(version: 20170114075338) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -106,6 +106,15 @@ ActiveRecord::Schema.define(version: 20170111020505) do
     t.integer  "variation_num",                           null: false
     t.integer  "remodel_level",               default: 0, null: false
     t.datetime "implemented_at"
+  end
+
+  create_table "ship_slot_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "ship_status_id",             null: false
+    t.integer "slot_index",                 null: false
+    t.string  "slot_equip_name", limit: 32, null: false
+    t.integer "slot_amount",                null: false
+    t.integer "slot_disp",                  null: false
+    t.index ["ship_status_id", "slot_index"], name: "index_ship_slot_statuses", unique: true, using: :btree
   end
 
   create_table "ship_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

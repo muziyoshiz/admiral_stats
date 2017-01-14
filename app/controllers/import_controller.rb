@@ -232,7 +232,7 @@ class ImportController < ApplicationController
     true
   end
 
-  # 艦娘一覧の JSON データを元に、ship_statuses レコードの追加
+  # 艦娘一覧の JSON データを元に、ship_statuses レコードおよび ship_slot_statuses レコードの追加
   def save_ship_statuses(admiral_id, exported_at, json, api_version, file_name)
     if ShipStatus.where(admiral_id: admiral_id, exported_at: exported_at).exists?
       @messages << "同じ時刻の艦娘一覧がインポート済みのため、無視されました。（ファイル名：#{file_name}）"
@@ -251,7 +251,7 @@ class ImportController < ApplicationController
         AdmiralStatsParser.parse_character_list_info(json, api_version).each do |info|
           # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
           # また、INSERT されないにも関わらずインデックスのみが作られた。
-          ShipStatus.create!(
+          status = ShipStatus.create!(
               admiral_id: admiral_id,
               book_no: info.book_no,
               remodel_level: info.remodel_lv,
@@ -260,6 +260,21 @@ class ImportController < ApplicationController
               exp_percent: info.exp_percent,
               exported_at: exported_at,
           )
+
+          # API version 5 以上で、slot_num の値がある場合は、ship_slot_statuses レコードも保存する
+          if info.slot_num and info.slot_num <= 4
+            ShipSlotStatus.transaction do
+              info.slot_num.times do |slot_index|
+                ShipSlotStatus.create!(
+                    ship_status_id: status.id,
+                    slot_index: slot_index,
+                    slot_equip_name: info.slot_equip_name[slot_index],
+                    slot_amount: info.slot_amount[slot_index],
+                    slot_disp: ShipSlotStatus.convert_slot_disp_to_i(info.slot_disp[slot_index])
+                )
+              end
+            end
+          end
         end
       end
 
