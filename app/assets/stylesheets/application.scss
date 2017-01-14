@@ -22,6 +22,7 @@ td.none     { text-align: center; background-color: #CCCCCC; color: #000000; }
 td.star     { text-align: center; }
 td.not-implemented              { background-color: #CCCCCC; color: #000000; }
 i.star      { color: #FFBF00; }
+span.not-equipped { color: #BBBBBB; font-size: 0.8em; }
 
 // 艦娘カードの入手率のセル
 td.rate-common    { text-align: center; }
