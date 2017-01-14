@@ -257,6 +257,7 @@ class ImportController < ApplicationController
               remodel_level: info.remodel_lv,
               level: info.lv,
               star_num: info.star_num,
+              exp_percent: info.exp_percent,
               exported_at: exported_at,
           )
         end

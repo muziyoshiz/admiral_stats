@@ -47,6 +47,15 @@ class ShipStatus < ApplicationRecord
                 allow_nil: true,
             }
 
+  # 経験値の獲得割合(%)
+  validates :exp_percent,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+                less_than_or_equal_to: 100,
+                allow_nil: true,
+            }
+
   # SEGA の「提督情報」からエクスポートされた日時
   validates :exported_at,
             presence: true,
@@ -56,7 +65,6 @@ class ShipStatus < ApplicationRecord
   # ただし、Lv および経験値の獲得割合(%)をもとに計算する都合上、多少の誤差があります。
   # この累計経験値は、艦娘の経験値テーブルが、艦これの本家と同じと仮定して計算しています。
   def estimated_exp
-#    CharacterListInfo.convert_lv_and_exp_percent_to_exp(self.level, self.exp_percent)
-    CharacterListInfo.convert_lv_and_exp_percent_to_exp(self.level, nil)
+    CharacterListInfo.convert_lv_and_exp_percent_to_exp(self.level, self.exp_percent)
   end
 end
