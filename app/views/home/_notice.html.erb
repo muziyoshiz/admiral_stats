@@ -13,6 +13,9 @@
         </li>
     <% end %>
     <li>
+      2017年1月15日更新(2)：<%= link_to_if_logged_in '装備スロット', controller: 'ship_list', action: 'slot' %> が表示できていなかった不具合を修正しました。
+    </li>
+    <li>
       2017年1月15日更新：「艦娘一覧」ファイルから取得できるデータを増やしました。それに伴い、以下の機能も追加・改善しました。
       <ul>
         <li>「艦娘一覧」内に <%= link_to_if_logged_in '装備スロット', controller: 'ship_list', action: 'slot' %> のページを追加しました。装備の整理にお役立てください。</li>
