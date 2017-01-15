@@ -79,7 +79,7 @@ class ShipListController < ApplicationController
     last_exported_at = ShipStatus.where(admiral_id: current_admiral.id).maximum('exported_at')
 
     # ship_slot_statuses レコードも含めて一度に取得
-    @statuses = ShipStatus.includes(:ship_slot_statuses).where(admiral_id: 1, exported_at: last_exported_at).
+    @statuses = ShipStatus.includes(:ship_slot_statuses).where(admiral_id: current_admiral.id, exported_at: last_exported_at).
         order(book_no: :asc, remodel_level: :asc)
   end
 end
