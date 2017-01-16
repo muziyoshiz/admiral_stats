@@ -5,13 +5,21 @@
     エクスポータ（PowerShell 版、ブックマークレット版）の開発は <%= link_to '@sophiarcp', 'http://twitter.com/sophiarcp', :target => '_blank' %> さんにご協力頂いています。
     <ul>
       <li>
-        <%= link_to 'Twitter (@admiral_stats)', twitter_admiral_stats_url, :target => '_blank' %>：更新情報の配信アカウント。不具合報告なども受け付けています。
+        <%= link_to 'Twitter (@admiral_stats)', twitter_admiral_stats_url, target: '_blank' %>：更新情報の配信アカウント。不具合報告なども受け付けています。
+        <div class="follow-button">
+          <a href="https://twitter.com/admiral_stats" class="twitter-follow-button" data-show-count="false" data-dnt="true">Follow @admiral_stats</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+        </div>
       </li>
       <li>
-        <%= link_to 'Gitter (muziyoshiz/admiral_stats)', gitter_url, :target => '_blank' %>：GitHub アカウントがあればログインできるチャットです。ご意見・ご要望・雑談など。
+        <%= link_to 'GitHub (muziyoshiz/admiral_stats)', github_url, target: '_blank' %>：このサイトのソースコードです。プルリク歓迎。
+        <div class="follow-button">
+          <a class="github-button" href="https://github.com/muziyoshiz/admiral_stats/subscription" data-icon="octicon-eye" data-count-href="/muziyoshiz/admiral_stats/watchers" data-count-api="/repos/muziyoshiz/admiral_stats#subscribers_count" data-count-aria-label="# watchers on GitHub" aria-label="Watch muziyoshiz/admiral_stats on GitHub">Watch</a>
+          <a class="github-button" href="https://github.com/muziyoshiz/admiral_stats" data-icon="octicon-star" data-count-href="/muziyoshiz/admiral_stats/stargazers" data-count-api="/repos/muziyoshiz/admiral_stats#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star muziyoshiz/admiral_stats on GitHub">Star</a>
+        </div>
       </li>
       <li>
-        <%= link_to 'GitHub (muziyoshiz/admiral_stats)', github_url, :target => '_blank' %>：このサイトのソースコードです。プルリク歓迎。
+        <%= link_to 'Gitter (muziyoshiz/admiral_stats)', gitter_url, target: '_blank' %>：GitHub アカウントがあればログインできるチャットです。ご意見・ご要望・雑談など。
       </li>
     </ul>
   </p>
