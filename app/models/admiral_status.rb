@@ -52,7 +52,7 @@ class AdmiralStatus < ApplicationRecord
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 1,
-                less_than_or_equal_to: 99,
+                less_than_or_equal_to: 110,
             }
 
   # 家具コイン
@@ -107,12 +107,24 @@ class AdmiralStatus < ApplicationRecord
       97 => 761500,
       98 => 851500,
       99 => 1000000,
+      # 2017-01-26: 艦隊司令部Lvの上限がLv.99からLv.110に拡張
+      100 => 1300000,
+      101 => 1600000,
+      102 => 1900000,
+      103 => 2200000,
+      104 => 2600000,
+      105 => 3000000,
+      106 => 3500000,
+      107 => 4000000,
+      108 => 4600000,
+      109 => 5200000,
+      110 => 5900000,
   }
 
-  # 艦これアーケードでは、艦隊司令部 Lv の経験値テーブルは、艦娘 Lv の経験値テーブルと
-  # 同じという噂があるため、その情報に従って累計経験値を計算して返します。
+  # 艦隊司令部Lv.をもとに、そのLv.までに必要な累計経験値を計算して返します。
   # ただし、Lv をもとに計算する都合上、その Lv になってから取得した経験値は含みません。
-  # この累計経験値は、艦娘の経験値テーブルが、艦これの本家と同じと仮定して計算しています。
+  # この累計経験値は、艦隊司令部Lvの経験値テーブルが、艦これブラウザ版と同じと仮定して計算しています。
+  # http://wikiwiki.jp/kancolle/?%B7%D0%B8%B3%C3%CD
   def level_to_exp
     case self.level
       when 1..50
@@ -146,7 +158,7 @@ class AdmiralStatus < ApplicationRecord
         n = self.level - 80
         # Lv80 までの累計経験値 = 383000
         383000 + n * (2 * a + (n - 1) * d) / 2
-      when 92..99
+      when 92..110
         # Lv92以降は規則性がなくなるため、累計経験値表から取得
         EXP_TABLE[self.level]
       else
