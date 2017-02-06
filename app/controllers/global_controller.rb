@@ -16,6 +16,15 @@ class GlobalController < ApplicationController
       @ships = ShipMaster.all.to_a
     else
       @ships = ShipMaster.where('implemented_at <= ?', Time.now).to_a
+
+      # 「改」があとから実装された艦娘について、ShipMaster を上書き
+      UpdatedShipMaster.where('implemented_at <= ?', Time.now).each do |us|
+        s = @ships.select{|s| s.book_no == us.book_no }.first
+        if s
+          @ships.delete(s)
+          @ships.push(us)
+        end
+      end
     end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
@@ -91,6 +100,14 @@ class GlobalController < ApplicationController
 
     # この期間限定海域の期間に実装されていた艦娘のみを表示
     @ships = ShipMaster.where('implemented_at < ?', @event.ended_at).to_a
+    # 「改」があとから実装された艦娘について、ShipMaster を上書き
+    UpdatedShipMaster.where('implemented_at < ?', @event.ended_at).each do |us|
+      s = @ships.select{|s| s.book_no == us.book_no }.first
+      if s
+        @ships.delete(s)
+        @ships.push(us)
+      end
+    end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
     kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
