@@ -1,4 +1,4 @@
-class ShipMaster < ApplicationRecord
+class UpdatedShipMaster < ApplicationRecord
   include ShipMaster::Base
 
   self.primary_key = 'book_no'
@@ -54,4 +54,8 @@ class ShipMaster < ApplicationRecord
                 only_integer: true,
                 greater_than_or_equal_to: 0,
             }
+
+  # このマスターデータの更新の適用開始日時
+  validates :implemented_at,
+            presence: true
 end

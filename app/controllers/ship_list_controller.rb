@@ -9,6 +9,15 @@ class ShipListController < ApplicationController
       @ships = ShipMaster.all.to_a
     else
       @ships = ShipMaster.where('implemented_at <= ?', Time.now).to_a
+
+      # 「改」があとから実装された艦娘について、ShipMaster を上書き
+      UpdatedShipMaster.where('implemented_at <= ?', Time.now).each do |us|
+        s = @ships.select{|s| s.book_no == us.book_no }.first
+        if s
+          @ships.delete(s)
+          @ships.push(us)
+        end
+      end
     end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成

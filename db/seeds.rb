@@ -1092,7 +1092,8 @@ ship_masters = [
         ship_name: '瑞鶴改',
         variation_num: 3,
         remodel_level: 1,
-        
+        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
+        implemented_at: '2017-02-07T07:00:00+09:00',
     },
     {
         book_no: 109,
@@ -1142,7 +1143,8 @@ ship_masters = [
         ship_name: '瑞鳳改',
         variation_num: 3,
         remodel_level: 1,
-        
+        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
+        implemented_at: '2017-02-07T07:00:00+09:00',
     },
     {
         book_no: 114,
@@ -2707,6 +2709,33 @@ ship_masters = [
 
 ship_masters.each do |ship_master|
   ShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
+end
+
+updated_ship_masters = [
+    {
+        book_no: 94,
+        ship_class: '祥鳳型',
+        ship_class_index: 1,
+        ship_type: '軽空母',
+        ship_name: '祥鳳',
+        variation_num: 6,
+        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
+        implemented_at: '2017-02-07T07:00:00+09:00',
+    },
+    {
+        book_no: 106,
+        ship_class: '翔鶴型',
+        ship_class_index: 1,
+        ship_type: '正規空母',
+        ship_name: '翔鶴',
+        variation_num: 6,
+        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
+        implemented_at: '2017-02-07T07:00:00+09:00',
+    },
+]
+
+updated_ship_masters.each do |ship_master|
+  UpdatedShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
 end
 
 event_masters = [
