@@ -342,6 +342,8 @@ class ShipInfoController < ApplicationController
 
     # 実装済みの艦娘のマスタデータを全入手
     ship_masters = ShipMaster.where.not(implemented_at: nil)
+    # マスタデータの更新データを全入手
+    updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
 
     # どの時刻にカードが何枚増えたかを調べる
     # gains[0..5][時刻] = その時刻に増えた枚数
@@ -351,6 +353,10 @@ class ShipInfoController < ApplicationController
 
     ship_cards.each do |card|
       ship_master = ship_masters.find{|m| m.book_no == card.book_no }
+
+      # 更新データが存在する場合は、そちらを優先する
+      updated_master = updated_ship_masters.find{|m| m.book_no == card.book_no }
+      ship_master = updated_master if updated_master
 
       case ship_master.remodel_level
         when 0
@@ -519,23 +525,34 @@ class ShipInfoController < ApplicationController
     # 実装済みの艦娘のマスタデータを全入手
     ship_masters = ShipMaster.where.not(implemented_at: nil)
 
-    # 艦娘追加が行われたタイムスタンプの抽出
-    timestamps = ship_masters.map{|m| m.implemented_at }.uniq.sort
+    # マスタデータの更新データを全入手
+    updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
+
+    # 艦娘追加またはマスタデータの更新が行われたタイムスタンプの抽出
+    timestamps = (ship_masters.map{|m| m.implemented_at } + updated_ship_masters.map{|m| m.implemented_at }).uniq.sort
 
     # card_index および時刻ごとの増加枚数を計算
     gains = Array.new(6){ Hash.new }
     # 初期値の設定
     6.times.each{|idx| timestamps.each{|t| gains[idx][t] = 0 } }
 
-    ship_masters.each do |m|
-      case m.remodel_level
+    ship_masters.each do |s|
+      case s.remodel_level
         when 0
-          m.variation_num.times.each{|idx| gains[idx][m.implemented_at] += 1 }
+          s.variation_num.times.each{|idx| gains[idx][s.implemented_at] += 1 }
         when 1
           # 改から始まる図鑑 No. の場合は、1枚目のカードを改と見なす
-          m.variation_num.times.each{|idx| gains[idx + 3][m.implemented_at] += 1 }
+          s.variation_num.times.each{|idx| gains[idx + 3][s.implemented_at] += 1 }
         else
           # 改二以上のカードは現時点で未実装のため、単純に無視する
+      end
+    end
+
+    # 艦娘のマスタデータの更新は、ノーマルのみ → 改のパターンしかないはずのため、
+    # それ以外のパターンは無視する
+    updated_ship_masters.each do |us|
+      if us.remodel_level == 0 and us.variation_num == 6
+        (3..5).each{|idx| gains[idx][us.implemented_at] += 1 }
       end
     end
 
