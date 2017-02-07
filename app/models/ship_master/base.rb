@@ -6,6 +6,8 @@ module ShipMaster::Base
     case ship_name
       when 'Верный'
         '響'
+      when /^龍鳳/
+        '大鯨'
       when /甲$/
         ship_name.sub(/甲$/, '')
       when /航$/
