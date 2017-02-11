@@ -33,13 +33,17 @@ Pull request を送るか、issue に要望をお寄せください。
 
 ## 関連ページ
 
-- [Admiral Stats](https://www.admiral-stats.com/)
+- [Admiral Stats](https://www.admiral-stats.com/) (Ruby)
     - このアプリケーションをホスティングしているサイト
-- [muziyoshiz/admiral_stats_exporter](https://github.com/muziyoshiz/admiral_stats_exporter)
+- [muziyoshiz/admiral_stats_exporter](https://github.com/muziyoshiz/admiral_stats_exporter) (Ruby, PowerShell)
     - SEGA 公式のプレイヤーズサイトからプレイデータをエクスポートするツール（Ruby 版および PowerShell 版）
-- [muziyoshiz/admiral_stats_exporter_js](https://github.com/muziyoshiz/admiral_stats_exporter_js)
+- [muziyoshiz/admiral_stats_exporter_js](https://github.com/muziyoshiz/admiral_stats_exporter_js) (JavaScript)
     - SEGA 公式のプレイヤーズサイトからプレイデータをエクスポートするツール（ブックマークレット版）
-- [muziyoshiz/admiral_stats_parser](https://github.com/muziyoshiz/admiral_stats_parser)
-    - Admiral Stats が内部で利用している、上記のプレイデータのパーサ
+- [muziyoshiz/admiral_stats_parser](https://github.com/muziyoshiz/admiral_stats_parser) (Ruby)
+    - Admiral Stats が内部で利用している、プレイデータのパーサ
+- [muziyoshiz/admiral_stats_api](https://github.com/muziyoshiz/admiral_stats_api) (Elixir, Phoenix Framework)
+    - Admiral Stats の API サーバ（開発中）
+- [muziyoshiz/admiral_stats_parser_ex](https://github.com/muziyoshiz/admiral_stats_parser_ex) (Elixir)
+    - Admiral Stats の API サーバが内部で利用している、プレイデータのパーサ（開発中）
 - [@admiral_stats](https://twitter.com/admiral_stats)
     - https://www.admiral-stats.com/ の運用状況のお知らせ
