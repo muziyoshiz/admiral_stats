@@ -38,6 +38,7 @@ td.rate-tuchinoko { text-align: center; color: #A94442; background-color: #F2DED
 // bootstrap に元々ある定義の優先度が強いため、ここまで指定しないとこちらが優先されない
 table#table-ship-level tbody>tr>td.achieved { text-align: center; vertical-align: middle; }
 table#table-ship-level tbody>tr>td.soon     { border-color: #5CB85C; border-width: 3px; }
+table#table-ship-level tbody>tr>td span.increase    { font-size: 0.9em; color: #A94442; }
 table#table-ship-level tbody>tr>td span.exp-to-next { font-size: 0.9em; color: #31708F; }
 
 // 活動記録のセル

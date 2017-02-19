@@ -55,11 +55,6 @@ class ShipInfoController < ApplicationController
     statuses = statuses.to_a
     statuses.reject!{|s| masters[s.book_no].kai_only? }
 
-    # レベルが上位5位の艦娘だけ、初期状態でグラフを表示する
-    last_exported_at = statuses.map{|s| s.exported_at }.max
-    visible_ships = statuses.select{|s| s.exported_at == last_exported_at }.
-        sort{|a, b| b.level <=> a.level }.first(5).map{|s| s.book_no }
-
     # キーは図鑑 No. で値は [時刻, レベル または 経験値] の配列
     levels = {}
     exps = {}
@@ -70,6 +65,15 @@ class ShipInfoController < ApplicationController
       exps[s.book_no] ||= []
       exps[s.book_no] << [s.exported_at.to_i * 1000, s.estimated_exp]
     end
+
+    # キーは図鑑 No. で、値はその期間内の経験値増加量
+    @increased_exps = exps.keys.each_with_object({}) do |book_no, map|
+      map[book_no] = exps[book_no].last[1] - exps[book_no].first[1]
+    end
+    # その期間内の経験値増加量が多い上位6隻の艦娘だけ、初期状態でグラフを表示する
+    visible_ships = exps.keys.sort{|book_no_1, book_no_2|
+      @increased_exps[book_no_2] <=> @increased_exps[book_no_1]
+    }.first(6)
 
     @series_level = []
     levels.keys.each do |book_no|

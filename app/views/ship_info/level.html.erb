@@ -1,21 +1,37 @@
 <div class="page-header">
   <h2><%= title %></h2>
+</div>
 
-  <div class="container">
-    <div class="dropdown">
-      <%= form_tag({ action: :level }, { id: 'rangeForm' }) do %>
-          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <%= range_to_s(@range) %>
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <% range_symbols.each do |r| %>
-                <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
-            <% end %>
-          </ul>
-      <% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">このデータについて</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>最初からグラフ表示されている艦娘は、指定された期間内に取得した経験値が最も多い6隻です。</li>
+          <li>このページの経験値はレベルおよび経験値の獲得割合（%）から逆算したものであり、実際の経験値とは誤差があります。</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="dropdown">
+    <%= form_tag({ action: :level }, { id: 'rangeForm' }) do %>
+        <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <%= range_to_s(@range) %>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <% range_symbols.each do |r| %>
+              <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
+          <% end %>
+        </ul>
+    <% end %>
   </div>
 </div>
 
@@ -24,9 +40,6 @@
 <hr>
 
 <div id="chart-exp" style="width:100%; height:400px;"></div>
-<p>
-  ※注：上記の経験値はレベルから逆算したものであり、細かな経験値上昇は含んでおりません。
-</p>
 
 <hr>
 
@@ -45,10 +58,15 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レベル</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">経験値</th>
+        <th class="hidden">経験値増加量（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 50</th>
+        <th class="hidden">レベル 50 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 70</th>
+        <th class="hidden">レベル 70 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 90</th>
+        <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 99</th>
+        <th class="hidden">レベル 99 到達日（ソート用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -57,10 +75,15 @@
         <th class="text-left">艦名</th>
         <th class="text-left">レベル</th>
         <th class="text-left">経験値</th>
+        <th class="hidden">経験値増加量（ソート用）</th>
         <th class="text-left">レベル 50</th>
+        <th class="hidden">レベル 50 到達日（ソート用）</th>
         <th class="text-left">レベル 70</th>
+        <th class="hidden">レベル 70 到達日（ソート用）</th>
         <th class="text-left">レベル 90</th>
+        <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left">レベル 99</th>
+        <th class="hidden">レベル 99 到達日（ソート用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -70,7 +93,11 @@
             <td class="numeric"><%= book_no %></td>
             <td class="text-left"><%= forecast[:name] %></td>
             <td class="numeric"><%= forecast[:end].level %></td>
-            <td class="numeric"><%= number_with_delimiter(forecast[:end].estimated_exp) %></td>
+            <td class="numeric">
+              <%= number_with_delimiter(forecast[:end].estimated_exp) %>
+              <br><span class="increase"><i class="glyphicon glyphicon-arrow-up"></i> <%= number_with_delimiter(@increased_exps[book_no]) %></span>
+            </td>
+            <td class="hidden"><%= @increased_exps[book_no] %></td>
             <% if forecast[:lv50_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv50_soon] %>">
                   <%= forecast[:lv50_at].to_s(:date) %>
@@ -79,6 +106,7 @@
             <% else %>
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
+            <td class="hidden"><%= forecast[:lv50_at] %></td>
             <% if forecast[:lv70_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv70_soon] %>">
                   <%= forecast[:lv70_at].to_s(:date) %>
@@ -87,6 +115,7 @@
             <% else %>
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
+            <td class="hidden"><%= forecast[:lv70_at] %></td>
             <% if forecast[:lv90_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv90_soon] %>">
                   <%= forecast[:lv90_at].to_s(:date) %>
@@ -95,6 +124,7 @@
             <% else %>
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
+            <td class="hidden"><%= forecast[:lv90_at] %></td>
             <% if forecast[:lv99_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv99_soon] %>">
                   <%= forecast[:lv99_at].to_s(:date) %>
@@ -103,6 +133,7 @@
             <% else %>
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
+            <td class="hidden"><%= forecast[:lv99_at] %></td>
           </tr>
       <% end %>
       </tbody>
@@ -152,6 +183,14 @@
   $(document).ready(function() {
     $('#table-ship-level').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "order": [[ 2, "desc" ], [ 0, "asc"]],
+      "aoColumnDefs": [
+        <!-- 経験値増加量でソートするための設定 -->
+        { "iDataSort": 4, "aTargets": [ 3 ] },
+        { "iDataSort": 6, "aTargets": [ 5 ] },
+        { "iDataSort": 8, "aTargets": [ 7 ] },
+        { "iDataSort": 10, "aTargets": [ 9 ] },
+        { "iDataSort": 12, "aTargets": [ 11 ] },
+      ],
     }));
   } );
 </script>
