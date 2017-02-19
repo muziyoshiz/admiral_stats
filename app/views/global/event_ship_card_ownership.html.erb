@@ -42,9 +42,18 @@
       <% end %>
     </ul>
   </div>
-  <div style="margin-top: 6px; margin-bottom: 6px;">
-    <a class="select-new-ships btn btn-primary">新艦娘のみ表示</a>
-    <a class="select-all-ships btn btn-default">全艦娘の表示</a>
+  <div id="select-ship-types" style="margin-top: 10px; margin-bottom: 6px;">
+    <a class="select-new btn btn-default">新艦娘のみ</a>
+    <a class="select-all btn btn-default">すべて</a>
+    <a class="select-s01 btn btn-default">駆逐</a>
+    <a class="select-s02 btn btn-default">軽巡</a>
+    <a class="select-s03 btn btn-default">雷巡</a>
+    <a class="select-s04 btn btn-default">重巡</a>
+    <a class="select-s05 btn btn-default">航巡</a>
+    <a class="select-s06-s07 btn btn-default">戦艦・航空戦艦</a>
+    <a class="select-s08 btn btn-default">水母</a>
+    <a class="select-s09 btn btn-default">軽空母</a>
+    <a class="select-s10 btn btn-default">正規空母</a>
   </div>
 </div>
 
@@ -123,20 +132,39 @@
       ],
     }));
 
-    $('a.select-new-ships').on('click', function (e) {
+    // 与えられたイベントに基づいて、ボタンのハイライト表示および艦種での絞り込みを行います。
+    // selectsNew が true の場合は、'新艦娘' と書かれた列を選択します。
+    function selectShipType(e, regex, selectsNew) {
       e.preventDefault();
-      // 隠しクエリに対して検索することで、新艦娘に絞り込んだ状態で表示
-      table.search('新艦娘').draw();
-    });
-    $('a.select-all-ships').on('click', function (e) {
-      e.preventDefault();
-      // 検索条件のリセット
-      table.search('').draw();
-    });
+      $('#select-ship-types').children('a').removeClass('btn-primary');
+      $(e.currentTarget).addClass('btn-primary');
+      table.column(4).search(regex, true, false).draw();
 
-    var keyword = getUrlParameter('keyword');
-    if (keyword) {
-      table.search(keyword).draw();
+      if (selectsNew) {
+        table.column(12).search('新艦娘').draw();
+      } else {
+        table.column(12).search('').draw();
+      }
+    }
+
+    $('a.select-new').on( 'click', function (e) { selectShipType(e, '', true); } );
+    $('a.select-all').on( 'click', function (e) { selectShipType(e, ''); } );
+    $('a.select-s01').on( 'click', function (e) { selectShipType(e, '^駆逐艦$'); } );
+    $('a.select-s02').on( 'click', function (e) { selectShipType(e, '^軽巡洋艦$'); } );
+    $('a.select-s03').on( 'click', function (e) { selectShipType(e, '^重雷装巡洋艦$'); } );
+    $('a.select-s04').on( 'click', function (e) { selectShipType(e, '^重巡洋艦$'); } );
+    $('a.select-s05').on( 'click', function (e) { selectShipType(e, '^航空巡洋艦$'); } );
+    $('a.select-s06-s07').on( 'click', function (e) { selectShipType(e, '戦艦'); } );
+    $('a.select-s08').on( 'click', function (e) { selectShipType(e, '^水上機母艦$'); } );
+    $('a.select-s09').on( 'click', function (e) { selectShipType(e, '^軽空母$'); } );
+    $('a.select-s10').on( 'click', function (e) { selectShipType(e, '^正規空母$'); } );
+
+    // ページのロード直後は、new パラメータの内容次第で、「すべて」または「新艦娘のみ」のいずれかを表示する
+    if (getUrlParameter('new') === 'true') {
+      $('a.select-new').addClass('btn-primary');
+      table.column(12).search('新艦娘').draw();
+    } else {
+      $('a.select-all').addClass('btn-primary');
     }
   });
 </script>
