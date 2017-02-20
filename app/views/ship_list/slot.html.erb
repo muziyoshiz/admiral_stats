@@ -33,22 +33,12 @@
     </div>
 <% end %>
 
-<div class="container" style="margin-top: 10px;">
-  <a id="button-all" class="btn btn-default">
-    全表示
-  </a>
-  <a id="button-normal-only" class="btn btn-default">
-    ノーマルのみ表示
-  </a>
-  <a id="button-kai-only" class="btn btn-default">
-    改のみ表示
-  </a>
-  <a id="button-ignore-unused-normal" class="btn btn-default">
-    改を優先して表示
-  </a>
-  <a id="button-unused-normal-only" class="btn btn-default">
-    改がいるノーマル艦娘のみ表示
-  </a>
+<div id="select-ship-types" class="container" style="margin-top: 10px;">
+  <a id="button-all"                  class="btn btn-primary btn-default">すべて</a>
+  <a id="button-normal-only"          class="btn btn-default">ノーマルのみ表示</a>
+  <a id="button-kai-only"             class="btn btn-default">改のみ表示</a>
+  <a id="button-ignore-unused-normal" class="btn btn-default">改を優先して表示</a>
+  <a id="button-unused-normal-only"   class="btn btn-default">改がいるノーマル艦娘のみ表示</a>
 </div>
 
 <div class="container">
@@ -133,35 +123,19 @@
       ],
     }));
 
-    $('#button-all').on('click', function (e) {
+    // 与えられたイベントに基づいて、ボタンのハイライト表示および検索条件の変更を行います。
+    function selectCondition(e, remodel, unusedNormal) {
       e.preventDefault();
-      <!-- 検索条件をリセット -->
-      table.columns(3).search('');
-      table.columns(9).search('').draw();
-    });
+      $('#select-ship-types').children('a').removeClass('btn-primary');
+      $(e.currentTarget).addClass('btn-primary');
+      table.columns(3).search(remodel);
+      table.columns(9).search(unusedNormal).draw();
+    }
 
-    $('#button-normal-only').on('click', function (e) {
-      e.preventDefault();
-      table.columns(3).search('N');
-      table.columns(9).search('').draw();
-    });
-
-    $('#button-kai-only').on('click', function (e) {
-      e.preventDefault();
-      table.columns(3).search('改');
-      table.columns(9).search('').draw();
-    });
-
-    $('#button-ignore-unused-normal').on('click', function (e) {
-      e.preventDefault();
-      table.columns(3).search('');
-      table.columns(9).search('false').draw();
-    });
-
-    $('#button-unused-normal-only').on('click', function (e) {
-      e.preventDefault();
-      table.columns(3).search('');
-      table.columns(9).search('true').draw();
-    });
+    $('#button-all'                 ).on('click', function (e) { selectCondition(e, '',  ''); } );
+    $('#button-normal-only'         ).on('click', function (e) { selectCondition(e, 'N', ''); } );
+    $('#button-kai-only'            ).on('click', function (e) { selectCondition(e, '改', ''); } );
+    $('#button-ignore-unused-normal').on('click', function (e) { selectCondition(e, '',  'false'); } );
+    $('#button-unused-normal-only'  ).on('click', function (e) { selectCondition(e, '',  'true'); } );
   });
 </script>
