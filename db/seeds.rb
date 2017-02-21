@@ -1194,7 +1194,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '初風',
         variation_num: 6,
-        
+        # 2017-02-23：4隻追加（舞風、初風、秋雲、弥生）
+        implemented_at: '2017-02-23T07:00:00+09:00',
     },
     {
         book_no: 119,
@@ -1203,7 +1204,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '舞風',
         variation_num: 6,
-        
+        # 2017-02-23：4隻追加（舞風、初風、秋雲、弥生）
+        implemented_at: '2017-02-23T07:00:00+09:00',
     },
     {
         book_no: 120,
@@ -1329,7 +1331,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '秋雲',
         variation_num: 6,
-        
+        # 2017-02-23：4隻追加（舞風、初風、秋雲、弥生）
+        implemented_at: '2017-02-23T07:00:00+09:00',
     },
     {
         book_no: 133,
@@ -1625,7 +1628,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '弥生',
         variation_num: 6,
-        
+        # 2017-02-23：4隻追加（舞風、初風、秋雲、弥生）
+        implemented_at: '2017-02-23T07:00:00+09:00',
     },
     {
         book_no: 165,
