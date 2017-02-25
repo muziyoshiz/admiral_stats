@@ -112,8 +112,8 @@ class ShipInfoController < ApplicationController
       @forecasts[s.book_no][:end] = s
     end
 
-    # 指定された期間にレベルが変わっていない艦娘は除外
-    @forecasts.select!{|b, f| f[:begin].level != f[:end].level }
+    # 指定された期間に、経験値が変わっていない艦娘は除外
+    @forecasts.select!{|b, f| f[:begin].estimated_exp != f[:end].estimated_exp }
 
     # 到達予想日の計算
     @forecasts.each do |book_no, forecast|
