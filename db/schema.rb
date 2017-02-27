@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206140647) do
+ActiveRecord::Schema.define(version: 20170227122841) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -27,6 +27,12 @@ ActiveRecord::Schema.define(version: 20170206140647) do
     t.integer  "strategy_point"
     t.datetime "exported_at",               null: false
     t.index ["admiral_id", "exported_at"], name: "index_admiral_statuses_on_admiral_id_and_exported_at", unique: true, using: :btree
+  end
+
+  create_table "admiral_tokens", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "admiral_id", null: false
+    t.string   "token",      null: false
+    t.datetime "issued_at",  null: false
   end
 
   create_table "admirals", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

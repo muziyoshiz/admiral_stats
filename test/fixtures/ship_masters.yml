@@ -1,19 +1,19 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  book_no: 1
-  ship_class: MyString
-  ship_class_index: 1
-  ship_type: MyString
-  ship_name: MyString
-  variation_num: 1
-  implemented_at: '2016-04-26T07:00:00+09:00'
-
-two:
-  book_no: 1
-  ship_class: MyString
-  ship_class_index: 1
-  ship_type: MyString
-  ship_name: MyString
-  variation_num: 1
-  implemented_at: '2016-04-26T07:00:00+09:00'
+#one:
+#  book_no: 1
+#  ship_class: MyString
+#  ship_class_index: 1
+#  ship_type: MyString
+#  ship_name: MyString
+#  variation_num: 1
+#  implemented_at: '2016-04-26T07:00:00+09:00'
+#
+#two:
+#  book_no: 1
+#  ship_class: MyString
+#  ship_class_index: 1
+#  ship_type: MyString
+#  ship_name: MyString
+#  variation_num: 1
+#  implemented_at: '2016-04-26T07:00:00+09:00'

@@ -1,15 +1,15 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  ship_status_id: 1
-  slot_index: 1
-  slot_equip_name: MyString
-  slot_amount: 1
-  slot_disp: MyString
-
-two:
-  ship_status_id: 1
-  slot_index: 1
-  slot_equip_name: MyString
-  slot_amount: 1
-  slot_disp: MyString
+#one:
+#  ship_status_id: 1
+#  slot_index: 1
+#  slot_equip_name: MyString
+#  slot_amount: 1
+#  slot_disp: MyString
+#
+#two:
+#  ship_status_id: 1
+#  slot_index: 1
+#  slot_equip_name: MyString
+#  slot_amount: 1
+#  slot_disp: MyString

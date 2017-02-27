@@ -44,6 +44,11 @@ Rails.application.routes.draw do
   # 以下の記載を追加すると root_url メソッドも自動設定される
   root to: 'home#index'
 
+  # API
+  scope 'api' do
+    post 'import/:file_type/:timestamp', to: 'api_import#index', as: :api_import
+  end
+
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
   get '*unmatched_route', to: 'application#redirect_to_home'
 end
