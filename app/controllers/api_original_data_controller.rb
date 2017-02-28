@@ -1,4 +1,4 @@
-class ApiImportController < ApplicationController
+class ApiOriginalDataController < ApplicationController
   include Import
 
   before_action :jwt_authenticate
@@ -20,7 +20,7 @@ class ApiImportController < ApplicationController
   #     }
   #   ]
   # }
-  def index
+  def import
     # エクスポートしたファイル名のプレフィックスを受け取り、ファイル種別を判別する
     case params[:file_type]
       when 'Personal_basicInfo'
@@ -52,18 +52,22 @@ class ApiImportController < ApplicationController
     # ボディ部に含まれる JSON
     json = request.body.read
 
-    case file_type
+    res, msg = case file_type
       when :basic_info
-        res, msg = save_admiral_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+        save_admiral_statuses(jwt_current_admiral.id, exported_at, json, api_version)
       when :ship_book
+        save_ship_cards(jwt_current_admiral.id, exported_at, json, api_version)
       when :ship_list
+        save_ship_statuses(jwt_current_admiral.id, exported_at, json, api_version)
       when :event_info
+        save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
     end
 
-    if res
-      render json: { data: { message: msg } }
-    else
-      render json: { errors: [ { message: msg } ] }
+    case res
+      when :ok, :created
+        render json: { data: { message: msg } }, status: res
+      else
+        render json: { errors: [ { message: msg } ] }
     end
   end
 end

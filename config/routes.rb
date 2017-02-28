@@ -46,7 +46,8 @@ Rails.application.routes.draw do
 
   # API
   scope 'api' do
-    post 'import/:file_type/:timestamp', to: 'api_import#index', as: :api_import
+    # SEGA 公式からエクスポートしたプレイデータのアップロード
+    post 'original_data/:file_type/:timestamp', to: 'api_original_data#import', as: :api_import
   end
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト

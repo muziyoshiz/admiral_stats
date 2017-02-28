@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ApiImportControllerTest < ActionDispatch::IntegrationTest
+class ApiOriginalDataControllerTest < ActionDispatch::IntegrationTest
   # Time.parse("2017-02-27 16:00:00 +09:00").to_i
   # => 1488178800
   TOKEN = JWT.encode({ id: 1, iat: 1488178800 }, Rails.application.secrets.secret_key_base, 'HS256')
@@ -10,7 +10,20 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # http://api.rubyonrails.org/classes/ActionDispatch/Assertions/ResponseAssertions.html#method-i-assert_response
     assert_response 401
+    assert_equal 'Bearer realm="Admiral Stats"', @response.header['WWW-Authenticate']
+    assert_equal JSON.generate(
+        {
+            errors: [
+                { message: 'Unauthorized' }
+            ]
+        }), @response.body
+  end
 
+  test 'Bearer 以外の token を指定した場合' do
+    post api_import_url('Personal_basicInfo', '20170227_160000'), headers: { 'Authorization' => "token #{TOKEN}" }
+
+    assert_response 401
+    assert_equal 'Bearer realm="Admiral Stats"', @response.header['WWW-Authenticate']
     assert_equal JSON.generate(
         {
             errors: [
@@ -23,10 +36,10 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     # 違う鍵でトークンを生成
     another_token = JWT.encode({ id: 1, iat: 1488178800 }, '824a5efc905a43a054f0ecce827284c899d1f60a24343b9fdc096d088dbec5fa1ef0326986c6d1780ed44eeb7d98f4344ee71926d6932c687755e05f8f862415', 'HS256')
 
-    post api_import_url('Personal_basicInfo', '20170227_160000'), headers: { 'Authorization' => "bearer #{another_token}" }
+    post api_import_url('Personal_basicInfo', '20170227_160000'), headers: { 'Authorization' => "Bearer #{another_token}" }
 
     assert_response 401
-
+    assert_equal 'Bearer realm="Admiral Stats", error="invalid_token"', @response.header['WWW-Authenticate']
     assert_equal JSON.generate(
         {
             errors: [
@@ -35,8 +48,25 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
         }), @response.body
   end
 
+  test '有効期限切れの（admiral_tokens テーブルから削除されている）トークンを指定した場合' do
+    # Time.parse("2016-02-27 16:00:00 +09:00").to_i
+    # => 1456556400
+    expired_token = JWT.encode({ id: 1, iat: 1456556400 }, Rails.application.secrets.secret_key_base, 'HS256')
+
+    post api_import_url('Personal_basicInfo', '20170227_160000'), headers: { 'Authorization' => "Bearer #{expired_token}" }
+
+    assert_response 401
+    assert_equal 'Bearer realm="Admiral Stats", error="invalid_token"', @response.header['WWW-Authenticate']
+    assert_equal JSON.generate(
+        {
+            errors: [
+                { message: 'Expired token' }
+            ]
+        }), @response.body
+  end
+
   test '未サポートのファイル種別を指定した場合' do
-    post api_import_url('unknown_file_type', 'test2'), headers: { 'Authorization' => "bearer #{TOKEN}" }
+    post api_import_url('unknown_file_type', 'test2'), headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
     assert_response 200
 
@@ -49,7 +79,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '不正な形式のタイムスタンプを指定した場合' do
-    post api_import_url('Personal_basicInfo', '202X0101_000000'), headers: { 'Authorization' => "bearer #{TOKEN}" }
+    post api_import_url('Personal_basicInfo', '202X0101_000000'), headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
     assert_response 200
 
@@ -57,23 +87,6 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
         {
             errors: [
                 { message: 'Invalid timestamp: 202X0101_000000' }
-            ]
-        }), @response.body
-  end
-
-  test '有効期限切れの（admiral_tokens テーブルから削除されている）トークンを指定した場合' do
-    # Time.parse("2016-02-27 16:00:00 +09:00").to_i
-    # => 1456556400
-    expired_token = JWT.encode({ id: 1, iat: 1456556400 }, Rails.application.secrets.secret_key_base, 'HS256')
-
-    post api_import_url('Personal_basicInfo', '20170227_160000'), headers: { 'Authorization' => "bearer #{expired_token}" }
-
-    assert_response 401
-
-    assert_equal JSON.generate(
-        {
-            errors: [
-                { message: 'Expired token' }
             ]
         }), @response.body
   end
@@ -89,9 +102,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
 
     post api_import_url('Personal_basicInfo', '20170227_160000'),
-         params: json, headers: { 'Authorization' => "bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+         params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
 
-    assert_response 200
+    assert_response 201
 
     assert_equal JSON.generate(
         {

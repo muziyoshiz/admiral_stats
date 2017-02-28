@@ -40,11 +40,13 @@ class ApplicationController < ActionController::Base
   # Authorization ヘッダに含まれる JWT で認証状態をチェックするためのメソッド
   def jwt_authenticate
     unless jwt_bearer_token
+      response.header['WWW-Authenticate'] = 'Bearer realm="Admiral Stats"'
       render json: { errors: [ { message: 'Unauthorized' }]}, status: :unauthorized
       return
     end
 
     unless jwt_decoded_token
+      response.header['WWW-Authenticate'] = 'Bearer realm="Admiral Stats", error="invalid_token"'
       render json: { errors: [ { message: 'Invalid token' } ] }, status: :unauthorized
       return
     end
@@ -55,21 +57,25 @@ class ApplicationController < ActionController::Base
       if AdmiralToken.where(admiral_id: jwt_admiral_id, token: jwt_bearer_token).exists?
         @jwt_admiral_id = jwt_admiral_id
       else
+        response.header['WWW-Authenticate'] = 'Bearer realm="Admiral Stats", error="invalid_token"'
         render json: { errors: [ { message: 'Expired token' } ] }, status: :unauthorized
       end
     end
   end
 
-  # Authorization ヘッダの bearer 以下に含まれるトークンを返します。
+  # Authorization ヘッダの Bearer スキームのトークンを返します。
   def jwt_bearer_token
     @jwt_bearer_token ||= if request.headers['Authorization'].present?
-                      request.headers['Authorization'].split(' ').last
-                    end
+                            scheme, token = request.headers['Authorization'].split(' ')
+                            (scheme == 'Bearer' ? token : nil)
+                          end
   end
 
   # JWT をデコードした結果を返します。
   def jwt_decoded_token
     begin
+      # verify_iat を指定しても、実際には何も起こらない
+      # iat を含めない場合も、iat が未来の日付の場合も、エラーは発生しなかった
       @jwt_decoded_token ||= JWT.decode(
           jwt_bearer_token,
           Rails.application.secrets.secret_key_base,
