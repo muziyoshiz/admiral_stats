@@ -25,9 +25,9 @@
   </p>
 </div>
 
-<h3>A. JSON ファイルのアップロード</h3>
+<h3>A. ブラウザからの手動アップロード</h3>
 <p>
-  admiral_stats_exporter（提督情報エクスポータ）でエクスポートした JSON ファイルをアップロードします。<br/>
+  提督情報エクスポータでエクスポートした JSON ファイルを、ブラウザからアップロードします。<br/>
   <strong class="text-info">2016年10月3日より、ファイルの種別を自動判別できるようになりました。異なる種別のファイルも同時にインポートできます。</strong>
   <br>
   （※参考：<%= link_to '提督情報エクスポータの使い方', { controller: 'manual', action: 'exporter' }, target: '_blank' %>）
@@ -101,7 +101,43 @@
 
 <hr>
 
-<h3>B. JSON API 経由でのアップロード</h3>
+<h3>B. 提督情報エクスポータからの自動アップロード</h3>
 <p>
-  準備中です。
+  Ruby 版に試験実装中の、自動アップロード機能を使って JSON ファイルをアップロードします。
 </p>
+<p>
+  以下のボタンを押してトークンを発行し、それを提督情報エクスポータに設定してください。<br/>
+  新しいトークンを発行すると、古いトークンは使えなくなります。
+</p>
+
+<div class="container">
+  <% unless @tokens.blank? %>
+      <div class="table-responsive-wrappable">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-3">発行日</th>
+            <th class="col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-9">トークン</th>
+          </tr>
+          </thead>
+          <tbody>
+          <% @tokens.each do |token| %>
+              <tr>
+                <td><%= token.issued_at.to_s(:datetime) %></td>
+                <td class="token"><%= token.token %></td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+  <% end %>
+  <%= form_tag({ action: :generate_token } ) do %>
+      <div class="form-group">
+        <% if @tokens.blank? %>
+            <%= submit_tag 'トークンの新規発行', :class => 'btn btn-primary' %>
+        <% else %>
+            <%= submit_tag 'トークンの削除・再発行', :class => 'btn btn-primary' %>
+        <% end %>
+      </div>
+  <% end %>
+</div>

@@ -5,11 +5,13 @@ class ImportController < ApplicationController
 
   def index
     set_meta_tags title: 'インポート'
+    @tokens = AdmiralToken.where('admiral_id = ?', current_admiral.id).order(issued_at: :asc)
   end
 
   # ファイルのアップロード
   def file
     set_meta_tags title: 'インポート'
+    @tokens = AdmiralToken.where('admiral_id = ?', current_admiral.id).order(issued_at: :asc)
 
     # エラーが発生した場合のみ、エラーメッセージが格納される変数
     @error = nil
@@ -98,6 +100,32 @@ class ImportController < ApplicationController
       end
     end
 
+    render :action => :index
+  end
+
+  # トークンの発行（すでにトークンがある場合は削除して作り直し）
+  def generate_token
+    set_meta_tags title: 'インポート'
+
+    begin
+      AdmiralToken.transaction do
+        AdmiralToken.where('admiral_id = ?', current_admiral.id).delete_all
+
+        issued_at = Time.now
+        token = JWT.encode({ id: current_admiral.id, iat: issued_at.to_i }, Rails.application.secrets.secret_key_base, 'HS256')
+
+        AdmiralToken.create!(
+            admiral_id: current_admiral.id,
+            token: token,
+            issued_at: issued_at
+        )
+      end
+    rescue => e
+      logger.debug(e)
+      @error = "トークンの発行に失敗しました。（原因：#{e.message}）"
+    end
+
+    @tokens = AdmiralToken.where('admiral_id = ?', current_admiral.id).order(issued_at: :asc)
     render :action => :index
   end
 end

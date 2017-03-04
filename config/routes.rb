@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # インポート
   get 'import', to: 'import#index', as: :import
   post 'import/file', to: 'import#file'
+  post 'import/generate_token', to: 'import#generate_token'
 
   # 提督情報
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
