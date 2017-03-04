@@ -1,4 +1,4 @@
-class ApiOriginalDataController < ApplicationController
+class ApiExportedDataController < ApplicationController
   include Import
 
   before_action :jwt_authenticate

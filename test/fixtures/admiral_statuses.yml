@@ -4,8 +4,20 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-#one: {}
-## column: value
-##
+one:
+  admiral_id: 1
+  fuel: 6750
+  ammo: 6183
+  steel: 7126
+  bauxite: 6513
+  bucket: 46
+  level: 32
+  room_item_coin: 82
+  result_point: "3571"
+  rank: "圏外"
+  title_id: 7
+  strategy_point: 915
+  exported_at: <%= Time.parse('2017-02-27 17:00:00 +09:00') %>
+
 #two: {}
 ## column: value
