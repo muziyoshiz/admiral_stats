@@ -1,6 +1,9 @@
 class ApiExportedDataController < ApplicationController
   include Import
 
+  # API 用のコントローラでは CSRF 対策を無効化する
+  skip_before_action :verify_authenticity_token
+
   before_action :jwt_authenticate
 
   # admiral_statuses テーブルの、1 提督あたりのレコード数上限
@@ -32,9 +35,7 @@ class ApiExportedDataController < ApplicationController
       when 'Event_info'
         file_type = :event_info
       else
-        render json: { errors: [
-            { message: "Unsupported file type: #{params[:file_type]}" }
-        ]}
+        render json: { data: { message: "Unsupported file type: #{params[:file_type]}" } }
         return
     end
 
@@ -45,7 +46,7 @@ class ApiExportedDataController < ApplicationController
     else
       render json: { errors: [
           { message: "Invalid timestamp: #{params[:timestamp]}" }
-      ]}
+      ]}, status: :bad_request
       return
     end
 

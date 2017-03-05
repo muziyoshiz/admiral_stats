@@ -72,16 +72,14 @@ class ApiExportedDataControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal JSON.generate(
         {
-            errors: [
-                { message: 'Unsupported file type: unknown_file_type' }
-            ]
+            data: { message: 'Unsupported file type: unknown_file_type' }
         }), @response.body
   end
 
   test '不正な形式のタイムスタンプを指定した場合' do
     post api_import_url('Personal_basicInfo', '202X0101_000000'), headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
-    assert_response 200
+    assert_response 400
 
     assert_equal JSON.generate(
         {
