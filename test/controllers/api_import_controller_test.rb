@@ -1,9 +1,35 @@
 require 'test_helper'
 
-class ApiExportedDataControllerTest < ActionDispatch::IntegrationTest
+class ApiImportControllerTest < ActionDispatch::IntegrationTest
   # Time.parse("2017-02-27 16:00:00 +09:00").to_i
   # => 1488178800
   TOKEN = JWT.encode({ id: 1, iat: 1488178800 }, Rails.application.secrets.secret_key_base, 'HS256')
+
+  test 'data_types Authorizationヘッダを指定しない場合' do
+    get '/api/v1/import/file_types'
+
+    assert_response 401
+    assert_equal 'Bearer realm="Admiral Stats"', @response.header['WWW-Authenticate']
+    assert_equal JSON.generate(
+        {
+            errors: [
+                { message: 'Unauthorized' }
+            ]
+        }), @response.body
+  end
+
+  test 'data_types' do
+    get '/api/v1/import/file_types', headers: { 'Authorization' => "Bearer #{TOKEN}" }
+
+    assert_response 200
+    assert_equal JSON.generate(
+        [
+            'Personal_basicInfo',
+            'TcBook_info',
+            'CharacterList_info',
+            'Event_info'
+        ]), @response.body
+  end
 
   test 'Authorizationヘッダを指定しない場合' do
     post api_import_url('Personal_basicInfo', '20170227_160000')

@@ -1,4 +1,4 @@
-class ApiExportedDataController < ApplicationController
+class ApiImportController < ApplicationController
   include Import
 
   # API 用のコントローラでは CSRF 対策を無効化する
@@ -6,9 +6,18 @@ class ApiExportedDataController < ApplicationController
 
   before_action :jwt_authenticate
 
-  # admiral_statuses テーブルの、1 提督あたりのレコード数上限
-  # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、1年分で 365 * 20 = 7,300
-  MAX_ADMIRAL_STATUSES_COUNT = 7300
+  # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+  SUPPORTED_FILE_TYPES = [
+      'Personal_basicInfo',
+      'TcBook_info',
+      'CharacterList_info',
+      'Event_info'
+  ]
+
+  # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+  def file_types
+    render json: SUPPORTED_FILE_TYPES
+  end
 
   # POST のボディ部に含まれる JSON をインポートする
   #

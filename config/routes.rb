@@ -46,9 +46,12 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   # API
-  scope 'api' do
-    # SEGA 公式からエクスポートしたプレイデータのアップロード
-    post 'exported_data/:file_type/:timestamp', to: 'api_exported_data#import', as: :api_import
+  scope 'api/v1' do
+    # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+    get 'import/file_types', to: 'api_import#file_types'
+
+    # SEGA 公式からエクスポートしたプレイデータのインポート
+    post 'import/:file_type/:timestamp', to: 'api_import#import', as: :api_import
   end
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
