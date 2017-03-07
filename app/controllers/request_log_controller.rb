@@ -1,4 +1,6 @@
 class RequestLogController < ApplicationController
+  before_action :authenticate
+
   def index
     set_meta_tags title: 'API ログの確認'
 

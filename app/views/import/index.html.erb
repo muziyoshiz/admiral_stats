@@ -106,41 +106,12 @@
 
 <div class="container">
   <p>
-    Ruby 版に試験実装中の、自動アップロード機能を使って JSON ファイルをアップロードします。
+    提督情報エクスポータ（Ruby 版）自動アップロード機能を使って、JSON ファイルをアップロードすることもできます。
   </p>
-  <% if @tokens.blank? %>
-      <p>「トークンの新規発行」ボタンを押すとトークンを発行します。そのトークンを提督情報エクスポータに設定してください。</p>
-  <% else %>
-      <p>このトークンを提督情報エクスポータに設定してください。</p>
-      <div class="table-responsive-wrappable">
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <th class="col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-3">発行日</th>
-            <th class="col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-9">トークン</th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @tokens.each do |token| %>
-              <tr>
-                <td><%= token.issued_at.to_s(:datetime) %></td>
-                <td class="token"><%= token.token %></td>
-              </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-  <% end %>
-  <%= form_tag({ action: :generate_token } ) do %>
-      <div class="form-group">
-        <% if @tokens.blank? %>
-            <%= submit_tag 'トークンの新規発行', :class => 'btn btn-primary' %>
-        <% else %>
-            <p>
-              トークンを変更したい場合は以下のボタンを押してください。トークンを再発行すると、いままでのトークンは使えなくなります。
-            </p>
-            <%= submit_tag 'トークンの削除・再発行', :class => 'btn btn-primary' %>
-        <% end %>
-      </div>
-  <% end %>
+  <p>
+    <%= link_to controller: 'token', action: 'index' do %>
+        設定 <i class="glyphicon glyphicon-menu-right"></i> API トークンの設定
+    <% end %>
+    でトークンを発行し、そのトークンを提督情報エクスポータに設定してください。
+  </p>
 </div>

@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   scope 'settings' do
     get 'request_logs', to: 'request_log#index'
     get 'tokens', to: 'token#index'
+    post 'tokens', to: 'token#create'
   end
 
   # API
