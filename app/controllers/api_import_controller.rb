@@ -96,7 +96,7 @@ class ApiImportController < ApplicationController
       # http://www.rubydoc.info/github/rack/rack/Rack/Utils
       ApiRequestLog.create!(
           admiral_id: jwt_current_admiral.id,
-          request_url: request.original_url,
+          request_uri: request.original_url,
           status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[res],
           response: msg,
       )

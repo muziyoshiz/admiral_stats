@@ -78,12 +78,25 @@
             <% end %>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li <%== 'class="active"' if current_page?(controller: 'about') %>>
-              <%= link_to 'Admiral Stats について', controller: 'about' %>
-            </li>
             <% if logged_in? %>
-                <li><%= link_to 'ログアウト', logout_path %></li>
-            <% end %>
+                <li class="dropdown <%==
+                  if current_page?(controller: 'about') or current_page?(controller: 'token') or current_page?(controller: 'request_log')
+                    'active'
+                  end
+                %>">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">設定 <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><%= link_to 'API トークンの設定', controller: 'token', action: 'index' %></li>
+                    <li><%= link_to 'API ログの確認', controller: 'request_log', action: 'index' %></li>
+                    <li><%= link_to 'Admiral Stats について', controller: 'about' %></li>
+                    <li><%= link_to 'ログアウト', logout_path %></li>
+                  </ul>
+                </li>
+            <% else %>
+                <li <%== 'class="active"' if current_page?(controller: 'about') %>>
+                  <%= link_to 'Admiral Stats について', controller: 'about' %>
+                </li>
+          <% end %>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

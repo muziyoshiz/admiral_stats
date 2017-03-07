@@ -8,8 +8,8 @@ class ApiRequestLog < ApplicationRecord
                 only_integer: true,
             }
 
-  # リクエスト URL
-  validates :request_url,
+  # リクエスト URI
+  validates :request_uri,
             presence: true,
             length: {  maximum: 255 }
 

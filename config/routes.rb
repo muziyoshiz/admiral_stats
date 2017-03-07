@@ -45,6 +45,12 @@ Rails.application.routes.draw do
   # 以下の記載を追加すると root_url メソッドも自動設定される
   root to: 'home#index'
 
+  # Settings
+  scope 'settings' do
+    get 'request_logs', to: 'request_log#index'
+    get 'tokens', to: 'token#index'
+  end
+
   # API
   scope 'api/v1' do
     # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）

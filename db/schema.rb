@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20170307125227) do
 
   create_table "api_request_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",  null: false
-    t.string   "request_url", null: false
+    t.string   "request_uri", null: false
     t.integer  "status_code", null: false
     t.string   "response"
     t.datetime "created_at",  null: false
