@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170227122841) do
+ActiveRecord::Schema.define(version: 20170307125227) do
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false
@@ -41,6 +41,14 @@ ActiveRecord::Schema.define(version: 20170227122841) do
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
     t.index ["twitter_uid"], name: "index_admirals_on_twitter_uid", unique: true, using: :btree
+  end
+
+  create_table "api_request_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "admiral_id",  null: false
+    t.string   "request_url", null: false
+    t.integer  "status_code", null: false
+    t.string   "response"
+    t.datetime "created_at",  null: false
   end
 
   create_table "event_masters", primary_key: "event_no", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

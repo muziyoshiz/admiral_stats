@@ -19,6 +19,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'data_types' do
+    # API call 前にはログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+
     get '/api/v1/import/file_types', headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
     assert_response 200
@@ -29,6 +32,19 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'CharacterList_info',
             'Event_info'
         ]), @response.body
+
+    # ログがあることを確認
+    logs = ApiRequestLog.all
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/file_types', l.request_url
+    assert_equal 200, l.status_code
+    assert_nil l.response
+    assert_not_nil l.created_at
   end
 
   test 'Authorizationヘッダを指定しない場合' do
@@ -92,6 +108,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
   end
 
   test '未サポートのファイル種別を指定した場合' do
+    # API call 前にはログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+
     post api_import_url('unknown_file_type', 'test2'), headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
     assert_response 200
@@ -100,9 +119,25 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
         {
             data: { message: 'Unsupported file type: unknown_file_type' }
         }), @response.body
+
+    # ログがあることを確認
+    logs = ApiRequestLog.all
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/unknown_file_type/test2', l.request_url
+    assert_equal 200, l.status_code
+    assert_equal 'Unsupported file type: unknown_file_type', l.response
+    assert_not_nil l.created_at
   end
 
   test '不正な形式のタイムスタンプを指定した場合' do
+    # API call 前にはログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+
     post api_import_url('Personal_basicInfo', '202X0101_000000'), headers: { 'Authorization' => "Bearer #{TOKEN}" }
 
     assert_response 400
@@ -113,6 +148,19 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
                 { message: 'Invalid timestamp: 202X0101_000000' }
             ]
         }), @response.body
+
+    # ログがあることを確認
+    logs = ApiRequestLog.all
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/202X0101_000000', l.request_url
+    assert_equal 400, l.status_code
+    assert_equal 'Invalid timestamp: 202X0101_000000', l.response
+    assert_not_nil l.created_at
   end
 
   test '基本情報のインポート' do
@@ -124,6 +172,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     # 登録前にはレコードが無いことを確認
     exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
     assert_equal false, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
 
     post api_import_url('Personal_basicInfo', '20170227_160000'),
          params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
@@ -158,6 +207,19 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 7,      r.title_id
     assert_equal 915,    r.strategy_point
     assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_160000', l.request_url
+    assert_equal 201, l.status_code
+    assert_equal '基本情報のインポートに成功しました。', l.response
+    assert_not_nil l.created_at
   end
 
   test '同じ日時の基本情報をインポート済みの場合' do
@@ -169,6 +231,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     # 登録前にはレコードが無いことを確認
     exported_at = Time.parse('2017-02-27 17:00:00 +09:00')
     assert_equal true, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
 
     post api_import_url('Personal_basicInfo', '20170227_170000'),
          params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
@@ -181,6 +244,19 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
                 message: '同じ時刻の基本情報がインポート済みのため、無視されました。'
             }
         }), @response.body
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_170000', l.request_url
+    assert_equal 200, l.status_code
+    assert_equal '同じ時刻の基本情報がインポート済みのため、無視されました。', l.response
+    assert_not_nil l.created_at
   end
 
   test '艦娘図鑑のインポート' do
@@ -204,11 +280,12 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     # 登録前にはレコードが無いことを確認
     exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
     assert_equal false, ShipStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
 
     post api_import_url('CharacterList_info', '20170227_160000'),
          params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
 
-    #assert_response 201
+    assert_response 201
 
     assert_equal JSON.generate(
         {
@@ -258,6 +335,19 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 70,  r.level
     assert_equal 5,   r.star_num
     assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/CharacterList_info/20170227_160000', l.request_url
+    assert_equal 201, l.status_code
+    assert_equal '艦娘一覧のインポートに成功しました。', l.response
+    assert_not_nil l.created_at
   end
 
   test 'イベント進捗情報のインポート' do
@@ -299,6 +389,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     # 登録前にはレコードが無いことを確認
     exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
     assert_equal false, EventProgressStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
 
     post api_import_url('Event_info', '20170227_160000'),
          params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
@@ -340,5 +431,18 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0,     r.cleared_stage_no
     assert_equal 1500,  r.current_military_gauge_left
     assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'http://www.example.com/api/v1/import/Event_info/20170227_160000', l.request_url
+    assert_equal 201, l.status_code
+    assert_equal 'イベント進捗情報のインポートに成功しました。', l.response
+    assert_not_nil l.created_at
   end
 end

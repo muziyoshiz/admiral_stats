@@ -16,6 +16,7 @@ class ApiImportController < ApplicationController
 
   # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
   def file_types
+    record_api_request_log(:ok)
     render json: SUPPORTED_FILE_TYPES
   end
 
@@ -44,7 +45,9 @@ class ApiImportController < ApplicationController
       when 'Event_info'
         file_type = :event_info
       else
-        render json: { data: { message: "Unsupported file type: #{params[:file_type]}" } }
+        msg = "Unsupported file type: #{params[:file_type]}"
+        record_api_request_log(:ok, msg)
+        render json: { data: { message: msg } }
         return
     end
 
@@ -53,9 +56,9 @@ class ApiImportController < ApplicationController
       exported_at = parse_time($1)
       api_version = AdmiralStatsParser.guess_api_version(exported_at)
     else
-      render json: { errors: [
-          { message: "Invalid timestamp: #{params[:timestamp]}" }
-      ]}, status: :bad_request
+      msg = "Invalid timestamp: #{params[:timestamp]}"
+      record_api_request_log(:bad_request, msg)
+      render json: { errors: [ { message: msg } ] }, status: :bad_request
       return
     end
 
@@ -73,11 +76,32 @@ class ApiImportController < ApplicationController
         save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
     end
 
+    record_api_request_log(res, msg)
+
     case res
       when :ok, :created
         render json: { data: { message: msg } }, status: res
       else
         render json: { errors: [ { message: msg } ] }
+    end
+  end
+
+  private
+
+  # api_request_logs テーブルに API リクエストログを記録します。
+  def record_api_request_log(res, msg = nil)
+    # 記録に失敗しても、ログに記録するだけで、リクエストの処理は継続する
+    begin
+      # ステータスコードを integer に変換してから記録
+      # http://www.rubydoc.info/github/rack/rack/Rack/Utils
+      ApiRequestLog.create!(
+          admiral_id: jwt_current_admiral.id,
+          request_url: request.original_url,
+          status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[res],
+          response: msg,
+      )
+    rescue => e
+      logger.error(e)
     end
   end
 end
