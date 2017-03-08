@@ -47,6 +47,28 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
+  test 'data_types OPTIONS メソッドの場合' do
+    # API call 前にはログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+
+    # この行で、以下の WARNING が出るが、他に OPTIONS のテスト方法が見当たらない
+    # > DEPRECATION WARNING: xhr and xml_http_request methods are deprecated in favor of
+    # > `get "/posts", xhr: true` and `post "/posts/1", xhr: true`.
+    ActiveSupport::Deprecation.silence do
+      xhr :options, '/api/v1/import/file_types'
+    end
+
+    assert_response 200
+    assert_equal '', @response.body
+    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
+    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
+    assert_equal 'Authorization, Content-Type', @response.headers['Access-Control-Allow-Headers']
+    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+
+    # API call 後にもログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+  end
+
   test 'Authorizationヘッダを指定しない場合' do
     post api_import_url('Personal_basicInfo', '20170227_160000')
 
@@ -161,6 +183,28 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 400, l.status_code
     assert_equal 'Invalid timestamp: 202X0101_000000', l.response
     assert_not_nil l.created_at
+  end
+
+  test 'import OPTIONS メソッドの場合' do
+    # API call 前にはログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
+
+    # この行で、以下の WARNING が出るが、他に OPTIONS のテスト方法が見当たらない
+    # > DEPRECATION WARNING: xhr and xml_http_request methods are deprecated in favor of
+    # > `get "/posts", xhr: true` and `post "/posts/1", xhr: true`.
+    ActiveSupport::Deprecation.silence do
+      xhr :options, api_import_url('Personal_basicInfo', '20170309_000000')
+    end
+
+    assert_response 200
+    assert_equal '', @response.body
+    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
+    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
+    assert_equal 'Authorization, Content-Type', @response.headers['Access-Control-Allow-Headers']
+    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+
+    # API call 後にもログが無いことを確認
+    assert_equal false, ApiRequestLog.all.exists?
   end
 
   test '基本情報のインポート' do

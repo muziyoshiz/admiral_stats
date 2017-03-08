@@ -59,6 +59,10 @@ Rails.application.routes.draw do
 
     # SEGA 公式からエクスポートしたプレイデータのインポート
     post 'import/:file_type/:timestamp', to: 'api_import#import', as: :api_import
+
+    # CORS のための応答
+    match 'import/file_types', to: 'api_import#options', via: :options
+    match 'import/:file_type/:timestamp', to: 'api_import#options', via: :options
   end
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
