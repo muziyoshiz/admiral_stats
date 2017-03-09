@@ -30,15 +30,36 @@
       </div>
   <% end %>
   <%= form_tag({ action: :create } ) do %>
-      <div class="form-group">
-        <% if @tokens.blank? %>
+      <% if @tokens.blank? %>
+          <div class="form-group">
             <%= submit_tag 'トークンの新規発行', :class => 'btn btn-primary' %>
-        <% else %>
+          </div>
+      <% else %>
+          <div class="form-group">
             <p>
               API トークンを変更したい場合は以下のボタンを押してください。トークンを再発行すると、いままでのトークンは使えなくなります。
             </p>
-            <%= submit_tag 'トークンの削除・再発行', :class => 'btn btn-primary' %>
-        <% end %>
-      </div>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm">
+              トークンの再発行
+            </button>
+          </div>
+          <div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="confirmModalLabel">確認</h4>
+                </div>
+                <div class="modal-body">
+                  トークンを再発行すると、いままでのトークンは使えなくなります。よろしいですか？
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+                  <%= submit_tag '再発行', :class => 'btn btn-primary' %>
+                </div>
+              </div>
+            </div>
+          </div>
+      <% end %>
   <% end %>
 </div>
