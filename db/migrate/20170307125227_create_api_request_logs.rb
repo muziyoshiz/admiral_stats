@@ -4,6 +4,9 @@ class CreateApiRequestLogs < ActiveRecord::Migration[5.0]
       # 提督 ID
       t.integer  :admiral_id,      null: false
 
+      # リクエストメソッド
+      t.string   :request_method,  null: false,    limit: 7
+
       # リクエスト URI
       t.string   :request_uri,     null: false,    limit: 255
 

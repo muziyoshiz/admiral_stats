@@ -41,6 +41,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'GET', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/file_types', l.request_uri
     assert_equal 200, l.status_code
     assert_nil l.response
@@ -150,6 +151,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/unknown_file_type/test2', l.request_uri
     assert_equal 200, l.status_code
     assert_equal 'Unsupported file type: unknown_file_type', l.response
@@ -179,6 +181,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/202X0101_000000', l.request_uri
     assert_equal 400, l.status_code
     assert_equal 'Invalid timestamp: 202X0101_000000', l.response
@@ -260,6 +263,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_160000', l.request_uri
     assert_equal 201, l.status_code
     assert_equal '基本情報のインポートに成功しました。', l.response
@@ -297,6 +301,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_170000', l.request_uri
     assert_equal 200, l.status_code
     assert_equal '同じ時刻の基本情報がインポート済みのため、無視されました。', l.response
@@ -388,6 +393,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/CharacterList_info/20170227_160000', l.request_uri
     assert_equal 201, l.status_code
     assert_equal '艦娘一覧のインポートに成功しました。', l.response
@@ -484,6 +490,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
 
     # ログの内容を確認
     assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/Event_info/20170227_160000', l.request_uri
     assert_equal 201, l.status_code
     assert_equal 'イベント進捗情報のインポートに成功しました。', l.response

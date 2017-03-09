@@ -44,11 +44,12 @@ ActiveRecord::Schema.define(version: 20170307125227) do
   end
 
   create_table "api_request_logs", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer  "admiral_id",  null: false
-    t.string   "request_uri", null: false
-    t.integer  "status_code", null: false
+    t.integer  "admiral_id",               null: false
+    t.string   "request_method", limit: 7, null: false
+    t.string   "request_uri",              null: false
+    t.integer  "status_code",              null: false
     t.string   "response"
-    t.datetime "created_at",  null: false
+    t.datetime "created_at",               null: false
   end
 
   create_table "event_masters", primary_key: "event_no", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

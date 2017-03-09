@@ -8,6 +8,11 @@ class ApiRequestLog < ApplicationRecord
                 only_integer: true,
             }
 
+  # リクエストメソッド（GET, POST, ...）
+  validates :request_method,
+            presence: true,
+            length: {  maximum: 7 }
+
   # リクエスト URI
   validates :request_uri,
             presence: true,
