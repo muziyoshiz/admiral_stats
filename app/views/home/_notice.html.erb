@@ -19,13 +19,30 @@
         </li>
     <% end %>
     <li>
+      2017年3月10日更新：自動アップロードのための API を追加しました。現時点では、Ruby 版エクスポータのみが API に対応しています。
+      <ul>
+        <li>
+          <%= link_to '提督情報エクスポータ（Ruby 版）', exporter_url, :target => '_blank' %> への自動アップロード機能の追加（※ 使い方は <%= link_to 'リンク先', exporter_url, :target => '_blank' %> をご覧ください）
+        </li>
+        <li>
+          <%= link_to_if_logged_in controller: 'token', action: 'index' do %>
+              設定 <i class="glyphicon glyphicon-menu-right"></i> API トークンの設定
+          <% end %>
+          にて API トークンを発行する機能の追加
+        </li>
+        <li>
+          <%= link_to_if_logged_in controller: 'token', action: 'index' do %>
+              設定 <i class="glyphicon glyphicon-menu-right"></i> API ログの確認
+          <% end %>
+          にて API 経由のインポート結果を確認する機能の追加
+        </li>
+      </ul>
+    </li>
+    <li>
       2017年2月25日更新：<%= link_to_if_logged_in '「レベル・経験値（艦娘別）」ページ', controller: 'ship_info', action: 'level' %> にて、1ヶ月間レベルが上がっていなくても、経験値が増えていればレベル99到達予想日を表示するように改善しました。
     </li>
     <li>
       2017年2月20日更新：艦娘一覧などの一覧表に、艦種（駆逐艦、軽巡洋艦など）での絞り込み機能を追加しました。
-    </li>
-    <li>
-      2017年2月19日更新：<%= link_to_if_logged_in '「レベル・経験値（艦娘別）」ページ', controller: 'ship_info', action: 'level' %> で最初からグラフ表示する艦娘を、期間内の取得経験値が最も多い6隻に変更しました（従来はレベル上位6隻）。また、期間内の取得経験値を表に追加しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>

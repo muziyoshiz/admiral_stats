@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # インポート
   get 'import', to: 'import#index', as: :import
   post 'import/file', to: 'import#file'
+  post 'import/generate_token', to: 'import#generate_token'
 
   # 提督情報
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
@@ -43,6 +44,26 @@ Rails.application.routes.draw do
 
   # 以下の記載を追加すると root_url メソッドも自動設定される
   root to: 'home#index'
+
+  # Settings
+  scope 'settings' do
+    get 'request_logs', to: 'request_log#index'
+    get 'tokens', to: 'token#index'
+    post 'tokens', to: 'token#create'
+  end
+
+  # API
+  scope 'api/v1' do
+    # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+    get 'import/file_types', to: 'api_import#file_types'
+
+    # SEGA 公式からエクスポートしたプレイデータのインポート
+    post 'import/:file_type/:timestamp', to: 'api_import#import', as: :api_import
+
+    # CORS のための応答
+    match 'import/file_types', to: 'api_import#options', via: :options
+    match 'import/:file_type/:timestamp', to: 'api_import#options', via: :options
+  end
 
   # 上記のいずれにもマッチしなかった場合は、root にリダイレクト
   get '*unmatched_route', to: 'application#redirect_to_home'

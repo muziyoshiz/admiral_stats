@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+#one:
+#  admiral_id: 1
+#  request_url: MyString
+#  request_parameter: MyString
+#  status_code: 1
+#  response: MyString
+#
+#two:
+#  admiral_id: 1
+#  request_url: MyString
+#  request_parameter: MyString
+#  status_code: 1
+#  response: MyString

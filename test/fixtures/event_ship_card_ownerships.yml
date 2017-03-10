@@ -1,7 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  event_no: 1
-
-two:
-  event_no: 1
+#one:
+#  event_no: 1
+#
+#two:
+#  event_no: 1

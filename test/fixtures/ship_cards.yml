@@ -1,25 +1,25 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-asasio:
-  admiral_id: 1
-  book_no: 85
-  card_index: 0
-  first_exported_at: 2016-08-17 15:29:10
-
-asasio_kai:
-  admiral_id: 1
-  book_no: 85
-  card_index: 3
-  first_exported_at: 2016-08-21 11:23:31
-
-chitose:
-  admiral_id: 1
-  book_no: 49
-  card_index: 0
-  first_exported_at: 2016-08-10 10:12:34
-
-chitose_holo:
-  admiral_id: 1
-  book_no: 49
-  card_index: 1
-  first_exported_at: 2016-08-12 12:34:56
+#asasio:
+#  admiral_id: 1
+#  book_no: 85
+#  card_index: 0
+#  first_exported_at: 2016-08-17 15:29:10
+#
+#asasio_kai:
+#  admiral_id: 1
+#  book_no: 85
+#  card_index: 3
+#  first_exported_at: 2016-08-21 11:23:31
+#
+#chitose:
+#  admiral_id: 1
+#  book_no: 49
+#  card_index: 0
+#  first_exported_at: 2016-08-10 10:12:34
+#
+#chitose_holo:
+#  admiral_id: 1
+#  book_no: 49
+#  card_index: 1
+#  first_exported_at: 2016-08-12 12:34:56

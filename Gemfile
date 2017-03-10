@@ -76,3 +76,6 @@ gem 'meta-tags'
 
 # Sitemap Support
 gem 'sitemap_generator'
+
+# JWT (JSON Web Token)
+gem 'jwt', '~> 1.5.6'

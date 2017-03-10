@@ -44,6 +44,6 @@ Pull request を送るか、issue に要望をお寄せください。
 - [muziyoshiz/admiral_stats_parser](https://github.com/muziyoshiz/admiral_stats_parser) (Ruby)
     - Admiral Stats が内部で利用している、プレイデータのパーサ
 - [muziyoshiz/admiral_stats_api](https://github.com/muziyoshiz/admiral_stats_api) (Elixir, Phoenix Framework)
-    - Admiral Stats の API サーバ（開発中）
+    - Elixir 版の API サーバ（試作品。admiral-stats.com で動作しているアプリとは別物）
 - [muziyoshiz/admiral_stats_parser_ex](https://github.com/muziyoshiz/admiral_stats_parser_ex) (Elixir)
-    - Admiral Stats の API サーバが内部で利用している、プレイデータのパーサ（開発中）
+    - Elixir 版のパーサ（試作品。admiral-stats.com で動作しているアプリとは別物）

@@ -1,29 +1,29 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-asasio:
-  admiral_id: 1
-  book_no: 85
-  remodel_level: 0
-  level: 50
-  exported_at: 2016-08-21 11:23:31
-
-asasio_kai:
-  admiral_id: 1
-  book_no: 85
-  remodel_level: 1
-  level: 50
-  exported_at: 2016-08-21 11:23:31
-
-asasio_old:
-  admiral_id: 1
-  book_no: 85
-  remodel_level: 0
-  level: 40
-  exported_at: 2016-08-17 15:29:10
-
-chitose:
-  admiral_id: 1
-  book_no: 49
-  remodel_level: 0
-  level: 20
-  exported_at: 2016-08-12 12:34:56
+#asasio:
+#  admiral_id: 1
+#  book_no: 85
+#  remodel_level: 0
+#  level: 50
+#  exported_at: 2016-08-21 11:23:31
+#
+#asasio_kai:
+#  admiral_id: 1
+#  book_no: 85
+#  remodel_level: 1
+#  level: 50
+#  exported_at: 2016-08-21 11:23:31
+#
+#asasio_old:
+#  admiral_id: 1
+#  book_no: 85
+#  remodel_level: 0
+#  level: 40
+#  exported_at: 2016-08-17 15:29:10
+#
+#chitose:
+#  admiral_id: 1
+#  book_no: 49
+#  remodel_level: 0
+#  level: 20
+#  exported_at: 2016-08-12 12:34:56

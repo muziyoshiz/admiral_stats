@@ -34,6 +34,9 @@ td.rate-rare      { text-align: center; color: #31708F; background-color: #D9EDF
 td.rate-veryrare  { text-align: center; color: #8A6D3B; background-color: #FCF8E3; }
 td.rate-tuchinoko { text-align: center; color: #A94442; background-color: #F2DEDE; }
 
+// API トークンのセル
+td.token { word-break: break-all; }
+
 // Lv 99 到達予想日のセル
 // bootstrap に元々ある定義の優先度が強いため、ここまで指定しないとこちらが優先されない
 table#table-ship-level tbody>tr>td.achieved { text-align: center; vertical-align: middle; }
@@ -88,4 +91,4 @@ ol.guest li {
 div.follow-button { margin-top: 4px; }
 
 // フッター
-div.footer { margin-top: 20px; }
+div.footer { margin-top: 40px; }

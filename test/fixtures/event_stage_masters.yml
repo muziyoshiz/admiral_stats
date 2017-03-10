@@ -3,9 +3,73 @@
 # This model initially had no columns defined. If you add columns to the
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-# column: value
+
+first_event_hei_1:
+  event_no: 1
+  level: 'HEI'
+  stage_no: 1
+  stage_mission_name: '前哨戦'
+  ene_military_gauge_val: 1000
+
+first_event_hei_2:
+  event_no: 1
+  level: 'HEI'
+  stage_no: 2
+  stage_mission_name: '警戒線突破'
+  ene_military_gauge_val: 1000
+
+first_event_hei_3:
+  event_no: 1
+  level: 'HEI'
+  stage_no: 3
+  stage_mission_name: '湾内突入！'
+  ene_military_gauge_val: 1200
+
+first_event_hei_4:
+  event_no: 1
+  level: 'HEI'
+  stage_no: 4
+  stage_mission_name: '敵泊地強襲！'
+  ene_military_gauge_val: 2000
+
+first_event_hei_5:
+  event_no: 1
+  level: 'HEI'
+  stage_no: 5
+  stage_mission_name: '掃討戦'
+  ene_military_gauge_val: 0
+
+first_event_otu_1:
+  event_no: 1
+  level: 'OTU'
+  stage_no: 1
+  stage_mission_name: '前哨戦'
+  ene_military_gauge_val: 1500
+
+first_event_otu_2:
+  event_no: 1
+  level: 'OTU'
+  stage_no: 2
+  stage_mission_name: '警戒線突破'
+  ene_military_gauge_val: 1500
+
+first_event_otu_3:
+  event_no: 1
+  level: 'OTU'
+  stage_no: 3
+  stage_mission_name: '湾内突入！'
+  ene_military_gauge_val: 1800
+
+first_event_otu_4:
+  event_no: 1
+  level: 'OTU'
+  stage_no: 4
+  stage_mission_name: '敵泊地強襲！'
+  ene_military_gauge_val: 2500
+
+first_event_otu_5:
+  event_no: 1
+  level: 'OTU'
+  stage_no: 5
+  stage_mission_name: '掃討戦'
+  ene_military_gauge_val: 0
