@@ -25,16 +25,10 @@
           <%= link_to '提督情報エクスポータ（Ruby 版）', exporter_url, :target => '_blank' %> への自動アップロード機能の追加（※ 使い方は <%= link_to 'リンク先', exporter_url, :target => '_blank' %> をご覧ください）
         </li>
         <li>
-          <%= link_to_if_logged_in controller: 'token', action: 'index' do %>
-              設定 <i class="glyphicon glyphicon-menu-right"></i> API トークンの設定
-          <% end %>
-          にて API トークンを発行する機能の追加
+          <%= link_to_if_logged_in '設定 > API トークンの設定', controller: 'token', action: 'index' %> にて API トークンを発行する機能の追加
         </li>
         <li>
-          <%= link_to_if_logged_in controller: 'token', action: 'index' do %>
-              設定 <i class="glyphicon glyphicon-menu-right"></i> API ログの確認
-          <% end %>
-          にて API 経由のインポート結果を確認する機能の追加
+          <%= link_to_if_logged_in '設定 > API ログの確認', controller: 'token', action: 'index' %> にて API 経由のインポート結果を確認する機能の追加
         </li>
       </ul>
     </li>
