@@ -6,7 +6,7 @@ class ApiImportController < ApplicationController
 
   before_action :jwt_authenticate, except: :options
 
-  # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+  # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）
   SUPPORTED_FILE_TYPES = [
       'Personal_basicInfo',
       'TcBook_info',
@@ -14,7 +14,7 @@ class ApiImportController < ApplicationController
       'Event_info'
   ]
 
-  # CORS のためのヘッダを返します
+  # CORS のためのヘッダを返します。
   def options
     response.header['Access-Control-Allow-Origin'] = '*'
     response.header['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
@@ -25,7 +25,7 @@ class ApiImportController < ApplicationController
     head :ok
   end
 
-  # Admiral Stats がインポート可能なファイル種別のリスト（snake_case）
+  # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）を返します。
   def file_types
     record_api_request_log(:ok)
     render json: SUPPORTED_FILE_TYPES
