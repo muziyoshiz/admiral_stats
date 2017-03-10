@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20170307125227) do
     t.integer  "admiral_id",               null: false
     t.string   "request_method", limit: 7, null: false
     t.string   "request_uri",              null: false
+    t.string   "user_agent"
     t.integer  "status_code",              null: false
     t.string   "response"
     t.datetime "created_at",               null: false

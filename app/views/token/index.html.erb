@@ -9,7 +9,10 @@
         発行した API トークンを提督情報エクスポータに設定してください。
       </p>
   <% else %>
-      <p>この API トークンを提督情報エクスポータに設定してください。</p>
+      <p>
+        この API トークンを提督情報エクスポータに設定してください。<br>
+        現時点では、Ruby 版のエクスポータのみが API に対応しています。使い方は <%= link_to 'リンク先', exporter_url, :target => '_blank' %> をご覧ください。
+      </p>
       <div class="table-responsive-wrappable">
         <table class="table table-striped">
           <thead>

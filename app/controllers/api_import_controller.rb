@@ -56,7 +56,7 @@ class ApiImportController < ApplicationController
       when 'Event_info'
         file_type = :event_info
       else
-        msg = "Unsupported file type: #{params[:file_type]}"
+        msg = "Admiral Stats がインポートできないファイル種別のため、無視されました。（ファイル種別：#{params[:file_type]}）"
         record_api_request_log(:ok, msg)
         render json: { data: { message: msg } }
         return
@@ -67,7 +67,7 @@ class ApiImportController < ApplicationController
       exported_at = parse_time($1)
       api_version = AdmiralStatsParser.guess_api_version(exported_at)
     else
-      msg = "Invalid timestamp: #{params[:timestamp]}"
+      msg = "タイムスタンプの形式が不正です。（タイムスタンプ：#{params[:timestamp]}）"
       record_api_request_log(:bad_request, msg)
       render json: { errors: [ { message: msg } ] }, status: :bad_request
       return
@@ -109,6 +109,7 @@ class ApiImportController < ApplicationController
           admiral_id: jwt_current_admiral.id,
           request_method: request.request_method,
           request_uri: request.original_url,
+          user_agent: request.user_agent,
           status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[res],
           response: msg,
       )

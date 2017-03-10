@@ -10,6 +10,9 @@ class CreateApiRequestLogs < ActiveRecord::Migration[5.0]
       # リクエスト URI
       t.string   :request_uri,     null: false,    limit: 255
 
+      # User-Agent
+      t.string   :user_agent,                      limit: 255
+
       # ステータスコード
       t.integer  :status_code,     null: false
 

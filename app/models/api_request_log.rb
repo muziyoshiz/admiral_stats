@@ -18,6 +18,10 @@ class ApiRequestLog < ApplicationRecord
             presence: true,
             length: {  maximum: 255 }
 
+  # User-Agent
+  validates :user_agent,
+            length: {  maximum: 255 }
+
   # ステータスコード
   validates :status_code,
             presence: true,
