@@ -4,7 +4,7 @@ class ApiImportController < ApplicationController
   # API 用のコントローラでは CSRF 対策を無効化する
   skip_before_action :verify_authenticity_token
 
-  before_action :jwt_authenticate, except: :options
+  before_action :jwt_authenticate
 
   # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）
   SUPPORTED_FILE_TYPES = [
@@ -13,17 +13,6 @@ class ApiImportController < ApplicationController
       'CharacterList_info',
       'Event_info'
   ]
-
-  # CORS のためのヘッダを返します。
-  def options
-    response.header['Access-Control-Allow-Origin'] = '*'
-    response.header['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.header['Access-Control-Allow-Headers'] = 'Authorization, Content-Type'
-    response.header['Access-Control-Max-Age'] = '3600'
-
-    # Content-Length: 0 の blank page を返す
-    head :ok
-  end
 
   # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）を返します。
   def file_types

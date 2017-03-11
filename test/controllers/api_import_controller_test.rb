@@ -49,7 +49,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
-  test 'data_types User-Agent がある場合' do
+  test 'data_types User-Agent ヘッダがある場合' do
     # API call 前にはログが無いことを確認
     assert_equal false, ApiRequestLog.all.exists?
 
@@ -80,26 +80,52 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
-  test 'data_types OPTIONS メソッドの場合' do
-    # API call 前にはログが無いことを確認
-    assert_equal false, ApiRequestLog.all.exists?
+  test 'data_types Origin ヘッダがある場合' do
+    # テスト対象を明確にするために、ログのテストは省略
 
-    # この行で、以下の WARNING が出るが、他に OPTIONS のテスト方法が見当たらない
-    # > DEPRECATION WARNING: xhr and xml_http_request methods are deprecated in favor of
-    # > `get "/posts", xhr: true` and `post "/posts/1", xhr: true`.
-    ActiveSupport::Deprecation.silence do
-      xhr :options, '/api/v1/import/file_types'
-    end
+    get '/api/v1/import/file_types', headers: { 'Authorization' => "Bearer #{TOKEN}", 'Origin' => 'https://kancolle-arcade.net'}
 
     assert_response 200
-    assert_equal '', @response.body
-    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
-    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
-    assert_equal 'Authorization, Content-Type', @response.headers['Access-Control-Allow-Headers']
-    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+    assert_equal JSON.generate(
+        [
+            'Personal_basicInfo',
+            'TcBook_info',
+            'CharacterList_info',
+            'Event_info'
+        ]), @response.body
 
-    # API call 後にもログが無いことを確認
-    assert_equal false, ApiRequestLog.all.exists?
+    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
+    assert_nil @response.headers['Access-Control-Allow-Headers']
+    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
+  end
+
+  test 'data_types Origin および Access-Control-Request-Headers ヘッダがある場合' do
+    # テスト対象を明確にするために、ログのテストは省略
+
+    get '/api/v1/import/file_types', headers: {
+        'Authorization' => "Bearer #{TOKEN}",
+        'Origin' => 'https://kancolle-arcade.net',
+        'Access-Control-Request-Method' => 'GET',
+        'Access-Control-Request-Headers' => 'Content-Type, Authorization'
+    }
+
+    assert_response 200
+    assert_equal JSON.generate(
+        [
+            'Personal_basicInfo',
+            'TcBook_info',
+            'CharacterList_info',
+            'Event_info'
+        ]), @response.body
+
+    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
+    # GET に対しては、Access-Control-Allow-Headers が返されない
+    assert_nil @response.headers['Access-Control-Allow-Headers']
+    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
   end
 
   test 'Authorizationヘッダを指定しない場合' do
@@ -222,28 +248,6 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
-  test 'import OPTIONS メソッドの場合' do
-    # API call 前にはログが無いことを確認
-    assert_equal false, ApiRequestLog.all.exists?
-
-    # この行で、以下の WARNING が出るが、他に OPTIONS のテスト方法が見当たらない
-    # > DEPRECATION WARNING: xhr and xml_http_request methods are deprecated in favor of
-    # > `get "/posts", xhr: true` and `post "/posts/1", xhr: true`.
-    ActiveSupport::Deprecation.silence do
-      xhr :options, api_import_url('Personal_basicInfo', '20170309_000000')
-    end
-
-    assert_response 200
-    assert_equal '', @response.body
-    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
-    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
-    assert_equal 'Authorization, Content-Type', @response.headers['Access-Control-Allow-Headers']
-    assert_equal '3600', @response.headers['Access-Control-Max-Age']
-
-    # API call 後にもログが無いことを確認
-    assert_equal false, ApiRequestLog.all.exists?
-  end
-
   test '基本情報のインポート' do
     # Personal_basicInfo
     json = <<-JSON
@@ -305,6 +309,45 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
+  test '基本情報のインポート Origin ヘッダがある場合' do
+    # テスト対象を明確にするために、ログのテストと、レコードの詳細確認は省略
+
+    # Personal_basicInfo
+    json = <<-JSON
+{"fuel":6750,"ammo":6183,"steel":7126,"bauxite":6513,"bucket":46,"level":32,"roomItemCoin":82,"resultPoint":"3571","rank":"圏外","titleId":7,"materialMax":7200,"strategyPoint":915}
+    JSON
+
+    # 登録前にはレコードが無いことを確認
+    exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
+    assert_equal false, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+
+    post api_import_url('Personal_basicInfo', '20170227_160000'),
+         params: json, headers: {
+            'Authorization' => "Bearer #{TOKEN}",
+            'Content-Type' => 'application/json',
+            'Origin' => 'https://kancolle-arcade.net',
+        }
+
+    assert_response 201
+
+    assert_equal JSON.generate(
+        {
+            data: {
+                message: '基本情報のインポートに成功しました。'
+            }
+        }), @response.body
+
+    # 登録後にはレコードがあることを確認
+    records = AdmiralStatus.where(admiral_id: 1, exported_at: exported_at)
+    assert_equal true, records.exists?
+
+    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
+    assert_nil @response.headers['Access-Control-Allow-Headers']
+    assert_equal '3600', @response.headers['Access-Control-Max-Age']
+    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
+  end
+
   test '同じ日時の基本情報をインポート済みの場合' do
     # Personal_basicInfo
     json = <<-JSON
@@ -341,6 +384,67 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 200, l.status_code
     assert_nil l.user_agent
     assert_equal '同じ時刻の基本情報がインポート済みのため、無視されました。', l.response
+    assert_not_nil l.created_at
+  end
+
+  test '基本情報のインポート User-Agent がある場合' do
+    # Personal_basicInfo
+    json = <<-JSON
+{"fuel":6750,"ammo":6183,"steel":7126,"bauxite":6513,"bucket":46,"level":32,"roomItemCoin":82,"resultPoint":"3571","rank":"圏外","titleId":7,"materialMax":7200,"strategyPoint":915}
+    JSON
+
+    # 登録前にはレコードが無いことを確認
+    exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
+    assert_equal false, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
+
+    post api_import_url('Personal_basicInfo', '20170227_160000'),
+         params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json', 'User-Agent' => 'AdmiralStatsExporter-Ruby/1.6.1' }
+
+    assert_response 201
+
+    assert_equal JSON.generate(
+        {
+            data: {
+                message: '基本情報のインポートに成功しました。'
+            }
+        }), @response.body
+
+    # 登録後にはレコードがあることを確認
+    records = AdmiralStatus.where(admiral_id: 1, exported_at: exported_at)
+    assert_equal true, records.exists?
+
+    assert_equal 1, records.size
+    r = records[0]
+
+    # レコードの内容を確認
+    assert_equal 1,      r.admiral_id
+    assert_equal 6750,   r.fuel
+    assert_equal 6183,   r.ammo
+    assert_equal 7126,   r.steel
+    assert_equal 6513,   r.bauxite
+    assert_equal 46,     r.bucket
+    assert_equal 32,     r.level
+    assert_equal 82,     r.room_item_coin
+    assert_equal '3571', r.result_point
+    assert_equal '圏外', r.rank
+    assert_equal 7,      r.title_id
+    assert_equal 915,    r.strategy_point
+    assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
+    assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_160000', l.request_uri
+    assert_equal 201, l.status_code
+    assert_equal 'AdmiralStatsExporter-Ruby/1.6.1', l.user_agent
+    assert_equal '基本情報のインポートに成功しました。', l.response
     assert_not_nil l.created_at
   end
 
