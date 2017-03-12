@@ -248,6 +248,44 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_not_nil l.created_at
   end
 
+  test '空のボディをアップロードした場合' do
+    # 登録前にはレコードが無いことを確認
+    exported_at = Time.parse('2017-02-27 16:00:00 +09:00')
+    assert_equal false, AdmiralStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
+
+    post api_import_url('Personal_basicInfo', '20170227_160000'),
+         params: nil, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+
+    assert_response 200
+
+    assert_equal JSON.generate(
+        {
+            errors: [
+                { message: '基本情報のインポートに失敗しました。（原因：A JSON text must at least contain two octets!）' }
+            ]
+        }), @response.body
+
+    # 登録後にはレコードがあることを確認
+    records = AdmiralStatus.where(admiral_id: 1, exported_at: exported_at)
+    assert_equal false, records.exists?
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
+    assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_160000', l.request_uri
+    assert_equal 200, l.status_code
+    assert_nil l.user_agent
+    assert_equal '基本情報のインポートに失敗しました。（原因：A JSON text must at least contain two octets!）', l.response
+    assert_not_nil l.created_at
+  end
+
   test '基本情報のインポート' do
     # Personal_basicInfo
     json = <<-JSON

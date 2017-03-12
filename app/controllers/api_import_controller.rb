@@ -92,6 +92,9 @@ class ApiImportController < ApplicationController
   def record_api_request_log(res, msg = nil)
     # 記録に失敗しても、ログに記録するだけで、リクエストの処理は継続する
     begin
+      # エラーメッセージを返す場合（res == :error）は 200 として記録
+      status_code = (res == :error) ? 200 : Rack::Utils::SYMBOL_TO_STATUS_CODE[res]
+
       # ステータスコードを integer に変換してから記録
       # http://www.rubydoc.info/github/rack/rack/Rack/Utils
       ApiRequestLog.create!(
@@ -99,7 +102,7 @@ class ApiImportController < ApplicationController
           request_method: request.request_method,
           request_uri: request.original_url,
           user_agent: request.user_agent,
-          status_code: Rack::Utils::SYMBOL_TO_STATUS_CODE[res],
+          status_code: status_code,
           response: msg,
       )
     rescue => e
