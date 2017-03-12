@@ -47,7 +47,7 @@
           <tr>
             <td class="text-left"><%= log.created_at.to_s(:datetime) %></td>
             <td class="text-left"><%= log.request_method %></td>
-            <td class="text-left"><%= log.request_uri.gsub(/https?:\/\/[^\/]+/, '') %></td>
+            <td class="text-left uri"><%= log.request_uri.gsub(/https?:\/\/[^\/]+/, '') %></td>
             <td class="text-left"><%= log.status_code %></td>
             <td class="text-left"><%= log.response %></td>
           </tr>

@@ -2,6 +2,10 @@ class ManualController < ApplicationController
   def exporter
     set_meta_tags title: 'Admiral Stats の使い方'
 
+    if logged_in?
+      @token = AdmiralToken.where('admiral_id = ?', current_admiral.id).order(issued_at: :asc).first
+    end
+
     # メニューバーまでキャッシュされてしまう（キャッシュ時のログイン状態のまま表示されてしまう）ため
     # キャッシュを無効化した。あとで、本文だけキャッシュするように直す。
 
