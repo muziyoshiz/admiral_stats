@@ -77,6 +77,7 @@
           <ul style="margin-left: -20px; margin-bottom: 0px;">
             <li>インストールはブックマークレット版の次に簡単</li>
             <li>ダウンロード先フォルダが固定で、ファイルが散らばらない</li>
+            <li>admiral_stats_exporter_ps_doupload.bat を実行すると、エクスポート後に自動アップロード</li>
           </ul>
         </td>
       </tr>
@@ -87,7 +88,7 @@
           <ul style="margin-left: -20px; margin-bottom: 0px;">
             <li>インストールは最も難しいが、Ruby が動作する OS 全般で動く</li>
             <li>ダウンロード先フォルダが固定で、ファイルが散らばらない</li>
-            <li><kbd>--upload</kbd> オプションを付けて実行すると、自動アップロード</li>
+            <li><kbd>--upload</kbd> オプションを付けると、エクスポート後に自動アップロード</li>
             <li><strong class="text-primary">実験的な機能は Ruby 版から追加予定</strong></li>
           </ul>
         </td>
@@ -170,7 +171,7 @@
             <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
             <p><span class="btn btn-default" style="cursor: not-allowed;">as-exporter 提督情報エクスポータ（自動アップロード）</span></p>
             現在の Admiral Stats がサポートしているプレイデータ（基本情報、艦娘図鑑、艦娘一覧、イベント進捗情報）をダウンロードして、Admiral Stats に自動アップロードします（ファイルは作成しません）。<br>
-            <strong><%= link_to '設定 > API トークンの設定', controller: 'token', action: 'index' %> でトークンを発行すると、この機能が有効になります。</strong>
+            <strong><%= link_to_if_logged_in '設定 > API トークンの設定', controller: 'token', action: 'index' %> でトークンを発行すると、この機能が有効になります。</strong>
         <% end %>
       </div>
       <div class="well">
@@ -287,7 +288,7 @@
             <%# p タグと a タグの間にスペースを空けてはいけない。ブックマークレットの登録時に、名前が空になってしまうため。 %>
             <p><span class="btn btn-default" style="cursor: not-allowed;">as-exporter 提督情報エクスポータ（自動アップロード）</span></p>
             現在の Admiral Stats がサポートしているプレイデータ（基本情報、艦娘図鑑、艦娘一覧、イベント進捗情報）をダウンロードして、Admiral Stats に自動アップロードします（ファイルは作成しません）。<br>
-            <strong><%= link_to '設定 > API トークンの設定', controller: 'token', action: 'index' %> でトークンを発行すると、この機能が有効になります。</strong>
+            <strong><%= link_to_if_logged_in '設定 > API トークンの設定', controller: 'token', action: 'index' %> でトークンを発行すると、この機能が有効になります。</strong>
         <% end %>
       </div>
       <div class="well">
