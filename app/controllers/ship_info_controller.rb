@@ -149,8 +149,6 @@ class ShipInfoController < ApplicationController
       end
     end
 
-    pp @forecasts
-
     # 到達予想日が最も近い艦娘をハイライト
     # min_by の返り値は [ book_no, forecast ] という配列になる
     soon = @forecasts.select{|b, f| f[:lv50_at] }.min_by{|b, f| f[:lv50_at] }
