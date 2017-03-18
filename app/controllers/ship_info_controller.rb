@@ -379,6 +379,15 @@ class ShipInfoController < ApplicationController
     # グラフに描画する時刻の一覧（時刻順にソート済）
     timestamps = ShipCardTimestamp.where(admiral_id: current_admiral.id).order(exported_at: :asc).map{|t| t.exported_at }
 
+    # サマリを作成するために最初と最後のタイムスタンプを取得
+    if beginning_of_range
+      first_timestamp = timestamps.select{|t| t >= beginning_of_range }.first
+    else
+      # 全期間が対象の場合は beginning_of_range が nil
+      first_timestamp = timestamps.first
+    end
+    last_timestamp = timestamps.last
+
     # 最終的な枚数を調べる
     # nums[0..5][時刻] = その時刻までに入手した枚数
     nums = Array.new(6){ Hash.new }
@@ -398,6 +407,10 @@ class ShipInfoController < ApplicationController
         end
       end
     end
+
+    # タイムスタンプの最初の日付、および最後の日付の枚数を配列に記録
+    @first_nums = 6.times.map{|idx| nums[idx][first_timestamp] }
+    @last_nums = 6.times.map{|idx| nums[idx][last_timestamp] }
 
     # 実装済みの枚数を調べる
     # nums[0..5][時刻] = その時刻までに実装された枚数
@@ -424,6 +437,10 @@ class ShipInfoController < ApplicationController
       end
     end
 
+    # タイムスタンプの最初の日付、および最後の日付の割合を配列に記録
+    @first_rates = 6.times.map{|idx| rates[idx][first_timestamp] }
+    @last_rates = 6.times.map{|idx| rates[idx][last_timestamp] }
+
     # 全体の数および割合を計算
     total_num_data = []
     total_rate_data = []
@@ -442,6 +459,12 @@ class ShipInfoController < ApplicationController
     @series_num = [{ 'name' => '全体', 'data' => total_num_data }]
     @series_rate = [{ 'name' => '全体', 'data' => total_rate_data, 'tooltip' => { 'valueSuffix' => ' %' } }]
     @series_impl = [{ 'name' => '全体', 'data' => total_impl_data }]
+
+    # サマリ表示のために、最初の日付、および最後の日付の合計値・割合を変数に保存
+    @first_total_num = total_num_data.first[1]
+    @last_total_num = total_num_data.last[1]
+    @first_total_rate = total_rate_data.first[1]
+    @last_total_rate = total_rate_data.last[1]
 
     %w(N Nホロ N中破 改 改ホロ 改中破).each_with_index do |name, idx|
       num_data = []

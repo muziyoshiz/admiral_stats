@@ -89,9 +89,13 @@ module ApplicationHelper
   # 差分を表す <span> タグを返します。
   def h_span_for_delta(first_val, last_val)
     # いずれかに文字列などを含む場合は、何も返さない
-    return unless (first_val.is_a?(Numeric) and last_val.is_a?(Numeric))
+    return '' unless (first_val.is_a?(Numeric) and last_val.is_a?(Numeric))
 
     delta = last_val - first_val
+    if delta.is_a?(Float)
+      delta = delta.round(1)
+    end
+
     if delta > 0
       <<~SPAN
         <br><span class="increase"><i class="glyphicon glyphicon-arrow-up"></i> #{number_with_delimiter(delta)}</span>
