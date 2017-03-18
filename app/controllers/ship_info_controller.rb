@@ -99,6 +99,7 @@ class ShipInfoController < ApplicationController
     #   :begin => 最初のステータス,
     #   :end => 最後のステータス,
     #   :lv99_at => Lv 99 到達予想日時
+    #   :lv99_rest => Lv 99 までの残り経験値
     # }
     @forecasts = {}
 
@@ -148,15 +149,17 @@ class ShipInfoController < ApplicationController
       end
     end
 
+    pp @forecasts
+
     # 到達予想日が最も近い艦娘をハイライト
     # min_by の返り値は [ book_no, forecast ] という配列になる
-    soon = @forecasts.min_by{|b, f| f[:lv50_rest] ? f[:lv50_rest] : MAX_EXP }
+    soon = @forecasts.select{|b, f| f[:lv50_at] }.min_by{|b, f| f[:lv50_at] }
     soon[1][:lv50_soon] = true if soon
-    soon = @forecasts.min_by{|b, f| f[:lv70_rest] ? f[:lv70_rest] : MAX_EXP }
+    soon = @forecasts.select{|b, f| f[:lv70_at] }.min_by{|b, f| f[:lv70_at] }
     soon[1][:lv70_soon] = true if soon
-    soon = @forecasts.min_by{|b, f| f[:lv90_rest] ? f[:lv90_rest] : MAX_EXP }
+    soon = @forecasts.select{|b, f| f[:lv90_at] }.min_by{|b, f| f[:lv90_at] }
     soon[1][:lv90_soon] = true if soon
-    soon = @forecasts.min_by{|b, f| f[:lv99_rest] ? f[:lv99_rest] : MAX_EXP }
+    soon = @forecasts.select{|b, f| f[:lv99_at] }.min_by{|b, f| f[:lv99_at] }
     soon[1][:lv99_soon] = true if soon
   end
 

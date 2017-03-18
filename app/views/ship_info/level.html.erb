@@ -182,7 +182,7 @@
 
   $(document).ready(function() {
     $('#table-ship-level').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
-      "order": [[ 2, "desc" ], [ 0, "asc"]],
+      "order": [[ 3, "desc" ], [ 0, "asc"]],
       "aoColumnDefs": [
         <!-- 経験値増加量でソートするための設定 -->
         { "iDataSort": 4, "aTargets": [ 3 ] },
