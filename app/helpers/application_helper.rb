@@ -56,6 +56,57 @@ module ApplicationHelper
     end
   end
 
+  # 階級を表す数値を、階級の名前に変換します。
+  def title_id_to_title(title_id)
+    case title_id
+      when 0
+        '新米少佐'
+      when 1
+        '中堅少佐'
+      when 2
+        '少佐'
+      when 3
+        '新米中佐'
+      when 4
+        '中佐'
+      when 5
+        '大佐'
+      when 6
+        '少将'
+      when 7
+        '中将'
+      when 8
+        '大将'
+      when 9
+        '元帥'
+      when 10
+        '集計中'
+      else
+        '？'
+    end
+  end
+
+  # 差分を表す <span> タグを返します。
+  def h_span_for_delta(first_val, last_val)
+    # いずれかに文字列などを含む場合は、何も返さない
+    return unless (first_val.is_a?(Numeric) and last_val.is_a?(Numeric))
+
+    delta = last_val - first_val
+    if delta > 0
+      <<~SPAN
+        <br><span class="increase"><i class="glyphicon glyphicon-arrow-up"></i> #{number_with_delimiter(delta)}</span>
+      SPAN
+    elsif delta < 0
+      <<~SPAN
+        <br><span class="decrease"><i class="glyphicon glyphicon-arrow-down"></i> #{number_with_delimiter(delta * -1)}</span>
+      SPAN
+    else
+      <<~SPAN
+        <br><span class="same"><i class="glyphicon glyphicon-arrow-right"></i> 0</span>
+      SPAN
+    end
+  end
+
   # SEGA 公式のプレイヤーズサイトの URL を返します。
   def sega_url
     'https://kancolle-arcade.net/ac/#/top'

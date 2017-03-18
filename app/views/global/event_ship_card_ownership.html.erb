@@ -29,7 +29,7 @@
   </div>
 </div>
 
-<div class="container">
+<div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
       「<%= @event.event_name %>」参加提督
@@ -42,19 +42,20 @@
       <% end %>
     </ul>
   </div>
-  <div id="select-ship-types" style="margin-top: 10px; margin-bottom: 6px;">
-    <a class="select-new btn btn-default">新艦娘のみ</a>
-    <a class="select-all btn btn-default">すべて</a>
-    <a class="select-s01 btn btn-default">駆逐</a>
-    <a class="select-s02 btn btn-default">軽巡</a>
-    <a class="select-s03 btn btn-default">雷巡</a>
-    <a class="select-s04 btn btn-default">重巡</a>
-    <a class="select-s05 btn btn-default">航巡</a>
-    <a class="select-s06-s07 btn btn-default">戦艦・航空戦艦</a>
-    <a class="select-s08 btn btn-default">水母</a>
-    <a class="select-s09 btn btn-default">軽空母</a>
-    <a class="select-s10 btn btn-default">正規空母</a>
-  </div>
+</div>
+
+<div id="select-ship-types" class="container">
+  <a class="select-new btn btn-default">新艦娘のみ</a>
+  <a class="select-all btn btn-default">すべて</a>
+  <a class="select-s01 btn btn-default">駆逐</a>
+  <a class="select-s02 btn btn-default">軽巡</a>
+  <a class="select-s03 btn btn-default">雷巡</a>
+  <a class="select-s04 btn btn-default">重巡</a>
+  <a class="select-s05 btn btn-default">航巡</a>
+  <a class="select-s06-s07 btn btn-default">戦艦・航空戦艦</a>
+  <a class="select-s08 btn btn-default">水母</a>
+  <a class="select-s09 btn btn-default">軽空母</a>
+  <a class="select-s10 btn btn-default">正規空母</a>
 </div>
 
 <div class="container">

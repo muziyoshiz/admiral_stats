@@ -13,6 +13,21 @@ $grid-float-breakpoint: 1200px;
 // For fixed navbar (height: 50px)
 body { padding-top: 50px; }
 
+// プレイデータの表示範囲を指定するドロップダウンリストの領域
+div.range-selector {
+  margin-bottom: 12px;
+}
+
+// ページの先頭に表示する、そのページの要約の表示エリア
+div.summary-box {
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+div.summary-box th { background-color: #F8F8F8; font-weight: normal; }
+div.summary-box span.increase { font-size: 0.9em; color: #A94442; }
+div.summary-box span.decrease { font-size: 0.9em; color: #31708F; }
+div.summary-box span.same     { font-size: 0.9em; color: #5CB85C; }
+
 // Right aligning for numeric columns
 td.numeric { text-align: right; }
 

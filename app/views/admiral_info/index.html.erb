@@ -1,20 +1,120 @@
 <div class="page-header">
   <h2><%= title %></h2>
+</div>
 
-  <div class="container">
-    <div class="dropdown">
-      <%= form_tag({ action: :index }, { id: 'rangeForm' }) do %>
-          <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
-          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <%= range_to_s(@range) %>
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <% range_symbols.each do |r| %>
-                <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
-            <% end %>
-          </ul>
-      <% end %>
+<div class="container range-selector">
+  <div class="dropdown">
+    <%= form_tag({ action: :index }, { id: 'rangeForm' }) do %>
+        <%= hidden_field_tag 'range', '', name: 'range', class: 'span2' %>
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <%= range_to_s(@range) %>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+          <% range_symbols.each do |r| %>
+              <li><a href="#" onclick="$('#range').val('<%= r.to_s %>'); $('#rangeForm').submit()"><%= range_to_s(r) %></a></li>
+          <% end %>
+        </ul>
+    <% end %>
+  </div>
+</div>
+
+<%
+  # 最大備蓄可能各資源量は、コードの各所で使うため、最初に計算したものを使いまわす
+  material_max = @last_status.level_to_material_max
+%>
+
+<div class="container row summary-box">
+  <div class="col-md-4">
+    <div class="table-responsive-wrappable">
+      <table class="table table-bordered" cellspacing="0" width="100%">
+        <tr>
+          <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">艦隊司令部レベル</th>
+          <td class="numeric col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <%= @last_status.level %>
+            <%== h_span_for_delta(@first_status.level, @last_status.level) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">階級</th>
+          <td class="numeric"><%= title_id_to_title(@last_status.title_id) %></td>
+        </tr>
+        <tr>
+          <th class="text-left">戦果</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.result_point) %>
+            <%== h_span_for_delta(@first_status.result_point, @last_status.result_point) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">暫定順位</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.rank) %>
+            <%== h_span_for_delta(@first_status.rank, @last_status.rank) %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="table-responsive-wrappable">
+      <table class="table table-bordered" cellspacing="0" width="100%">
+        <tr>
+          <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">燃料</th>
+          <td class="numeric col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <%= number_with_delimiter(@last_status.fuel) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">弾薬</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.ammo) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">鋼材</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.steel) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">ボーキサイト</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.bauxite) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">最大備蓄可能各資源量</th>
+          <td class="numeric"><%= number_with_delimiter(material_max) %></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="table-responsive-wrappable">
+      <table class="table table-bordered" cellspacing="0" width="100%">
+        <tr>
+          <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">修復バケツ</th>
+          <td class="numeric col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <%= number_with_delimiter(@last_status.bucket) %>
+            <%== h_span_for_delta(@first_status.bucket, @last_status.bucket) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">家具コイン</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.room_item_coin) %>
+            <%== h_span_for_delta(@first_status.room_item_coin, @last_status.room_item_coin) %>
+          </td>
+        </tr>
+        <tr>
+          <th class="text-left">戦略ポイント</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.strategy_point) %>
+            <%== h_span_for_delta(@first_status.strategy_point, @last_status.strategy_point) %>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>
@@ -102,12 +202,12 @@
           text: '備蓄量'
         },
         plotLines: [{
-          value: <%== @material_max.to_json %>,
+          value: <%== material_max.to_json %>,
           color: '#C22C64',
           dashStyle: 'shortdash',
           width: 2,
           label: {
-            text: <%== "最大備蓄可能各資源量(Lv. #{@level_max}): #{@material_max}".to_json %>,
+            text: <%== "最大備蓄可能各資源量(Lv. #{@last_status.level}): #{number_with_delimiter(material_max)}".to_json %>,
             align: 'center',
             style: {
               color: '#C22C64'

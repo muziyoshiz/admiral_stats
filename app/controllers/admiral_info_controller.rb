@@ -33,9 +33,9 @@ class AdmiralInfoController < ApplicationController
       return
     end
 
-    # 最大備蓄可能各資源量
-    latest_status = admiral_statuses.last
-    @level_max, @material_max = latest_status.level, latest_status.level_to_material_max
+    # 指定された期間で最も古いステータスと、最新のステータス（最大備蓄可能各資源量などを、ここから取得）
+    @first_status = admiral_statuses.first
+    @last_status = admiral_statuses.last
 
     # 提督の Lv および経験値
     data_level, data_exp = [], []
