@@ -19,6 +19,97 @@
   </div>
 </div>
 
+<div class="container summary-box">
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">艦種</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均レベル</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">合計レベル</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均経験値</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">合計経験値</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">★5艦娘数</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">★5艦娘数（改）</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% ShipMaster::SUPPORTED_SHIP_TYPES.each do |st| %>
+        <tr>
+          <td><%= st %></td>
+          <% if @last_avg_levels[st] %>
+              <td class="numeric">
+                <%= @last_avg_levels[st].round(1) %>
+                <%== h_span_for_delta(@first_avg_levels[st], @last_avg_levels[st]) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+          </td>
+          <% if @last_levels[st] %>
+              <td class="numeric">
+                <%= @last_levels[st] %>
+                <%== h_span_for_delta(@first_levels[st], @last_levels[st]) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+          </td>
+          <% if @last_avg_exps[st] %>
+              <td class="numeric">
+                <%= number_with_delimiter(@last_avg_exps[st].round(0)) %>
+                <%== h_span_for_delta(@first_avg_exps[st], @last_avg_exps[st], 0) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+          </td>
+          <% if @last_exps[st] %>
+              <td class="numeric">
+                <%= number_with_delimiter(@last_exps[st]) %>
+                <%== h_span_for_delta(@first_exps[st], @last_exps[st]) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+          <% if @last_five_stars[st] %>
+              <td class="numeric">
+                <%= @last_five_stars[st] %>
+                <%== h_span_for_delta(@first_five_stars[st], @last_five_stars[st]) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+          </td>
+          <% if @last_five_stars_kai[st] %>
+              <td class="numeric">
+                <%= @last_five_stars_kai[st] %>
+                <%== h_span_for_delta(@first_five_stars_kai[st], @last_five_stars_kai[st]) %>
+              </td>
+          <% else %>
+              <td class="none">
+                <i class="glyphicon glyphicon-minus"></i>
+              </td>
+          <% end %>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+
 <div id="chart-total-level" style="width:100%; height:400px;"></div>
 
 <hr>

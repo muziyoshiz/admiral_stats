@@ -197,9 +197,10 @@ class ShipInfoController < ApplicationController
     masters = {}
     ShipMaster.all.each{|m| masters[m.book_no] = m }
 
-    # 艦種の並び順は、艦娘図鑑での登場順とする
+    # 艦種の並び順は、ShipMaster で定義された順とする
     # ただし、未入手の艦種は表示しない
-    ship_types = statuses.sort_by{|s| s.book_no }.map{|s| masters[s.book_no].ship_type_by_status(s) }.uniq
+    owned_ship_types = statuses.map{|s| masters[s.book_no].ship_type_by_status(s) }.uniq
+    ship_types = ShipMaster::SUPPORTED_SHIP_TYPES.select{|t| owned_ship_types.include?(t) }
 
     # キーは艦種で値は [時刻, 合計レベル または 平均レベル] の配列
     levels, avg_levels = {}, {}
@@ -320,6 +321,12 @@ class ShipInfoController < ApplicationController
           'data' => five_stars_kai[ship_type],
       }
     end
+
+    # サマリのためのデータ取得
+    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_five_stars, @first_five_stars_kai =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai].map{|v| first_st_values(v) }
+    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_five_stars, @last_five_stars_kai =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai].map{|v| last_st_values(v) }
   end
 
   # カード入手数・入手率の表示
@@ -609,5 +616,15 @@ class ShipInfoController < ApplicationController
 
     # いずれにも該当しなかった場合は、最新のカード枚数を返す
     prev_num
+  end
+
+  # 艦種ごとのデータから、最初のデータのみを取り出して返します。
+  def first_st_values(st_values)
+    st_values.map{|st, values| [st, values.first[1]] }.to_h
+  end
+
+  # 艦種ごとのデータから、最後のデータのみを取り出して返します。
+  def last_st_values(st_values)
+    st_values.map{|st, values| [st, values.last[1]] }.to_h
   end
 end
