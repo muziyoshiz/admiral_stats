@@ -208,6 +208,8 @@ class ShipInfoController < ApplicationController
     exps, avg_exps = {}, {}
     # キーは艦種で値は [時刻, 星5の艦娘数] の配列
     five_stars, five_stars_kai = {}, {}
+    # キーは艦種で値は [時刻, 艦娘数] の配列
+    nums = {}
 
     ship_types.each do |ship_type|
       # 時刻ごとのレベル・経験値
@@ -236,6 +238,15 @@ class ShipInfoController < ApplicationController
       # 合計レベルおよび経験値の計算
       levels[ship_type] = type_levels.keys.map{|exported_at| [ exported_at.to_i * 1000, type_levels[exported_at] ] }
       exps[ship_type] = type_exps.keys.map{|exported_at| [ exported_at.to_i * 1000, type_exps[exported_at] ] }
+
+      # 艦娘数の計算
+      nums[ship_type] = base_ship_names.keys.map do |exported_at|
+        if base_ship_names[exported_at].blank?
+          [ exported_at.to_i * 1000, 0 ]
+        else
+          [ exported_at.to_i * 1000, base_ship_names[exported_at].size ]
+        end
+      end
 
       # 平均レベルおよび経験値の計算
       avg_levels[ship_type] = type_levels.keys.map do |exported_at|
@@ -323,10 +334,10 @@ class ShipInfoController < ApplicationController
     end
 
     # サマリのためのデータ取得
-    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_five_stars, @first_five_stars_kai =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai].map{|v| first_st_values(v) }
-    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_five_stars, @last_five_stars_kai =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai].map{|v| last_st_values(v) }
+    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_five_stars, @first_five_stars_kai, @first_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| first_st_values(v) }
+    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_five_stars, @last_five_stars_kai, @last_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| last_st_values(v) }
   end
 
   # カード入手数・入手率の表示

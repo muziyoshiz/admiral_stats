@@ -2,6 +2,21 @@
   <h2><%= title %></h2>
 </div>
 
+<div class="container row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">このデータについて</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>このページの経験値はレベルおよび経験値の獲得割合（%）から逆算したものであり、実際の経験値とは誤差があります。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container range-selector">
   <div class="dropdown">
     <%= form_tag({ action: :level_summary }, { id: 'rangeForm' }) do %>
@@ -19,114 +34,124 @@
   </div>
 </div>
 
-<div class="container summary-box">
+<div class="container summary">
   <div class="table-responsive">
-    <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <table id="table-summary" class="table table-striped table-bordered" cellspacing="0" width="100%">
       <thead>
       <tr>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">艦種</th>
+        <th class="hidden">デフォルトの表示順（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦娘数</th>
+        <th class="hidden">艦娘数（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均レベル</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">合計レベル</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均経験値</th>
+        <th class="hidden">平均レベル（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">合計レベル</th>
+        <th class="hidden">合計レベル（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">平均経験値</th>
+        <th class="hidden">平均経験値（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">合計経験値</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">★5艦娘数</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">★5艦娘数（改）</th>
+        <th class="hidden">合計経験値（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5艦娘</th>
+        <th class="hidden">★5艦娘（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5艦娘(改)</th>
+        <th class="hidden">★5艦娘(改)（ソート用）</th>
       </tr>
       </thead>
       <tbody>
-      <% ShipMaster::SUPPORTED_SHIP_TYPES.each do |st| %>
+      <% ShipMaster::SUPPORTED_SHIP_TYPES.each_with_index do |st, idx| %>
         <tr>
-          <td><%= st %></td>
+          <td class="text-left"><%= st %></td>
+          <td class="hidden"><%= idx %></td>
+          <% if @last_nums[st] %>
+              <td class="numeric">
+                <%= @last_nums[st] %>
+                <%== h_span_for_delta(@first_nums[st], @last_nums[st]) %>
+              </td>
+              <td class="hidden"><%= @last_nums[st] %></td>
+          <% else %>
+              <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
+          <% end %>
           <% if @last_avg_levels[st] %>
               <td class="numeric">
                 <%= @last_avg_levels[st].round(1) %>
                 <%== h_span_for_delta(@first_avg_levels[st], @last_avg_levels[st]) %>
               </td>
+              <td class="hidden"><%= @last_avg_levels[st].round(1) %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
-          </td>
           <% if @last_levels[st] %>
-              <td class="numeric">
+              <td class="numeric hidden-sm hidden-xs">
                 <%= @last_levels[st] %>
                 <%== h_span_for_delta(@first_levels[st], @last_levels[st]) %>
               </td>
+              <td class="hidden"><%= @last_levels[st] %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none hidden-sm hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
-          </td>
           <% if @last_avg_exps[st] %>
-              <td class="numeric">
+              <td class="numeric hidden-xs">
                 <%= number_with_delimiter(@last_avg_exps[st].round(0)) %>
                 <%== h_span_for_delta(@first_avg_exps[st], @last_avg_exps[st], 0) %>
               </td>
+              <td class="hidden"><%= @last_avg_exps[st].round(0) %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
-          </td>
           <% if @last_exps[st] %>
               <td class="numeric">
                 <%= number_with_delimiter(@last_exps[st]) %>
                 <%== h_span_for_delta(@first_exps[st], @last_exps[st]) %>
               </td>
+              <td class="hidden"><%= @last_exps[st] %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
           <% if @last_five_stars[st] %>
-              <td class="numeric">
+              <td class="numeric hidden-xs">
                 <%= @last_five_stars[st] %>
                 <%== h_span_for_delta(@first_five_stars[st], @last_five_stars[st]) %>
               </td>
+              <td class="hidden"><%= @last_five_stars[st] %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
-          </td>
           <% if @last_five_stars_kai[st] %>
-              <td class="numeric">
+              <td class="numeric hidden-xs">
                 <%= @last_five_stars_kai[st] %>
                 <%== h_span_for_delta(@first_five_stars_kai[st], @last_five_stars_kai[st]) %>
               </td>
+              <td class="hidden"><%= @last_five_stars_kai[st] %></td>
           <% else %>
-              <td class="none">
-                <i class="glyphicon glyphicon-minus"></i>
-              </td>
+              <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
           <% end %>
         </tr>
       <% end %>
       </tbody>
     </table>
   </div>
-
 </div>
-
-
-<div id="chart-total-level" style="width:100%; height:400px;"></div>
-
-<hr>
 
 <div id="chart-average-level" style="width:100%; height:400px;"></div>
 
 <hr>
 
-<div id="chart-total-exp" style="width:100%; height:400px;"></div>
+<div id="chart-total-level" style="width:100%; height:400px;"></div>
 
 <hr>
 
 <div id="chart-average-exp" style="width:100%; height:400px;"></div>
 
-<p>
-  ※注：上記の経験値はレベルから逆算したものであり、細かな経験値上昇は含んでおりません。
-</p>
+<hr>
+
+<div id="chart-total-exp" style="width:100%; height:400px;"></div>
 
 <hr>
 
@@ -146,21 +171,6 @@
   });
 
   $(function () {
-    $('#chart-total-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
-      title: {
-        text: '合計レベル'
-      },
-      yAxis: {
-        title: {
-          text: 'レベル'
-        },
-        min: 0
-      },
-      series: <%== @series_total_level.to_json %>
-    }));
-  });
-
-  $(function () {
     $('#chart-average-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '平均レベル'
@@ -176,17 +186,17 @@
   });
 
   $(function () {
-    $('#chart-total-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+    $('#chart-total-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '合計経験値'
+        text: '合計レベル'
       },
       yAxis: {
         title: {
-          text: '経験値'
+          text: 'レベル'
         },
         min: 0
       },
-      series: <%== @series_total_exp.to_json %>
+      series: <%== @series_total_level.to_json %>
     }));
   });
 
@@ -202,6 +212,21 @@
         min: 0
       },
       series: <%== @series_average_exp.to_json %>
+    }));
+  });
+
+  $(function () {
+    $('#chart-total-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+      title: {
+        text: '合計経験値'
+      },
+      yAxis: {
+        title: {
+          text: '経験値'
+        },
+        min: 0
+      },
+      series: <%== @series_total_exp.to_json %>
     }));
   });
 
@@ -234,4 +259,23 @@
       series: <%== @series_5stars_kai.to_json %>
     }));
   });
+
+  $(document).ready(function() {
+    $('#table-summary').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
+      <!-- サマリに検索は不要なため、無効化 -->
+      "searching": false,
+      "aoColumnDefs": [
+        <!-- 最初の表示順に戻せるようにするための設定 -->
+        { "iDataSort": 1, "aTargets": [ 0 ] },
+        <!-- delta を無視してソートするための設定 -->
+        { "iDataSort": 3, "aTargets": [ 2 ] },
+        { "iDataSort": 5, "aTargets": [ 4 ] },
+        { "iDataSort": 7, "aTargets": [ 6 ] },
+        { "iDataSort": 9, "aTargets": [ 8 ] },
+        { "iDataSort": 11, "aTargets": [ 10 ] },
+        { "iDataSort": 13, "aTargets": [ 12 ] },
+        { "iDataSort": 15, "aTargets": [ 14 ] },
+      ],
+    }));
+  } );
 </script>

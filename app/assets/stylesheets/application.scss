@@ -19,14 +19,17 @@ div.range-selector {
 }
 
 // ページの先頭に表示する、そのページの要約の表示エリア
-div.summary-box {
+div.summary {
   margin-top: 6px;
   margin-bottom: 12px;
 }
-div.summary-box th { background-color: #F8F8F8; }
-div.summary-box span.increase { font-size: 0.9em; color: #A94442; }
-div.summary-box span.decrease { font-size: 0.9em; color: #31708F; }
-div.summary-box span.same     { font-size: 0.9em; color: #5CB85C; }
+
+// 列がヘッダになっている表
+table.table-vertical th { background-color: #F8F8F8; }
+
+table span.increase { font-size: 0.9em; color: #5CB85C; }
+table span.decrease { font-size: 0.9em; color: #A94442; }
+table span.same     { font-size: 0.9em; color: #6B97AE; }
 
 // Right aligning for numeric columns
 td.numeric { text-align: right; }
@@ -57,7 +60,6 @@ td.uri { word-break: break-all; }
 // bootstrap に元々ある定義の優先度が強いため、ここまで指定しないとこちらが優先されない
 table#table-ship-level tbody>tr>td.achieved { text-align: center; vertical-align: middle; }
 table#table-ship-level tbody>tr>td.soon     { border-color: #5CB85C; border-width: 3px; }
-table#table-ship-level tbody>tr>td span.increase    { font-size: 0.9em; color: #A94442; }
 table#table-ship-level tbody>tr>td span.exp-to-next { font-size: 0.9em; color: #31708F; }
 
 // 活動記録のセル
