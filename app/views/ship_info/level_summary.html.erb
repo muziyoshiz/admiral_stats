@@ -41,8 +41,6 @@
       <tr>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">艦種</th>
         <th class="hidden">デフォルトの表示順（ソート用）</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦娘数</th>
-        <th class="hidden">艦娘数（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均レベル</th>
         <th class="hidden">平均レベル（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">合計レベル</th>
@@ -51,6 +49,8 @@
         <th class="hidden">平均経験値（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">合計経験値</th>
         <th class="hidden">合計経験値（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦娘数</th>
+        <th class="hidden">艦娘数（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5艦娘</th>
         <th class="hidden">★5艦娘（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5艦娘(改)</th>
@@ -62,16 +62,6 @@
         <tr>
           <td class="text-left"><%= st %></td>
           <td class="hidden"><%= idx %></td>
-          <% if @last_nums[st] %>
-              <td class="numeric">
-                <%= @last_nums[st] %>
-                <%== h_span_for_delta(@first_nums[st], @last_nums[st]) %>
-              </td>
-              <td class="hidden"><%= @last_nums[st] %></td>
-          <% else %>
-              <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
-              <td class="hidden">0</td>
-          <% end %>
           <% if @last_avg_levels[st] %>
               <td class="numeric">
                 <%= @last_avg_levels[st].round(1) %>
@@ -108,6 +98,16 @@
                 <%== h_span_for_delta(@first_exps[st], @last_exps[st]) %>
               </td>
               <td class="hidden"><%= @last_exps[st] %></td>
+          <% else %>
+              <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
+          <% end %>
+          <% if @last_nums[st] %>
+              <td class="numeric">
+                <%= @last_nums[st] %>
+                <%== h_span_for_delta(@first_nums[st], @last_nums[st]) %>
+              </td>
+              <td class="hidden"><%= @last_nums[st] %></td>
           <% else %>
               <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
