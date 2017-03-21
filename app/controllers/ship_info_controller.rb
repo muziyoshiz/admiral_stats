@@ -336,9 +336,9 @@ class ShipInfoController < ApplicationController
     end
 
     # サマリのためのデータ取得
-    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_five_stars, @first_five_stars_kai, @first_nums =
+    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_nums =
         [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| first_st_values(v) }
-    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_five_stars, @last_five_stars_kai, @last_nums =
+    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_nums =
         [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| last_st_values(v) }
   end
 

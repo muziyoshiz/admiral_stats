@@ -112,22 +112,22 @@
               <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_five_stars[st] %>
+          <% if @last_5stars[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_five_stars[st] %>
-                <%== h_span_for_delta(@first_five_stars[st], @last_five_stars[st]) %>
+                <%= @last_5stars[st] %>
+                <%== h_span_for_delta(@first_5stars[st], @last_5stars[st]) %>
               </td>
-              <td class="hidden"><%= @last_five_stars[st] %></td>
+              <td class="hidden"><%= @last_5stars[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_five_stars_kai[st] %>
+          <% if @last_5stars_kai[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_five_stars_kai[st] %>
-                <%== h_span_for_delta(@first_five_stars_kai[st], @last_five_stars_kai[st]) %>
+                <%= @last_5stars_kai[st] %>
+                <%== h_span_for_delta(@first_5stars_kai[st], @last_5stars_kai[st]) %>
               </td>
-              <td class="hidden"><%= @last_five_stars_kai[st] %></td>
+              <td class="hidden"><%= @last_5stars_kai[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
