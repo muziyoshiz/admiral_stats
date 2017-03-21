@@ -49,6 +49,9 @@ class GlobalController < ApplicationController
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     if logged_in?
       ShipCard.where(admiral_id: current_admiral.id).each do |card|
+        # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
+        next unless @cards.keys.include?(card.book_no)
+
         if kai_book_numbers.include?(card.book_no)
           @cards[card.book_no][card.card_index + 3] = :acquired
         else
@@ -65,6 +68,9 @@ class GlobalController < ApplicationController
     @rates = {}
     @cards.keys.each{|book_no| @rates[book_no] = [] }
     ShipCardOwnership.where(reported_at: @last_reported_at).each do |own|
+      # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
+      next unless @rates.keys.include?(own.book_no)
+
       rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       if kai_book_numbers.include?(own.book_no)
         @rates[own.book_no][own.card_index + 3] = rate

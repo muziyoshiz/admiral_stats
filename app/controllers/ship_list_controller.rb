@@ -43,6 +43,9 @@ class ShipListController < ApplicationController
     # 所持カードのフラグを立てる
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     ShipCard.where(admiral_id: current_admiral.id).each do |card|
+      # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
+      next unless @cards.keys.include?(card.book_no)
+
       if kai_book_numbers.include?(card.book_no)
         @cards[card.book_no][card.card_index + 3] = :acquired
       else
@@ -60,6 +63,9 @@ class ShipListController < ApplicationController
               'AND s1.remodel_level = s2.remodel_level AND s1.exported_at < s2.exported_at)',
           current_admiral.id ]
     ).each do |status|
+      # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
+      next unless @cards.keys.include?(status.book_no)
+
       # レベル
       # レベルはノーマルも改も同じなので、両者を区別する必要はない
       @statuses[status.book_no] ||= {}
@@ -67,8 +73,9 @@ class ShipListController < ApplicationController
 
       # 星の数
       # 星の数はノーマルと改で別管理なので、remodel_level で区別する
+      # remodel_level = 2 の場合、ノーマルの列に表示する
       @statuses[status.book_no][:star_num] ||= []
-      @statuses[status.book_no][:star_num][status.remodel_level] = status.star_num
+      @statuses[status.book_no][:star_num][(status.remodel_level % 2)] = status.star_num
 
       # 艦娘一覧が空ではないことを表すフラグを立てる
       @is_blank = false

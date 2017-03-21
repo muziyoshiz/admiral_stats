@@ -22,12 +22,13 @@ class ShipStatus < ApplicationRecord
   # （未改造の艦娘と、改造済みの艦娘が、別のデータとして返される）
   # 0: 未改造
   # 1: 改
+  # 2: 改二
   validates :remodel_level,
             presence: true,
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 0,
-                less_than_or_equal_to: 1,
+                less_than_or_equal_to: 2,
             }
 
   # レベル

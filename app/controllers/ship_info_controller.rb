@@ -50,10 +50,10 @@ class ShipInfoController < ApplicationController
     masters = {}
     ShipMaster.all.each{|m| masters[m.book_no] = m }
 
-    # statuses から、「改」だけ独立した図鑑 No. になっている艦娘を除去
+    # statuses から、「改」以上だけ独立した図鑑 No. になっている艦娘を除去
     # statuses の実体は ActiveRecord::relation である。そのため、to_a で配列にするまでは配列のメソッドは使えない
     statuses = statuses.to_a
-    statuses.reject!{|s| masters[s.book_no].kai_only? }
+    statuses.reject!{|s| masters[s.book_no].over_kai_only? }
 
     # キーは図鑑 No. で値は [時刻, レベル または 経験値] の配列
     levels = {}
@@ -105,8 +105,8 @@ class ShipInfoController < ApplicationController
 
     # 最初のステータスと最後のステータスを取得
     statuses.each do |s|
-      # 改カードのみの図鑑エントリは除外
-      next if masters[s.book_no].kai_only?
+      # 改/改二カードのみの図鑑エントリは除外
+      next if masters[s.book_no].over_kai_only?
 
       # exported_at ASC でソート済みのため、その図鑑 No. で最初に登場したものが最初のステータス
       @forecasts[s.book_no] ||= { :name => masters[s.book_no].ship_name, :begin => s }
@@ -277,6 +277,8 @@ class ShipInfoController < ApplicationController
               type_5stars[s.exported_at] += 1
             when 1
               type_5stars_kai[s.exported_at] += 1
+            else
+              # 改二以上のカードは現時点で未実装のため、単純に無視する
           end
         end
       end
