@@ -1000,7 +1000,9 @@ ship_masters = [
         ship_type: '水上機母艦',
         ship_name: '千歳甲',
         variation_num: 3,
-        
+        remodel_level: 2,
+        # 2017-03-23：5隻追加（卯月、大井改二、北上改二、千歳甲、千代田甲）
+        implemented_at: '2017-03-23T07:00:00+09:00',
     },
     {
         book_no: 100,
@@ -1009,7 +1011,9 @@ ship_masters = [
         ship_type: '水上機母艦',
         ship_name: '千代田甲',
         variation_num: 3,
-        
+        remodel_level: 2,
+        # 2017-03-23：5隻追加（卯月、大井改二、北上改二、千歳甲、千代田甲）
+        implemented_at: '2017-03-23T07:00:00+09:00',
     },
     {
         book_no: 101,
@@ -1154,7 +1158,8 @@ ship_masters = [
         ship_name: '大井改二',
         variation_num: 3,
         remodel_level: 2,
-        
+        # 2017-03-23：5隻追加（卯月、大井改二、北上改二、千歳甲、千代田甲）
+        implemented_at: '2017-03-23T07:00:00+09:00',
     },
     {
         book_no: 115,
@@ -1164,7 +1169,8 @@ ship_masters = [
         ship_name: '北上改二',
         variation_num: 3,
         remodel_level: 2,
-        
+        # 2017-03-23：5隻追加（卯月、大井改二、北上改二、千歳甲、千代田甲）
+        implemented_at: '2017-03-23T07:00:00+09:00',
     },
     {
         book_no: 116,
@@ -1638,7 +1644,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '卯月',
         variation_num: 6,
-        
+        # 2017-03-23：5隻追加（卯月、大井改二、北上改二、千歳甲、千代田甲）
+        implemented_at: '2017-03-23T07:00:00+09:00',
     },
     {
         book_no: 166,
