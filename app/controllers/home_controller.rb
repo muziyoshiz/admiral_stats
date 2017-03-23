@@ -55,7 +55,10 @@ class HomeController < ApplicationController
     @histories = []
 
     # カード種別ごとの数を数えるカウンター
-    counters = Array.new(6, 0)
+    # 0, 1, 2 -> ノーマルの通常、ホロ、中破
+    # 3, 4, 5 -> 改の通常、ホロ、中破
+    # 6, 7, 8 -> 改二の通常、ホロ、中破
+    counters = Array.new(9, 0)
 
     # カードをソートするためのインデックス
     index = 0
@@ -97,6 +100,19 @@ class HomeController < ApplicationController
             when 2
               desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[5]} 隻目の改（中破）です。"
               clazz = 'kai-chuha'
+          end
+        when 2
+          counters[card.card_index + 6] += 1 if card.card_index.between?(0, 2)
+          case card.card_index
+            when 0
+              desc = "#{master.ship_name} が着任しました。通算 #{counters[6]} 隻目の改二です。"
+              clazz = 'kai2'
+            when 1
+              desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[7]} 隻目の改二（ホロ）です。"
+              clazz = 'kai2-holo'
+            when 2
+              desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[8]} 隻目の改二（中破）です。"
+              clazz = 'kai2-chuha'
           end
       end
 

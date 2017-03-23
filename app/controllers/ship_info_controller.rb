@@ -207,7 +207,7 @@ class ShipInfoController < ApplicationController
     # キーは艦種で値は [時刻, 合計経験値 または 平均経験値] の配列
     exps, avg_exps = {}, {}
     # キーは艦種で値は [時刻, 星5の艦娘数] の配列
-    five_stars, five_stars_kai = {}, {}
+    five_stars, five_stars_kai, five_stars_kai2 = {}, {}, {}
     # キーは艦種で値は [時刻, 艦娘数] の配列
     nums = {}
 
@@ -267,24 +267,29 @@ class ShipInfoController < ApplicationController
       # 星5の艦娘数
       type_5stars = {}
       type_5stars_kai = {}
+      type_5stars_kai2 = {}
 
       statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
         type_5stars[s.exported_at] ||= 0
         type_5stars_kai[s.exported_at] ||= 0
+        type_5stars_kai2[s.exported_at] ||= 0
         if s.star_num == 5
           case s.remodel_level
             when 0
               type_5stars[s.exported_at] += 1
             when 1
               type_5stars_kai[s.exported_at] += 1
+            when 2
+              type_5stars_kai2[s.exported_at] += 1
             else
-              # 改二以上のカードは現時点で未実装のため、単純に無視する
+              # 改二より上のカードは現時点で未実装のため、単純に無視する
           end
         end
       end
 
       five_stars[ship_type] = type_5stars.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars[exported_at] ] }
       five_stars_kai[ship_type] = type_5stars_kai.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai[exported_at] ] }
+      five_stars_kai2[ship_type] = type_5stars_kai2.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai2[exported_at] ] }
     end
 
     @series_total_level = []
@@ -335,11 +340,19 @@ class ShipInfoController < ApplicationController
       }
     end
 
+    @series_5stars_kai2 = []
+    ship_types.each do |ship_type|
+      @series_5stars_kai2 << {
+          'name' => ship_type,
+          'data' => five_stars_kai2[ship_type],
+      }
+    end
+
     # サマリのためのデータ取得
-    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_nums =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| first_st_values(v) }
-    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_nums =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, nums].map{|v| last_st_values(v) }
+    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_5stars_kai2, @first_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, nums].map{|v| first_st_values(v) }
+    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_5stars_kai2, @last_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, nums].map{|v| last_st_values(v) }
   end
 
   # カード入手数・入手率の表示
@@ -371,10 +384,10 @@ class ShipInfoController < ApplicationController
     updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
 
     # どの時刻にカードが何枚増えたかを調べる
-    # gains[0..5][時刻] = その時刻に増えた枚数
+    # gains[0..8][時刻] = その時刻に増えた枚数
     # 注意：以下のように宣言すると、すべて同じオブジェクトになってしまう
-    # nums = Array.new(6, {})
-    gains = Array.new(6){ Hash.new }
+    # nums = Array.new(9, {})
+    gains = Array.new(9){ Hash.new }
 
     ship_cards.each do |card|
       ship_master = ship_masters.find{|m| m.book_no == card.book_no }
@@ -391,8 +404,12 @@ class ShipInfoController < ApplicationController
           # 改から始まる図鑑 No. の場合は、1枚目のカードを改と見なす
           gains[card.card_index + 3][card.first_exported_at] ||= 0
           gains[card.card_index + 3][card.first_exported_at] += 1
+        when 2
+          # 改二から始まる図鑑 No. の場合は、1枚目のカードを改二と見なす
+          gains[card.card_index + 6][card.first_exported_at] ||= 0
+          gains[card.card_index + 6][card.first_exported_at] += 1
         else
-          # 改二以上のカードは現時点で未実装のため、単純に無視する
+          # 改二より上のカードは現時点で未実装のため、単純に無視する
       end
     end
 
@@ -409,11 +426,11 @@ class ShipInfoController < ApplicationController
     last_timestamp = timestamps.last
 
     # 最終的な枚数を調べる
-    # nums[0..5][時刻] = その時刻までに入手した枚数
-    nums = Array.new(6){ Hash.new }
+    # nums[0..8][時刻] = その時刻までに入手した枚数
+    nums = Array.new(9){ Hash.new }
 
     # 時刻順に積算していく
-    6.times do |idx|
+    9.times do |idx|
       # 1つ前の時刻の値
       prev_num = 0
 
@@ -429,28 +446,28 @@ class ShipInfoController < ApplicationController
     end
 
     # タイムスタンプの最初の日付、および最後の日付の枚数を配列に記録
-    @first_nums = 6.times.map{|idx| nums[idx][first_timestamp] }
-    @last_nums = 6.times.map{|idx| nums[idx][last_timestamp] }
+    @first_nums = 9.times.map{|idx| nums[idx][first_timestamp] }
+    @last_nums = 9.times.map{|idx| nums[idx][last_timestamp] }
 
     # 実装済みの枚数を調べる
-    # nums[0..5][時刻] = その時刻までに実装された枚数
-    impls = Array.new(6){ Hash.new }
+    # nums[0..8][時刻] = その時刻までに実装された枚数
+    impls = Array.new(9){ Hash.new }
 
     # ship_masters テーブルからカード枚数の情報を生成
     released_nums = get_released_nums
 
     # 時刻順に取得していく
-    6.times do |idx|
+    9.times do |idx|
       timestamps.each do |timestamp|
         impls[idx][timestamp] = get_total(released_nums, idx, timestamp)
       end
     end
 
     # 現時点のカード総数に対する割合を計算
-    # rates[0..5][時刻] = 割合
-    rates = Array.new(6){ Hash.new }
+    # rates[0..8][時刻] = 割合
+    rates = Array.new(9){ Hash.new }
 
-    6.times do |idx|
+    9.times do |idx|
       timestamps.each do |exported_at|
         # 整数同士で普通に割り算すると、小数点以下が無視されて 0 になる
         rates[idx][exported_at] = (100.0 * nums[idx][exported_at] / impls[idx][exported_at]).round(1)
@@ -458,8 +475,8 @@ class ShipInfoController < ApplicationController
     end
 
     # タイムスタンプの最初の日付、および最後の日付の割合を配列に記録
-    @first_rates = 6.times.map{|idx| rates[idx][first_timestamp] }
-    @last_rates = 6.times.map{|idx| rates[idx][last_timestamp] }
+    @first_rates = 9.times.map{|idx| rates[idx][first_timestamp] }
+    @last_rates = 9.times.map{|idx| rates[idx][last_timestamp] }
 
     # 全体の数および割合を計算
     total_num_data = []
@@ -470,8 +487,8 @@ class ShipInfoController < ApplicationController
       next if beginning_of_range and exported_at < beginning_of_range
 
       timestamp = exported_at.to_i * 1000
-      num = 6.times.map{|idx| nums[idx][exported_at] }.sum
-      num_impl = 6.times.map{|idx| impls[idx][exported_at] }.sum
+      num = 9.times.map{|idx| nums[idx][exported_at] }.sum
+      num_impl = 9.times.map{|idx| impls[idx][exported_at] }.sum
       total_num_data << [ timestamp, num ]
       total_rate_data << [ timestamp, (100.0 * num / num_impl).round(1) ]
       total_impl_data << [ timestamp, num_impl ]
@@ -486,7 +503,7 @@ class ShipInfoController < ApplicationController
     @first_total_rate = total_rate_data.first[1]
     @last_total_rate = total_rate_data.last[1]
 
-    %w(N Nホロ N中破 改 改ホロ 改中破).each_with_index do |name, idx|
+    %w(N Nホロ N中破 改 改ホロ 改中破 改二 改二ホロ 改二中破).each_with_index do |name, idx|
       num_data = []
       timestamps.each do |exported_at|
         # 指定された期間の結果のみプロット
@@ -580,9 +597,9 @@ class ShipInfoController < ApplicationController
     timestamps = (ship_masters.map{|m| m.implemented_at } + updated_ship_masters.map{|m| m.implemented_at }).uniq.sort
 
     # card_index および時刻ごとの増加枚数を計算
-    gains = Array.new(6){ Hash.new }
+    gains = Array.new(9){ Hash.new }
     # 初期値の設定
-    6.times.each{|idx| timestamps.each{|t| gains[idx][t] = 0 } }
+    9.times.each{|idx| timestamps.each{|t| gains[idx][t] = 0 } }
 
     ship_masters.each do |s|
       case s.remodel_level
@@ -591,8 +608,11 @@ class ShipInfoController < ApplicationController
         when 1
           # 改から始まる図鑑 No. の場合は、1枚目のカードを改と見なす
           s.variation_num.times.each{|idx| gains[idx + 3][s.implemented_at] += 1 }
+        when 2
+          # 改二から始まる図鑑 No. の場合は、1枚目のカードを改二と見なす
+          s.variation_num.times.each{|idx| gains[idx + 6][s.implemented_at] += 1 }
         else
-          # 改二以上のカードは現時点で未実装のため、単純に無視する
+          # 改二より上のカードは現時点で未実装のため、単純に無視する
       end
     end
 
@@ -605,8 +625,8 @@ class ShipInfoController < ApplicationController
     end
 
     # card_index ごとのカード総数を計算
-    released_nums = Array.new(6){ Array.new }
-    6.times.each do |idx|
+    released_nums = Array.new(9){ Array.new }
+    9.times.each do |idx|
       prev_num = 0
       timestamps.each do |implemented_at|
         num = prev_num + gains[idx][implemented_at]

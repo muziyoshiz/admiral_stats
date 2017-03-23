@@ -63,11 +63,14 @@ table#table-ship-level tbody>tr>td.soon     { border-color: #5CB85C; border-widt
 table#table-ship-level tbody>tr>td span.exp-to-next { font-size: 0.9em; color: #31708F; }
 
 // 活動記録のセル
-tr.history td.holo      { color: #8A6D3B; }
-tr.history td.chuha     { color: #A94442; }
-tr.history td.kai       { color: #31708F; background-color: #D9EDF7; }
-tr.history td.kai-holo  { color: #8A6D3B; background-color: #FCF8E3; }
-tr.history td.kai-chuha { color: #A94442; background-color: #F2DEDE; }
+tr.history td.holo       { color: #8A6D3B; }
+tr.history td.chuha      { color: #A94442; }
+tr.history td.kai        { color: #31708F; background-color: #D9EDF7; }
+tr.history td.kai-holo   { color: #8A6D3B; background-color: #FCF8E3; }
+tr.history td.kai-chuha  { color: #A94442; background-color: #F2DEDE; }
+tr.history td.kai2       { color: #31708F; background-color: #B1D9F7; }
+tr.history td.kai2-holo  { color: #8A6D3B; background-color: #FCFC7F; }
+tr.history td.kai2-chuha { color: #A94442; background-color: #F2C0B3; }
 
 // table-responsive の折り返しを許可するバージョン
 .table-responsive-wrappable {
