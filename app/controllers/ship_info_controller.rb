@@ -469,8 +469,13 @@ class ShipInfoController < ApplicationController
 
     9.times do |idx|
       timestamps.each do |exported_at|
-        # 整数同士で普通に割り算すると、小数点以下が無視されて 0 になる
-        rates[idx][exported_at] = (100.0 * nums[idx][exported_at] / impls[idx][exported_at]).round(1)
+        if impls[idx][exported_at] == 0
+          # 改二が未実装の期間の場合は、0 にする
+          rates[idx][exported_at] = 0.0
+        else
+          # 整数同士で普通に割り算すると、小数点以下が無視されて 0 になる
+          rates[idx][exported_at] = (100.0 * nums[idx][exported_at] / impls[idx][exported_at]).round(1)
+        end
       end
     end
 
@@ -498,10 +503,13 @@ class ShipInfoController < ApplicationController
     @series_impl = [{ 'name' => '全体', 'data' => total_impl_data }]
 
     # サマリ表示のために、最初の日付、および最後の日付の合計値・割合を変数に保存
-    @first_total_num = total_num_data.first[1]
-    @last_total_num = total_num_data.last[1]
-    @first_total_rate = total_rate_data.first[1]
-    @last_total_rate = total_rate_data.last[1]
+    # 指定された期間のデータがない場合は、何も代入しない
+    if (total_num_data.present? and total_rate_data.present?)
+      @first_total_num = total_num_data.first[1]
+      @last_total_num = total_num_data.last[1]
+      @first_total_rate = total_rate_data.first[1]
+      @last_total_rate = total_rate_data.last[1]
+    end
 
     %w(N Nホロ N中破 改 改ホロ 改中破 改二 改二ホロ 改二中破).each_with_index do |name, idx|
       num_data = []
