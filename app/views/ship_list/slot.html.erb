@@ -24,8 +24,14 @@
           </div>
           <div class="panel-body">
             <ul>
-              <li>ノーマル艦娘と改艦娘は装備スロットが分かれているため、両方とも表示しています。</li>
-              <li>すでに改カードを入手している艦娘の、ノーマルカードの装備を強調表示しています。装備の整理にお役立てください。</li>
+              <li>ノーマル艦娘、改艦娘、改二艦娘は装備スロットが分かれているため、両方とも表示しています。</li>
+              <li>
+                すでに上位カードを入手している艦娘の、それ以外の装備を強調表示しています。装備の整理にお役立てください。
+                <ul>
+                  <li>例1）すでに吹雪改を入手している場合に、ノーマル吹雪の装備を強調表示</li>
+                  <li>例2）すでに北上改二を入手している場合に、ノーマル北上、北上改の装備を強調表示</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
@@ -35,10 +41,11 @@
 
 <div id="select-ship-types" class="container" style="margin-top: 10px;">
   <a id="button-all"                  class="btn btn-primary btn-default">すべて</a>
-  <a id="button-normal-only"          class="btn btn-default">ノーマルのみ表示</a>
-  <a id="button-kai-only"             class="btn btn-default">改のみ表示</a>
-  <a id="button-ignore-unused-normal" class="btn btn-default">改を優先して表示</a>
-  <a id="button-unused-normal-only"   class="btn btn-default">改がいるノーマル艦娘のみ表示</a>
+  <a id="button-normal-only"          class="btn btn-default">ノーマルのみ</a>
+  <a id="button-kai-only"             class="btn btn-default">改のみ</a>
+  <a id="button-kai2-only"            class="btn btn-default">改二のみ</a>
+  <a id="button-ignore-unused-normal" class="btn btn-default">最上位のみ</a>
+  <a id="button-unused-normal-only"   class="btn btn-default">上位艦がいる艦娘のみ</a>
 </div>
 
 <div class="container">
@@ -50,7 +57,7 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">改</th>
-        <th class="hidden">改（ソート用）</th>
+        <th class="hidden">改（ソートおよび検索用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット1</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット2</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット3</th>
@@ -64,7 +71,7 @@
         <th class="text-left hidden-xs">艦種</th>
         <th class="text-left">艦名</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">改</th>
-        <th class="hidden">改（ソート用）</th>
+        <th class="hidden">改（ソートおよび検索用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット1</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット2</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット3</th>
@@ -75,14 +82,16 @@
       <tbody>
       <% @statuses.each do |status| %>
           <% ship = @ships[status.book_no] %>
-          <% kai_exists = kai_exists_for?(status, @ships, @statuses) %>
-          <tr <%== 'class="unused-normal"' if kai_exists %>>
+          <% upper_level_exists = upper_level_exists_for?(status, @ships, @statuses) %>
+          <tr <%== 'class="unused-normal"' if upper_level_exists %>>
             <td class="numeric"><%= ship.book_no %></td>
             <td class="text-left hidden-xs"><%= ship.ship_type_by_status(status) %></td>
             <td class="text-left"><%= ship.ship_name %></td>
             <td class="text-left">
               <% if status.remodel_level == 1 %>
                   改
+              <% elsif status.remodel_level == 2 %>
+                  改二
               <% else %>
                   <span class="hidden">N</span>
               <% end %>
@@ -106,7 +115,7 @@
                     <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
                 <% end %>
             <% end %>
-            <td class="hidden"><%= kai_exists %></td>
+            <td class="hidden"><%= upper_level_exists %></td>
           </tr>
       <% end %>
       </tbody>
@@ -128,13 +137,14 @@
       e.preventDefault();
       $('#select-ship-types').children('a').removeClass('btn-primary');
       $(e.currentTarget).addClass('btn-primary');
-      table.columns(3).search(remodel);
+      table.columns(4).search(remodel);
       table.columns(9).search(unusedNormal).draw();
     }
 
     $('#button-all'                 ).on('click', function (e) { selectCondition(e, '',  ''); } );
-    $('#button-normal-only'         ).on('click', function (e) { selectCondition(e, 'N', ''); } );
-    $('#button-kai-only'            ).on('click', function (e) { selectCondition(e, '改', ''); } );
+    $('#button-normal-only'         ).on('click', function (e) { selectCondition(e, '0', ''); } );
+    $('#button-kai-only'            ).on('click', function (e) { selectCondition(e, '1', ''); } );
+    $('#button-kai2-only'           ).on('click', function (e) { selectCondition(e, '2', ''); } );
     $('#button-ignore-unused-normal').on('click', function (e) { selectCondition(e, '',  'false'); } );
     $('#button-unused-normal-only'  ).on('click', function (e) { selectCondition(e, '',  'true'); } );
   });
