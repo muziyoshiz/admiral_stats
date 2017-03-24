@@ -25,6 +25,13 @@ class AdmiralInfoController < ApplicationController
       # 過去1ヶ月分の提督情報を一括取得
       admiral_statuses = AdmiralStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           order(exported_at: :asc)
+
+      # 指定された期間にデータがなければ、範囲を全期間に変えて検索し直す
+      if admiral_statuses.blank?
+        @error = '指定された期間にデータが存在しなかったため、全期間のデータを表示します。'
+        @range = :all
+        admiral_statuses = AdmiralStatus.where(admiral_id: current_admiral.id).order(exported_at: :asc)
+      end
     end
 
     # 提督情報がなければ、処理を終了

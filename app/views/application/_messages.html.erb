@@ -1,0 +1,21 @@
+<%# partial template の内部では、locals で定義していない変数を直接参照するとエラーが発生する。
+    local_assigns 経由でアクセスすると、エラーが発生せずに nil が返される。
+%>
+<% if local_assigns[:error] -%>
+    <div class="alert alert-danger alert-dismissable" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <% if local_assigns[:messages] %>
+          <% messages.each do |msg| %>
+              <%= msg %><br/>
+          <% end %>
+      <% end %>
+      <strong>エラー：</strong> <%= error %>
+    </div>
+<% elsif local_assigns[:messages] %>
+    <div class="alert alert-success alert-dismissable" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <% messages.each do |msg| %>
+          <%= msg %><br/>
+      <% end %>
+    </div>
+<% end -%>

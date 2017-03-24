@@ -29,6 +29,14 @@ class ShipInfoController < ApplicationController
       # TODO MySQL の ONLY_FULL_GROUP_BY 対策
       statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           group(:book_no, :exported_at).order(book_no: :asc, exported_at: :asc)
+
+      # 指定された期間にデータがなければ、範囲を全期間に変えて検索し直す
+      if statuses.blank?
+        @error = '指定された期間にデータが存在しなかったため、全期間のデータを表示します。'
+        @range = :all
+        statuses = ShipStatus.where(admiral_id: current_admiral.id).
+            group(:book_no, :exported_at).order(book_no: :asc, exported_at: :asc)
+      end
     end
 
     # 艦種を指定したい場合は、以下のクエリを実行する
@@ -185,6 +193,13 @@ class ShipInfoController < ApplicationController
       # そのため、remodel_level も取得する
       statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
+
+      # 指定された期間にデータがなければ、範囲を全期間に変えて検索し直す
+      if statuses.blank?
+        @error = '指定された期間にデータが存在しなかったため、全期間のデータを表示します。'
+        @range = :all
+        statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
+      end
     end
 
     # 艦娘データがない場合
@@ -368,6 +383,15 @@ class ShipInfoController < ApplicationController
 
     # 表示期間が「全期間」以外の場合は、その期間の開始時刻を調べる
     beginning_of_range = get_beginning_of_range_by(@range)
+
+    if beginning_of_range
+      # 指定された期間にデータがなければ、範囲を全期間に変える
+      unless ShipCardTimestamp.where(['admiral_id = ? AND exported_at >= ?', current_admiral.id, beginning_of_range]).exists?
+        @error = '指定された期間にデータが存在しなかったため、全期間のデータを表示します。'
+        @range = :all
+        beginning_of_range = nil
+      end
+    end
 
     # 入手済みのカードのデータを全入手
     ship_cards = ShipCard.where(admiral_id: current_admiral.id)
