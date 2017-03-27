@@ -1,7 +1,10 @@
 language: ruby
 rvm:
-  - 2.3.1
+- 2.3.1
 services:
-  - mysql
+- mysql
 before_install:
-  - mysql -e 'CREATE DATABASE admiral_stats_test'
+- mysql -e 'CREATE DATABASE admiral_stats_test'
+notifications:
+  slack:
+    secure: U2/hb7gj78GOWM/kd5MBRRc6OqYf+BgXsms6LjDIRX8WuMYthxgLLQ70xSlBEs7e3LmNcq7v4glT0sdPOPYICfkEYabu6M91wnvR+l1uf136CXcdtgtIaUQwa8/gDfxKEzuqbUaZ54+V4NDTBHIGuUxgR7hKbe8A2ok4oWqte5Vk1cWmoh6O9JFTVAqPr6hRpEZfP56BIgnWoHNFQdnbiyD/dR3oVUsvbxc9RGIP14BkT/OVWtxW5+895iE+910O+4AxB8iM/aNVE9FmgAKFtcHZ8w2U5NeUXLePj8LhqzFnECfjO8iRVJHl9Jl5E3SyQbTd2mKwnbktZHRxRAnf8CUO5HLPSO02XpO7QF9CApuv5Qjg+HfT6DOu7umOSw1+4vOR98qGf0y5r1H1BFug55XfljFUNhXTU1GhOtGj4DFQRxUVkiHDUtWih1oXVGo5Kw+aDqk1yApHUekkaqRR8nsPncMhae183jVKbWsApBOfX/gTlm4et5tBfLTbcCXh5QOQue4VyTDzY0v2a64PWQ33EEklcygaI+Oc79rnCSUErDAjLd186HQraRc1CwYLTRVupNmsdXYgtjuI9HZiTOb3Wr7VZ/f2vGVniN/ef5/XsiaBB8H0szWiY/AG8XJ/KD8k3C/nSpPXH7G4VuSM0NT5M4LuDfxvh59lmes+hR0=
