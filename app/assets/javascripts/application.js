@@ -12,15 +12,18 @@
 //
 //= require jquery
 //= require jquery_ujs
+
 //= require bootstrap-sprockets
 //= require dataTables/jquery.dataTables
 //= require dataTables/bootstrap/3/jquery.dataTables.bootstrap
+
 //= require highcharts
 //= require highcharts/highcharts-more
-
-// チャート画像のダウンロード機能
+// 以下2点は、チャート画像のダウンロード機能のために必要
 //= require highcharts/modules/exporting
 //= require highcharts/modules/offline-exporting
+
+//= require clipboard
 
 //= require_tree .
 

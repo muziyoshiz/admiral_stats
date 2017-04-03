@@ -3,15 +3,15 @@
 </div>
 
 <div class="container">
-  <% if @tokens.blank? %>
+  <% if @token.blank? %>
       <p>
         「トークンの新規発行」ボタンを押すと API トークンを発行します。<br>
-        発行した API トークンを提督情報エクスポータに設定してください。
+        発行した API トークンを提督情報エクスポータに設定すると、エクスポート結果を Admiral Stats に自動アップロードできるようになります。
       </p>
   <% else %>
       <p>
-        この API トークンを提督情報エクスポータに設定してください。<br>
-        使い方は <%= link_to 'リンク先', exporter_url, :target => '_blank' %> をご覧ください。
+        この API トークンを提督情報エクスポータに設定すると、エクスポート結果を Admiral Stats に自動アップロードできるようになります。<br>
+        設定方法は <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。
       </p>
       <div class="table-responsive-wrappable">
         <table class="table table-striped">
@@ -22,25 +22,27 @@
           </tr>
           </thead>
           <tbody>
-          <% @tokens.each do |token| %>
-              <tr>
-                <td><%= token.issued_at.to_s(:datetime) %></td>
-                <td class="token"><%= token.token %></td>
-              </tr>
-          <% end %>
+            <tr>
+              <td><%= @token.issued_at.to_s(:datetime) %></td>
+              <td class="token">
+                <div id="token" style="margin-bottom: 8px;"><%= @token.token %></div>
+                <button class="clipboard-btn btn btn-default" data-clipboard-target="#token">クリップボードにコピー</button>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
   <% end %>
   <%= form_tag({ action: :create } ) do %>
-      <% if @tokens.blank? %>
+      <% if @token.blank? %>
           <div class="form-group">
             <%= submit_tag 'トークンの新規発行', :class => 'btn btn-primary' %>
           </div>
       <% else %>
           <div class="form-group">
             <p>
-              API トークンを変更したい場合は以下のボタンを押してください。トークンを再発行すると、いままでのトークンは使えなくなります。
+              API トークンを間違えて公開してしまった、などの理由でトークンを変更したい場合は以下のボタンを押してください。<br>
+              トークンを再発行すると、いままでのトークンは使えなくなります。
             </p>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm">
               トークンの再発行
@@ -66,3 +68,46 @@
       <% end %>
   <% end %>
 </div>
+
+<% unless @token.blank? %>
+    <script type="application/javascript">
+      function setTooltip(btn, message) {
+        $(btn).tooltip('hide')
+          .attr('data-original-title', message)
+          .tooltip('show');
+      }
+
+      function hideTooltip(btn) {
+        setTimeout(function() {
+          // tooltip('hide') とすると、ボタンを2回目に押したときに
+          // ツールチップがすぐに消えてしまう不具合が発生した。
+          // そのため、destory で破棄するようにした。
+          $(btn).tooltip('destroy');
+        }, 1500);
+      }
+
+      var clipboard = new Clipboard('.clipboard-btn');
+
+      clipboard.on('success', function(e) {
+        $('.clipboard-btn').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+
+        setTooltip(e.trigger, 'コピーしました');
+        hideTooltip(e.trigger);
+        e.clearSelection();
+      });
+
+      clipboard.on('error', function(e) {
+        $('.clipboard-btn').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+
+        setTooltip(e.trigger, 'コピーに失敗しました');
+        hideTooltip(e.trigger);
+        e.clearSelection();
+      });
+    </script>
+<% end %>

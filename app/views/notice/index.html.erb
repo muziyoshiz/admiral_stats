@@ -6,6 +6,14 @@
   <h3>2017年</h3>
   <ul>
     <li>
+      2017年3月19日更新：以下のページの先頭に、集計結果の概要がわかる表を追加しました。
+      <ul>
+        <li><%= link_to_if_logged_in '提督情報 > 基本情報', controller: 'admiral_info', action: 'index' %></li>
+        <li><%= link_to_if_logged_in '艦娘情報 > レベル・経験値・★5艦娘数（艦種別）', controller: 'ship_info', action: 'level_summary' %></li>
+        <li><%= link_to_if_logged_in '艦娘情報 > カード入手数・入手率', controller: 'ship_info', action: 'card' %></li>
+      </ul>
+    </li>
+    <li>
       2017年3月12日更新(2)：<%= link_to '提督情報エクスポータ（PowerShell 版）', exporter_url, :target => '_blank' %> に自動アップロード機能を追加しました。今回も <%= link_to '@sophiarcp', 'http://twitter.com/sophiarcp', :target => '_blank' %> さんにコードを寄贈いただきました。ありがとうございます！
     </li>
     <li>

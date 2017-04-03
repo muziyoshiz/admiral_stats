@@ -65,6 +65,7 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    clipboard-rails (1.6.1)
     coffee-rails (4.2.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.2.x)
@@ -215,6 +216,7 @@ DEPENDENCIES
   capistrano (~> 3.1)
   capistrano-rails (~> 1.1)
   capistrano-rvm
+  clipboard-rails (~> 1.6.1)
   coffee-rails (~> 4.2)
   google-analytics-rails (= 1.1.0)
   highcharts-rails (~> 4.2.5)

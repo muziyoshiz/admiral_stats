@@ -82,3 +82,6 @@ gem 'jwt', '~> 1.5.6'
 
 # Rack CORS Middleware for API (/api/*)
 gem 'rack-cors', :require => 'rack/cors'
+
+# clipboard.js
+gem 'clipboard-rails', '~> 1.6.1'
