@@ -1,0 +1,45 @@
+<div class="page-header">
+  <%= render partial: 'messages', locals: {messages: @messages, error: @error} %>
+  <h2><%= title %></h2>
+</div>
+
+<div class="container">
+  <%= form_tag({ action: :create_or_update }, { class: 'form-horizontal' }) do %>
+      <div class="form-group">
+        <label for="publication_name" class="control-label col-sm-2">提督名</label>
+        <div class="col-sm-10">
+          <%= text_field :publication, :name, size: 32 %>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="publication_url_name" class="control-label col-sm-2">URLに含める名前</label>
+        <div class="col-sm-10">
+          <%= text_field :publication, :url_name, size: 16 %><br>
+          ※ 半角英数およびアンダーバー（_）のみが使えます
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="publication_opens_twitter_nickname" class="control-label col-sm-2">Twitter アカウントの公開</label>
+        <div class="col-sm-10">
+          <%= check_box :publication, :opens_twitter_nickname %><br>
+          ※ このチェックボックスを ON にすると、Admiral Stats へのログインに使っている twitter アカウントも公開します
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="publication_opens_ship_list" class="control-label col-sm-2">艦娘一覧の公開</label>
+        <div class="col-sm-10">
+          <%= check_box :publication, :opens_ship_list %>
+          <% if @publication.url_name %>
+              <br>
+              <% url = url_for(controller: 'public_ship_list', action: 'index', url_name: @publication.url_name, only_path: false) %>
+              <%= link_to url, url %>
+          <% end %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <%= submit_tag '変更を保存', :class => 'btn btn-primary' %>
+        </div>
+      </div>
+  <% end %>
+</div>

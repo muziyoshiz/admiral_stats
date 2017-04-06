@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  admiral_id: 1
+  name: MyString
+  url_name: MyString
+  opens_twitter_nickname: false
+  opens_ship_list: false
+
+two:
+  admiral_id: 2
+  name: MyString
+  url_name: MyString2
+  opens_twitter_nickname: false
+  opens_ship_list: false

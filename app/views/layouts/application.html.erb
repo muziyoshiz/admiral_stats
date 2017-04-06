@@ -80,7 +80,7 @@
           <ul class="nav navbar-nav navbar-right">
             <% if logged_in? %>
                 <li class="dropdown <%==
-                  if current_page?(controller: 'about') or current_page?(controller: 'token') or current_page?(controller: 'request_log')
+                  if current_page?(controller: 'about') or current_page?(controller: 'token') or current_page?(controller: 'request_log') or current_page?(controller: 'publication')
                     'active'
                   end
                 %>">
@@ -88,6 +88,7 @@
                   <ul class="dropdown-menu">
                     <li><%= link_to 'API トークンの設定', controller: 'token', action: 'index' %></li>
                     <li><%= link_to 'API ログの確認', controller: 'request_log', action: 'index' %></li>
+                    <li><%= link_to '情報公開の設定', controller: 'publication', action: 'index' %></li>
                     <li><%= link_to 'Admiral Stats について', controller: 'about' %></li>
                     <li><%= link_to 'ログアウト', logout_path %></li>
                   </ul>

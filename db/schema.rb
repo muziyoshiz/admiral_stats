@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170307125227) do
+ActiveRecord::Schema.define(version: 20170406144116) do
+
+  create_table "admiral_publications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "admiral_id",                                        null: false
+    t.string   "name",                   limit: 32,                 null: false
+    t.string   "url_name",               limit: 32,                 null: false
+    t.boolean  "opens_twitter_nickname",            default: false, null: false
+    t.boolean  "opens_ship_list",                   default: false, null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
+    t.index ["admiral_id"], name: "index_admiral_publications_on_admiral_id", unique: true, using: :btree
+    t.index ["url_name"], name: "index_admiral_publications_on_url_name", unique: true, using: :btree
+  end
 
   create_table "admiral_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                null: false

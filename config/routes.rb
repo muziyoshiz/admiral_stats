@@ -45,11 +45,18 @@ Rails.application.routes.draw do
   # 以下の記載を追加すると root_url メソッドも自動設定される
   root to: 'home#index'
 
+  # Public play data
+  scope 'admirals/:url_name' do
+    get 'ship_list', to: 'public_ship_list#index'
+  end
+
   # Settings
   scope 'settings' do
     get 'request_logs', to: 'request_log#index'
     get 'tokens', to: 'token#index'
     post 'tokens', to: 'token#create'
+    get 'publications', to: 'publication#index'
+    post 'publications', to: 'publication#create_or_update'
   end
 
   # API

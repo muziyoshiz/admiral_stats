@@ -9,7 +9,7 @@ class AdmiralToken < ApplicationRecord
   # 認証トークン（JWT）
   validates :token,
             presence: true,
-            length: {  maximum: 255 }
+            length: { maximum: 255 }
 
   # 発行時刻
   # 認証トークンに含まれる iat (issued at) と同じ時刻
