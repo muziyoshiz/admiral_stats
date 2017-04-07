@@ -23,9 +23,15 @@
       すべてのエクスポータに、Admiral Stats への自動アップロード機能を実装完了しました。<strong>Safari および iOS でもお使いいただけます</strong>。<br>
       まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
     </li>
+    <li>
+      2017年4月7日更新：自分のプレイデータ（艦娘一覧）を公開する機能を追加しました。
+      <ul>
+        <li>サンプル：<%= link_to 'ムジ提督の艦娘一覧', 'https://www.admiral-stats.com/admirals/muziyoshiz/ship_list' %><br></li>
+        <li><%= link_to_if_logged_in '「情報公開の設定」ページ', controller: 'publication', action: 'index' %> で設定を ON にすると、公開用 URL が割り当てられます。</li>
+        <li>公開したくない場合は、デフォルト設定（OFF）のままにしておけば公開されないのでご安心ください。</li>
+      </ul>
+    </li>
     <li>2017年4月3日更新：<%= link_to_if_logged_in '「API トークンの発行」ページ', controller: 'token', action: 'index' %> を微修正しました（「クリップボードにコピー」ボタンの追加など）。</li>
-    <li>2017年3月23日更新：ホーム画面の「活動記録」、艦娘情報の一部、装備スロットページで改二を表示できていなかった不具合を修正しました。不具合報告ありがとうございました！</li>
-    <li>2017年3月21日更新：改二艦娘のインポート・表示処理を一部実装しました。あくまでデータ形式を予想して作っただけなので、うまく動かない可能性があります。</li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
     </li>
