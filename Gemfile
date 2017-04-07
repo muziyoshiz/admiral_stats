@@ -85,3 +85,6 @@ gem 'rack-cors', :require => 'rack/cors'
 
 # clipboard.js
 gem 'clipboard-rails', '~> 1.6.1'
+
+# jquery.qrcode.js
+gem 'jquery-qrcode-rails'

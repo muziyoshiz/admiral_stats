@@ -24,6 +24,7 @@
 //= require highcharts/modules/offline-exporting
 
 //= require clipboard
+//= require jquery-qrcode
 
 //= require_tree .
 

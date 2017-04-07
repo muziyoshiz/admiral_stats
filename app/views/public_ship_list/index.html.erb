@@ -6,6 +6,9 @@
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   </div>
   <% end %>
+
+  <button id="qrcode-btn" class="btn btn-default">QR コードの表示</button>
+  <div id="qrcode" style="display: none;"></div>
 </div>
 
 <div class="row">
@@ -225,5 +228,17 @@
     if (keyword) {
       table.search(keyword).draw();
     }
+
+    // QRCode の表示
+    // https://github.com/bayetech/jquery-qrcode-rails
+    $('#qrcode').qrcode({
+      size: 200,
+      text: '<%== request.url %>',
+    });
+
+    $('#qrcode-btn').on('click', function() {
+      $('#qrcode-btn').hide();
+      $('#qrcode').show();
+    })
   });
 </script>
