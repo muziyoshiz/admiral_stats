@@ -8,31 +8,36 @@
       <div class="form-group">
         <label for="publication_name" class="control-label col-sm-2">提督名</label>
         <div class="col-sm-10">
-          <%= text_field :publication, :name, size: 32 %>
+          <%= text_field :publication, :name, maxlength: 32, class: 'form-control' %>
         </div>
       </div>
       <div class="form-group">
         <label for="publication_url_name" class="control-label col-sm-2">URLに含める名前</label>
         <div class="col-sm-10">
-          <%= text_field :publication, :url_name, size: 16 %><br>
-          ※ 半角英数およびアンダーバー（_）のみが使えます
+          <%= text_field :publication, :url_name, maxlength: 16, class: 'form-control' %>
+          <span class="help-block" style="margin-bottom: 0px;">半角英数およびアンダーバー（_）のみが使えます</span>
         </div>
       </div>
       <div class="form-group">
-        <label for="publication_opens_twitter_nickname" class="control-label col-sm-2">Twitter アカウントの公開</label>
-        <div class="col-sm-10">
-          <%= check_box :publication, :opens_twitter_nickname %><br>
-          ※ このチェックボックスを ON にすると、Admiral Stats へのログインに使っている twitter アカウントも公開します
+        <div class="col-sm-offset-2 col-sm-10">
+          <label>
+            <%= check_box :publication, :opens_twitter_nickname %> Twitter アカウントの公開
+          </label>
+          <span class="help-block" style="margin-bottom: 0px;">
+            このチェックボックスを ON にすると、Admiral Stats へのログインに使っている twitter アカウント（@<%= current_admiral.twitter_nickname %>）も公開します
+          </span>
         </div>
       </div>
       <div class="form-group">
-        <label for="publication_opens_ship_list" class="control-label col-sm-2">艦娘一覧の公開</label>
-        <div class="col-sm-10">
-          <%= check_box :publication, :opens_ship_list %>
+        <div class="col-sm-offset-2 col-sm-10">
+          <label>
+            <%= check_box :publication, :opens_ship_list %> 艦娘一覧の公開
+          </label>
           <% if @publication.url_name %>
-              <br>
-              <% url = url_for(controller: 'public_ship_list', action: 'index', url_name: @publication.url_name, only_path: false) %>
-              <%= link_to url, url %>
+              <span class="help-block" style="margin-bottom: 0px;">
+                <% url = url_for(controller: 'public_ship_list', action: 'index', url_name: @publication.url_name, only_path: false) %>
+                <%= link_to url, url %>
+              </span>
           <% end %>
         </div>
       </div>
