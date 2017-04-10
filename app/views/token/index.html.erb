@@ -27,7 +27,9 @@
               <td><%= @token.issued_at.to_s(:datetime) %></td>
               <td class="token">
                 <div id="token" style="margin-bottom: 8px;"><%= @token.token %></div>
-                <button class="clipboard-btn btn btn-default" data-clipboard-target="#token">クリップボードにコピー</button>
+                <button class="clipboard-btn btn btn-default btn-sm" data-clipboard-target="#token">
+                  クリップボードにコピー <span class="glyphicon glyphicon-copy"></span>
+                </button>
               </td>
             </tr>
           </tbody>

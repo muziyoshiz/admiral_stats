@@ -36,7 +36,10 @@
           <% if @publication.url_name %>
               <span class="help-block" style="margin-bottom: 0px;">
                 <% url = url_for(controller: 'public_ship_list', action: 'index', url_name: @publication.url_name, only_path: false) %>
-                <%= link_to url, url %>
+                <%= link_to url, url, id: 'ship_list_url' %>
+                <button class="clipboard-btn btn btn-default btn-sm" data-clipboard-target="#ship_list_url" type="button">
+                  クリップボードにコピー <span class="glyphicon glyphicon-copy"></span>
+                </button>
               </span>
           <% end %>
         </div>
@@ -73,3 +76,46 @@
     $('#publication_opens_ship_list').on('change', function () { $('#settings_save').removeAttr('disabled') });
   });
 </script>
+
+<% if @publication.url_name %>
+    <script type="application/javascript">
+      function setTooltip(btn, message) {
+        $(btn).tooltip('hide')
+          .attr('data-original-title', message)
+          .tooltip('show');
+      }
+
+      function hideTooltip(btn) {
+        setTimeout(function() {
+          // tooltip('hide') とすると、ボタンを2回目に押したときに
+          // ツールチップがすぐに消えてしまう不具合が発生した。
+          // そのため、destory で破棄するようにした。
+          $(btn).tooltip('destroy');
+        }, 1500);
+      }
+
+      var clipboard = new Clipboard('.clipboard-btn');
+
+      clipboard.on('success', function(e) {
+        $('.clipboard-btn').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+
+        setTooltip(e.trigger, 'コピーしました');
+        hideTooltip(e.trigger);
+        e.clearSelection();
+      });
+
+      clipboard.on('error', function(e) {
+        $('.clipboard-btn').tooltip({
+          trigger: 'click',
+          placement: 'bottom'
+        });
+
+        setTooltip(e.trigger, 'コピーに失敗しました');
+        hideTooltip(e.trigger);
+        e.clearSelection();
+      });
+    </script>
+<% end %>
