@@ -22,13 +22,14 @@ class PublicationController < ApplicationController
               opens_ship_list: params[:publication][:opens_ship_list]
           )
         else
-          @publication = AdmiralPublication.create!(
+          @publication = AdmiralPublication.new(
               admiral_id: current_admiral.id,
               name: params[:publication][:name],
               url_name: params[:publication][:url_name],
               opens_twitter_nickname: params[:publication][:opens_twitter_nickname],
               opens_ship_list: params[:publication][:opens_ship_list]
           )
+          @publication.save!
         end
 
         @messages = ['情報公開の設定の更新に成功しました。']
