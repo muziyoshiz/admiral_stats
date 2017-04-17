@@ -46,9 +46,13 @@ Rails.application.routes.draw do
   root to: 'home#index'
 
   # Public play data
-  scope 'admirals/:url_name' do
-    get 'ship_list', to: 'public_ship_list#index'
+  scope '/@:url_name' do
+    # 公開情報の種類が2種類以上になったら、リダイレクト処理を変更する
+    get '/', to: redirect('/@%{url_name}/ship_list')
+    get '/ship_list', to: 'public_ship_list#index'
   end
+  # 古い URL を、互換性維持のために残す
+  get 'admirals/:url_name/ship_list', to: redirect('/@%{url_name}'), constraints: { format: :html }
 
   # Settings
   scope 'settings' do
