@@ -38,6 +38,37 @@
   </p>
 </div>
 
+<div class="container" style="margin-top: 18px;">
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="panel panel-warning">
+        <div class="panel-heading">SEGA 公式サイトを使ったことがない場合</div>
+        <div class="panel-body">
+          <p>
+            <%= link_to 'SEGA 公式のプレイヤーズサイト', sega_url, target: '_blank' %> のアカウントをお持ちでない場合は、先に以下の作業が必要です。
+          </p>
+          <ol>
+            <li>
+              SEGA ID の登録
+              <ul>
+                <li><%= link_to 'SEGA ID 新規登録ページ', 'https://gw.sega.jp/gw/create/create1.html', target: '_blank' %> の指示に従って、登録してください。</li>
+              </ul>
+            </li>
+            <li>
+              公式プレイヤーズサイト（提督情報ページ）ヘのログイン確認
+              <ul>
+                <li><%= link_to '提督情報ページ', sega_url, target: '_blank' %> の指示に従って、初回ログインを行ってください。</li>
+                <li>初回ログイン時に、SEGA ID と Aime カードのひも付けが行われます。</li>
+                <li>このページで自分のプレイデータを閲覧できない場合は、以下で説明するエクスポータも動作しません。</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <hr>
 
 <h3>3種類のエクスポータ</h3>
@@ -103,8 +134,8 @@
 <div class="container">
   <p>
     2017-03-12 時点のバージョンで動作確認した結果です。<br>
-    Safari および iOS は、自動アップロードは可能ですが、ローカルへのファイルダウンロードができないという制限があります。
-    <%= link_to 'GitHub でソースコード公開してます', 'https://github.com/muziyoshiz/admiral_stats_exporter_js', target: '_blank' %> のでプルリク歓迎です。
+    Safari および iOS は、自動アップロードは可能ですが、ローカルへのファイルダウンロードができないという制限があります。<br>
+    ブックマークレット版も <%= link_to 'GitHub でソースコードを公開しています', 'https://github.com/muziyoshiz/admiral_stats_exporter_js', target: '_blank' %>。プルリクはいつでも歓迎です。
   </p>
 
   <div class="table-responsive-wrappable">
@@ -112,8 +143,8 @@
       <thead>
       <tr>
         <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">OS</th>
-        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">動作する</th>
-        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">動作するがダウンロードは不可</th>
+        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">自動アップロードもダウンロードも動作する</th>
+        <th class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">自動アップロードは動作するがダウンロードは不可</th>
       </tr>
       </thead>
       <tbody>
@@ -129,7 +160,7 @@
       </tr>
       <tr>
         <td>Android</td>
-        <td>Chrome</td>
+        <td>Chrome（※一部環境は自動アップロードのみ動作）</td>
         <td></td>
       </tr>
       <tr>
