@@ -27,6 +27,7 @@
       <thead>
       <tr>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-3">日時</th>
+        <th class="hidden">インデックス（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">要求</th>
         <th class="text-left col-xl-4 col-lg-4 col-md-4 col-sm-3 col-xs-3">URI</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">応答</th>
@@ -36,6 +37,7 @@
       <tfoot>
       <tr>
         <th class="text-left">日時</th>
+        <th class="hidden">インデックス（ソート用）</th>
         <th class="text-left">要求</th>
         <th class="text-left">URI</th>
         <th class="text-left">応答</th>
@@ -46,6 +48,7 @@
       <% @request_logs.each do |log| %>
           <tr>
             <td class="text-left"><%= log.created_at.to_s(:datetime) %></td>
+            <td class="hidden"><%= log.created_at.to_i %></td>
             <td class="text-left"><%= log.request_method %></td>
             <td class="text-left uri"><%= log.request_uri.gsub(/https?:\/\/[^\/]+/, '') %></td>
             <td class="text-left"><%= log.status_code %></td>
@@ -62,8 +65,10 @@
     $('#table-request-logs').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "paging": true,
       "sorting": [ 0, "desc" ],
-      "columnDefs": [
-        { orderable: false, targets: [ 1, 2, 3, 4 ] }
+      "aoColumnDefs": [
+        <!-- インデックスでソートするための設定 -->
+        { "iDataSort": 1, "aTargets": [ 0 ] },
+        { orderable: false, targets: [ 2, 3, 4, 5 ] }
       ],
     }));
   } );
