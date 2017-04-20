@@ -73,7 +73,8 @@ class ApiImportController < ApplicationController
       when :ship_list
         save_ship_statuses(jwt_current_admiral.id, exported_at, json, api_version)
       when :event_info
-        save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+        # save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+        [:ok, '第2回イベントのデータ形式が判明するまでは、イベント進捗情報のインポートをスキップします。後日、改めてお試しください。']
     end
 
     record_api_request_log(res, msg)
@@ -82,7 +83,7 @@ class ApiImportController < ApplicationController
       when :ok, :created
         render json: { data: { message: msg } }, status: res
       else
-        render json: { errors: [ { message: msg } ] }
+        render json: { errors: [ { message: msg } ] }, status: :bad_request
     end
   end
 

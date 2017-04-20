@@ -88,7 +88,8 @@ class ImportController < ApplicationController
         when :ship_list
           save_ship_statuses(current_admiral.id, exported_at, json, api_version)
         when :event_info
-          save_event_progress_statuses(current_admiral.id, exported_at, json, api_version)
+          # save_event_progress_statuses(current_admiral.id, exported_at, json, api_version)
+          [:ok, '第2回イベントのデータ形式が判明するまでは、イベント進捗情報のインポートをスキップします。後日、改めてお試しください。']
       end
 
       case res

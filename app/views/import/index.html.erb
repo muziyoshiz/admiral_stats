@@ -11,10 +11,24 @@
 
 <h3>A. ブラウザからの手動アップロード</h3>
 
+<div class="container" style="margin-top: 18px;">
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="panel panel-primary">
+        <div class="panel-heading">大事なお知らせ</div>
+        <div class="panel-body">
+          第2回イベントのデータ形式が判明するまでは、イベント進捗情報のインポートをスキップします。後日、改めてお試しください。<br>
+          イベント進捗情報以外は、今まで通りにインポート可能です。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <p>
     提督情報エクスポータでエクスポートした JSON ファイルを、ブラウザからアップロードします。<br/>
-    <strong class="text-info">2016年10月3日より、ファイルの種別を自動判別できるようになりました。異なる種別のファイルも同時にインポートできます。</strong>
+    ファイルの種別を自動判別するため、異なる種別のファイルも同時にインポートできます。</strong>
     <br>
     （※参考：<%= link_to '提督情報エクスポータの使い方', { controller: 'manual', action: 'exporter' }, target: '_blank' %>）
   </p>
