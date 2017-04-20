@@ -70,7 +70,7 @@ module Import
         )
       end
     rescue => e
-      logger.debug(e)
+      logger.error(e)
       return :error, "基本情報のインポートに失敗しました。（原因：#{e.message}）"
     end
 
@@ -126,7 +126,7 @@ module Import
         ShipCardTimestamp.create!( admiral_id: admiral_id, exported_at: exported_at )
       end
     rescue => e
-      logger.debug(e)
+      logger.error(e)
       return :error, "艦娘図鑑のインポートに失敗しました。（原因：#{e.message}）"
     end
 
@@ -178,7 +178,7 @@ module Import
       end
 
     rescue => e
-      logger.debug(e)
+      logger.error(e)
       return :error, "艦娘一覧のインポートに失敗しました。（原因：#{e.message}）"
     end
 
@@ -249,7 +249,7 @@ module Import
         return :ok, '同じ意味を持つ、過去のイベント進捗情報がインポート済みのため、無視されました。'
       end
     rescue => e
-      logger.debug(e)
+      logger.error(e)
       return :error, "イベント進捗情報のインポートに失敗しました。（原因：#{e.message}）"
     end
   end

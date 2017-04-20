@@ -257,7 +257,7 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     post api_import_url('Personal_basicInfo', '20170227_160000'),
          params: nil, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
 
-    assert_response 200
+    assert_response 400
 
     assert_equal JSON.generate(
         {
@@ -280,6 +280,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, l.admiral_id
     assert_equal 'POST', l.request_method
     assert_equal 'http://www.example.com/api/v1/import/Personal_basicInfo/20170227_160000', l.request_uri
+    # ログには 200 レスポンスとして記録される
+    # TODO 要修正
     assert_equal 200, l.status_code
     assert_nil l.user_agent
     assert_equal '基本情報のインポートに失敗しました。（原因：A JSON text must at least contain two octets!）', l.response
@@ -623,57 +625,60 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     post api_import_url('Event_info', '20170227_160000'),
          params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
 
-    assert_response 201
+    # 一時的に無効化しているため
+    assert_response 200
 
-    assert_equal JSON.generate(
-        {
-            data: {
-                message: 'イベント進捗情報のインポートに成功しました。'
-            }
-        }), @response.body
-
-    # 登録後にはレコードがあることを確認
-    records = EventProgressStatus.where(admiral_id: 1, exported_at: exported_at)
-    assert_equal true, records.exists?
-
-    assert_equal 2, records.size
-
-    # レコードの内容を確認
-    r = records[0]
-    assert_equal 1,     r.admiral_id
-    assert_equal 1,     r.event_no
-    assert_equal 'HEI', r.level
-    assert_equal true,  r.opened
-    assert_equal 1,     r.current_loop_counts
-    assert_equal 0,     r.cleared_loop_counts
-    assert_equal 1,     r.cleared_stage_no
-    assert_equal 0,     r.current_military_gauge_left
-    assert_equal exported_at, r.exported_at
-
-    r = records[1]
-    assert_equal 1,     r.admiral_id
-    assert_equal 1,     r.event_no
-    assert_equal 'OTU', r.level
-    assert_equal false, r.opened
-    assert_equal 1,     r.current_loop_counts
-    assert_equal 0,     r.cleared_loop_counts
-    assert_equal 0,     r.cleared_stage_no
-    assert_equal 1500,  r.current_military_gauge_left
-    assert_equal exported_at, r.exported_at
-
-    # ログがあることを確認
-    logs = ApiRequestLog.where(admiral_id: 1)
-    assert_equal true, logs.exists?
-    assert_equal 1, logs.size
-    l = logs[0]
-
-    # ログの内容を確認
-    assert_equal 1, l.admiral_id
-    assert_equal 'POST', l.request_method
-    assert_equal 'http://www.example.com/api/v1/import/Event_info/20170227_160000', l.request_uri
-    assert_equal 201, l.status_code
-    assert_nil l.user_agent
-    assert_equal 'イベント進捗情報のインポートに成功しました。', l.response
-    assert_not_nil l.created_at
+    # assert_response 201
+    #
+    # assert_equal JSON.generate(
+    #     {
+    #         data: {
+    #             message: 'イベント進捗情報のインポートに成功しました。'
+    #         }
+    #     }), @response.body
+    #
+    # # 登録後にはレコードがあることを確認
+    # records = EventProgressStatus.where(admiral_id: 1, exported_at: exported_at)
+    # assert_equal true, records.exists?
+    #
+    # assert_equal 2, records.size
+    #
+    # # レコードの内容を確認
+    # r = records[0]
+    # assert_equal 1,     r.admiral_id
+    # assert_equal 1,     r.event_no
+    # assert_equal 'HEI', r.level
+    # assert_equal true,  r.opened
+    # assert_equal 1,     r.current_loop_counts
+    # assert_equal 0,     r.cleared_loop_counts
+    # assert_equal 1,     r.cleared_stage_no
+    # assert_equal 0,     r.current_military_gauge_left
+    # assert_equal exported_at, r.exported_at
+    #
+    # r = records[1]
+    # assert_equal 1,     r.admiral_id
+    # assert_equal 1,     r.event_no
+    # assert_equal 'OTU', r.level
+    # assert_equal false, r.opened
+    # assert_equal 1,     r.current_loop_counts
+    # assert_equal 0,     r.cleared_loop_counts
+    # assert_equal 0,     r.cleared_stage_no
+    # assert_equal 1500,  r.current_military_gauge_left
+    # assert_equal exported_at, r.exported_at
+    #
+    # # ログがあることを確認
+    # logs = ApiRequestLog.where(admiral_id: 1)
+    # assert_equal true, logs.exists?
+    # assert_equal 1, logs.size
+    # l = logs[0]
+    #
+    # # ログの内容を確認
+    # assert_equal 1, l.admiral_id
+    # assert_equal 'POST', l.request_method
+    # assert_equal 'http://www.example.com/api/v1/import/Event_info/20170227_160000', l.request_uri
+    # assert_equal 201, l.status_code
+    # assert_nil l.user_agent
+    # assert_equal 'イベント進捗情報のインポートに成功しました。', l.response
+    # assert_not_nil l.created_at
   end
 end
