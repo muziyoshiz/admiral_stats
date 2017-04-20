@@ -1328,7 +1328,8 @@ ship_masters = [
         ship_type: '戦艦',
         ship_name: '大和',
         variation_num: 3,
-        
+        # 2017-05-11：2隻追加（酒匂、大和のノーマルのみ）
+        implemented_at: '2017-05-11T07:00:00+09:00',
     },
     {
         book_no: 132,
@@ -1383,8 +1384,11 @@ ship_masters = [
         ship_class_index: 1,
         ship_type: '軽巡洋艦',
         ship_name: '阿賀野',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2017-04-26：3隻追加（阿賀野、能代、矢矧のノーマルのみ）
+        implemented_at: '2017-04-26T07:00:00+09:00',
     },
     {
         book_no: 138,
@@ -1392,8 +1396,11 @@ ship_masters = [
         ship_class_index: 2,
         ship_type: '軽巡洋艦',
         ship_name: '能代',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2017-04-26：3隻追加（阿賀野、能代、矢矧のノーマルのみ）
+        implemented_at: '2017-04-26T07:00:00+09:00',
     },
     {
         book_no: 139,
@@ -1401,8 +1408,11 @@ ship_masters = [
         ship_class_index: 3,
         ship_type: '軽巡洋艦',
         ship_name: '矢矧',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2017-04-26：3隻追加（阿賀野、能代、矢矧のノーマルのみ）
+        implemented_at: '2017-04-26T07:00:00+09:00',
     },
     {
         book_no: 140,
@@ -1410,8 +1420,11 @@ ship_masters = [
         ship_class_index: 4,
         ship_type: '軽巡洋艦',
         ship_name: '酒匂',
-        variation_num: 6,
-        
+        # 最終的には6になるが、初回実装時はノーマルのみ
+        # variation_num: 6,
+        variation_num: 3,
+        # 2017-05-11：2隻追加（酒匂、大和のノーマルのみ）
+        implemented_at: '2017-05-11T07:00:00+09:00',
     },
     {
         book_no: 141,
