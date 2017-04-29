@@ -190,10 +190,11 @@ class GlobalController < ApplicationController
     # 各提督の、攻略済み周回数を、難易度別に取得
     @statuses = {}
     @event.levels.each do |level|
+      # TODO 前段作戦/後段作戦を切替可能にする（いまは前段作戦固定）
       @statuses[level] = EventProgressStatus.find_by_sql(
           [ 'SELECT admiral_id, max(cleared_loop_counts) AS max_cleared_loop_counts ' +
-                'FROM event_progress_statuses WHERE level = ? GROUP BY admiral_id',
-            level ]
+                'FROM event_progress_statuses WHERE event_no = ? AND level = ? AND period = ? GROUP BY admiral_id',
+            @event.event_no, level, 0 ]
       )
     end
 
@@ -202,14 +203,27 @@ class GlobalController < ApplicationController
 
     # クリアした提督数
     @cleared_nums = {}
+    # クリアした提督のIDのリスト
+    cleared_ids = {}
+    %w(KOU OTU HEI).each{|level| cleared_ids[level] = [] }
+
     @event.levels.each do |level|
-      @cleared_nums[level] = @statuses[level].select{|s| s.max_cleared_loop_counts > 0 }.size
+      cleared_ids[level] = @statuses[level].select{|s| s.max_cleared_loop_counts > 0 }.map{|s| s.admiral_id }
     end
-    # 丙難易度をクリア済みの人数から、乙難易度をクリア済みの人数を引く
-    higher_level_cleared_nums = 0
-    @event.levels.reverse.each do |level|
-      @cleared_nums[level] -= higher_level_cleared_nums
-      higher_level_cleared_nums = @cleared_nums[level]
+
+    # 攻略済みの比率を出すために、難易度間での重複を排除する（難易度が高いほうを優先する）
+    @event.levels.each do |level|
+      case level
+        when 'KOU'
+          # 甲の場合は全員をカウント
+          @cleared_nums['KOU'] = cleared_ids['KOU'].size
+        when 'OTU'
+          # 乙の場合は、甲をクリア済みの提督を除く
+          @cleared_nums['OTU'] = cleared_ids['OTU'].reject{|i| cleared_ids['KOU'].include?(i) }.size
+        when 'HEI'
+          # 丙の場合は、甲または乙をクリア済みの提督を除く
+          @cleared_nums['HEI'] = cleared_ids['HEI'].reject{|i| cleared_ids['KOU'].include?(i) || cleared_ids['OTU'].include?(i) }.size
+      end
     end
 
     # クリアした周回数

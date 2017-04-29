@@ -27,6 +27,20 @@
   </div>
 </div>
 
+<div class="container range-selector">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= @event.event_name %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <% @events.each do |e| %>
+          <li><%= link_to e.event_name, controller: 'global', action: 'event', event_no: e.event_no %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
 <div id="chart-cleared-rate" style="width:100%; height:400px;"></div>
 
 <hr>
