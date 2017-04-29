@@ -21,7 +21,7 @@ class EventStageMaster < ApplicationRecord
             presence: true,
             inclusion: { in: [ 0, 1 ] }
 
-  # ステージ No. （例：E-1 なら 1）
+  # ステージ No. （例：E-1 なら 1。後段作戦が E-4 から始まる場合、E-4 なら 1）
   validates :stage_no,
             presence: true,
             numericality: {
@@ -29,6 +29,15 @@ class EventStageMaster < ApplicationRecord
                 greater_than_or_equal_to: 1,
             },
             uniqueness: { scope: [ :event_no, :level, :period ] }
+
+  # 表示用のステージ No. （後段作戦が E-4 から始まる場合、4）
+  # 掃討戦の場合は 0
+  validates :display_stage_no,
+            presence: true,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+            }
 
   # 作戦名
   validates :stage_mission_name,

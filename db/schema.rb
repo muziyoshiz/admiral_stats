@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(version: 20170429122527) do
     t.datetime "period1_started_at"
     t.datetime "started_at",                                   null: false
     t.datetime "ended_at",                                     null: false
+    t.index ["area_id"], name: "index_event_masters_on_area_id", unique: true, using: :btree
   end
 
   create_table "event_progress_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -104,6 +105,7 @@ ActiveRecord::Schema.define(version: 20170429122527) do
     t.string  "level",                  limit: 32,             null: false
     t.integer "period",                            default: 0, null: false
     t.integer "stage_no",                                      null: false
+    t.integer "display_stage_no",                  default: 0, null: false
     t.string  "stage_mission_name",     limit: 32,             null: false
     t.integer "ene_military_gauge_val",                        null: false
     t.index ["event_no", "level", "period", "stage_no"], name: "index_event_stage_masters", unique: true, using: :btree

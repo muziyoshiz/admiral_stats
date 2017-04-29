@@ -16,8 +16,9 @@
       <tbody>
       <% @event.levels.each do |level| %>
           <%
-            statuses = @statuses.select{|s| s.level == level }
-            stages = @event.stages.select{|s| s.level == level }
+            # TODO 後段作戦との表示切り替えに対応
+            statuses = @statuses.select{|s| s.level == level and s.period == 0 }
+            stages = @event.stages.select{|s| s.level == level and s.period == 0 }
           %>
           <tr>
             <td><%= difficulty_level_to_text(level) %></td>

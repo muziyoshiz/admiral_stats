@@ -8,9 +8,13 @@ module AdmiralInfoHelper
       retval += "全海域突破！"
     else
       curr_stg = stages.select{|stg| stg.stage_no == status.cleared_stage_no + 1 }.first
-      retval += "E-#{curr_stg.stage_no} 出撃中"
-      if curr_stg.ene_military_gauge_val > 0
-        retval += "（ゲージ残り #{status.current_military_gauge_left}/#{curr_stg.ene_military_gauge_val}）"
+      if curr_stg.display_stage_no == 0
+        retval += "掃討戦 出撃中"
+      else
+        retval += "E-#{curr_stg.display_stage_no} 出撃中"
+        if curr_stg.ene_military_gauge_val > 0
+          retval += "（ゲージ残り #{status.current_military_gauge_left}/#{curr_stg.ene_military_gauge_val}）"
+        end
       end
     end
 
