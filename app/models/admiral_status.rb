@@ -92,6 +92,14 @@ class AdmiralStatus < ApplicationRecord
                 allow_nil: true,
             }
 
+  # 甲種勲章の数 (From API version 7)
+  validates :kou_medal,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+                allow_nil: true,
+            }
+
   # SEGA の「提督情報」からエクスポートされた日時
   validates :exported_at,
             presence: true,

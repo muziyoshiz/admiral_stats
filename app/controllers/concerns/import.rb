@@ -66,6 +66,7 @@ module Import
             rank: info.rank,
             title_id: info.title_id,
             strategy_point: info.strategy_point,
+            kou_medal: info.kou_medal,
             exported_at: exported_at,
         )
       end
@@ -217,6 +218,7 @@ module Import
       imported = false
 
       EventProgressStatus.transaction do
+        # TODO このループを、すべての難易度と作戦（前段/後段）の組み合わせに対して実行する
         event.levels.each do |level|
           summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, api_version)
 

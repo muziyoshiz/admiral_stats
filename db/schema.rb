@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406144116) do
+ActiveRecord::Schema.define(version: 20170429113345) do
 
   create_table "admiral_publications", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "admiral_id",                                        null: false
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20170406144116) do
     t.string   "rank",           limit: 32
     t.integer  "title_id"
     t.integer  "strategy_point"
+    t.integer  "kou_medal"
     t.datetime "exported_at",               null: false
     t.index ["admiral_id", "exported_at"], name: "index_admiral_statuses_on_admiral_id_and_exported_at", unique: true, using: :btree
   end
