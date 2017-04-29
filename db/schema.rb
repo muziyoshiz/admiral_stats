@@ -67,11 +67,12 @@ ActiveRecord::Schema.define(version: 20170429122527) do
   end
 
   create_table "event_masters", primary_key: "event_no", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "event_name",         limit: 32,             null: false
-    t.integer  "no_of_periods",                 default: 1, null: false
+    t.integer  "area_id",                       default: 1000, null: false
+    t.string   "event_name",         limit: 32,                null: false
+    t.integer  "no_of_periods",                 default: 1,    null: false
     t.datetime "period1_started_at"
-    t.datetime "started_at",                                null: false
-    t.datetime "ended_at",                                  null: false
+    t.datetime "started_at",                                   null: false
+    t.datetime "ended_at",                                     null: false
   end
 
   create_table "event_progress_statuses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

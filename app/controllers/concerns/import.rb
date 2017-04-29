@@ -207,11 +207,11 @@ module Import
         return :ok, 'イベント進捗情報が空のため、無視されました。'
       end
 
-      # event_master に登録されていない event_no は拒否する
-      event_no = event_info_list.map{|info| info.event_no }.max
-      event = EventMaster.where(event_no: event_no).first
+      # event_master に登録されていない area_id は拒否する
+      area_id = event_info_list.map{|info| info.area_id }.max
+      event = EventMaster.where(area_id: area_id).first
       unless event
-        logger.error("Unregistered event_no (admiral_id: #{admiral_id}, event_no: #{event_no})")
+        logger.error("Unregistered area_id (admiral_id: #{admiral_id}, area_id: #{area_id})")
         return :error, 'Admiral Stats にこのイベントの情報が未登録です。プレイデータの誤登録を防ぐために、インポートを中断しました。'
       end
 
@@ -219,30 +219,32 @@ module Import
       imported = false
 
       EventProgressStatus.transaction do
-        # TODO このループを、すべての難易度と作戦（前段/後段）の組み合わせに対して実行する
-        event.levels.each do |level|
-          summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, api_version)
+        event.periods.each do |period|
+          event.levels.each do |level|
+            summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, period, api_version)
 
-          # 上記の summary と同じ意味で、かつ exported_at が上記の summary よりも古いイベント進捗履歴が
-          # 存在する場合は、インポートを行わない
-          next if EventProgressStatus.where(
-              'admiral_id = ? AND event_no = ? AND level = ? AND opened = ? AND current_loop_counts = ?' +
-                  ' AND cleared_loop_counts = ? AND cleared_stage_no = ? AND current_military_gauge_left = ? AND exported_at <= ?',
-              admiral_id, event_no, level, summary[:opened], summary[:current_loop_counts],
-              summary[:cleared_loop_counts], summary[:cleared_stage_no], summary[:current_military_gauge_left], exported_at).exists?
+            # 上記の summary と同じ意味で、かつ exported_at が上記の summary よりも古いイベント進捗履歴が
+            # 存在する場合は、インポートを行わない
+            next if EventProgressStatus.where(
+                'admiral_id = ? AND event_no = ? AND level = ? AND period = ? AND opened = ? AND current_loop_counts = ?' +
+                    ' AND cleared_loop_counts = ? AND cleared_stage_no = ? AND current_military_gauge_left = ? AND exported_at <= ?',
+                admiral_id, event.event_no, level, period, summary[:opened], summary[:current_loop_counts],
+                summary[:cleared_loop_counts], summary[:cleared_stage_no], summary[:current_military_gauge_left], exported_at).exists?
 
-          EventProgressStatus.create!(
-              admiral_id: admiral_id,
-              event_no: event_no,
-              level: level,
-              opened: summary[:opened],
-              current_loop_counts: summary[:current_loop_counts],
-              cleared_loop_counts: summary[:cleared_loop_counts],
-              cleared_stage_no: summary[:cleared_stage_no],
-              current_military_gauge_left: summary[:current_military_gauge_left],
-              exported_at: exported_at,
-          )
-          imported = true
+            EventProgressStatus.create!(
+                admiral_id: admiral_id,
+                event_no: event.event_no,
+                level: level,
+                period: period,
+                opened: summary[:opened],
+                current_loop_counts: summary[:current_loop_counts],
+                cleared_loop_counts: summary[:cleared_loop_counts],
+                cleared_stage_no: summary[:cleared_stage_no],
+                current_military_gauge_left: summary[:current_military_gauge_left],
+                exported_at: exported_at,
+            )
+            imported = true
+          end
         end
       end
 
