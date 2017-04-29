@@ -215,6 +215,11 @@ module Import
         return :error, 'Admiral Stats にこのイベントの情報が未登録です。プレイデータの誤登録を防ぐために、インポートを中断しました。'
       end
 
+      # period が nil の場合は、デフォルト値の 0 を設定する（第1回イベントのデータ形式への対応）
+      event_info_list.each do |event_info|
+        event_info.period ||= 0
+      end
+
       # データがインポートされたかどうか確認するためのフラグ
       imported = false
 

@@ -2,7 +2,9 @@
 
 first_event:
   event_no: 1
+  area_id: 1000
   event_name: 敵艦隊前線泊地殴り込み
+  no_of_periods: 1
   started_at: <%= Time.parse('2016-10-27 07:00:00 +09:00') %>
   ended_at: <%= Time.parse('2016-11-25 23:59:59 +09:00') %>
 
