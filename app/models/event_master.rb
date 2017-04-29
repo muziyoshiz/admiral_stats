@@ -17,6 +17,14 @@ class EventMaster < ApplicationRecord
             presence: true,
             length: { minimum: 1, maximum: 32 }
 
+  # 作戦数（通常は1、多段作戦の場合は2以上）
+  # 第1回イベントは多段作戦ではない。第2回イベントは前段作戦/後段作戦
+  validates :no_of_periods,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 1,
+            }
+
   # 開始時刻
   validates :started_at,
             presence: true

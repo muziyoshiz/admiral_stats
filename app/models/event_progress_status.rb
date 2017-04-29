@@ -19,6 +19,13 @@ class EventProgressStatus < ApplicationRecord
             presence: true,
             format: { with: /\A(HEI|OTU|KOU)\z/ }
 
+  # 作戦
+  # 前段作戦の場合は 0, 後段作戦の場合は 1
+  # 前段作戦/後段作戦に分かれていない場合は 0 のみ
+  validates :period,
+            presence: true,
+            inclusion: { in: [ 0, 1 ] }
+
   # 難易度が解放済みかどうか
   validates :opened,
             inclusion: { in: [ true, false ] }
@@ -42,6 +49,8 @@ class EventProgressStatus < ApplicationRecord
   # 現在の周回で攻略済みのステージ番号（0 〜）
   # E-1 未攻略なら 0
   # E-1 攻略済みなら、丙 E-1 でも、乙 E-1 でも 1
+  # 後段作戦の場合は、1 から数え直しになる。
+  # 前段作戦が E-3 までで、後段作戦の E-4 をクリアしたら 1 になる
   validates :cleared_stage_no,
             presence: true,
             numericality: {
@@ -61,13 +70,14 @@ class EventProgressStatus < ApplicationRecord
   # SEGA の「提督情報」からエクスポートされた日時
   validates :exported_at,
             presence: true,
-            uniqueness: { scope: [ :admiral_id, :event_no, :level ] }
+            uniqueness: { scope: [ :admiral_id, :event_no, :level, :period ] }
 
   # このイベント進捗情報と引数で与えられたイベント進捗情報を比較して、エクスポート時刻以外の情報が同じ場合に true を返します。
   def is_comparable_with?(status)
     self.admiral_id == status.admiral_id and
         self.event_no == status.event_no and
         self.level == status.level and
+        self.period == status.period and
         self.opened == status.opened and
         self.current_loop_counts == status.current_loop_counts and
         self.cleared_loop_counts == status.cleared_loop_counts and
