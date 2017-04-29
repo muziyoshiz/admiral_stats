@@ -158,6 +158,7 @@ module Import
               level: info.lv,
               star_num: info.star_num,
               exp_percent: info.exp_percent,
+              blueprint_total_num: info.blueprint_total_num,
               exported_at: exported_at,
           )
 

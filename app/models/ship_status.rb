@@ -58,6 +58,14 @@ class ShipStatus < ApplicationRecord
                 allow_nil: true,
             }
 
+  # 改装設計図の枚数 (From API version 7)
+  validates :blueprint_total_num,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+                allow_nil: true,
+            }
+
   # SEGA の「提督情報」からエクスポートされた日時
   validates :exported_at,
             presence: true,
