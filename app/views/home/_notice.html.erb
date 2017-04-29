@@ -23,15 +23,18 @@
       すべてのエクスポータに、Admiral Stats への自動アップロード機能を実装完了しました。<strong>Safari および iOS でもお使いいただけます</strong>。<br>
       まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
     </li>
-    <li>2017年4月20日更新：イベント進捗情報のインポート機能を一時的に停止しました。第2回イベントのデータ形式が判明したら再開します。</li>
-    <li>2017年4月18日更新：mimikun さん開発の <%= link_to 'Python 版エクスポータ', 'https://github.com/mimikun/admiral_stats_exporter_python', target: '_blank' %> へのリンクを、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> に追加しました。開発ありがとうございます！</li>
-    <li>2017年4月17日更新：プレイデータの URL を若干短いものに修正しました（/admirals/name/ship_list → /@name/ship_list）。以前の URL は新しい URL にリダイレクトします。</li>
     <li>
-      2017年4月7日更新：自分のプレイデータ（艦娘一覧）を公開する機能を追加しました。
+      2017年4月30日更新：第2回イベント（REVISION 5）での SEGA 公式サイトのアップデートに対応して、以下の修正を行いました。
       <ul>
-        <li>サンプル：<%= link_to 'ムジ提督の艦娘一覧', 'https://www.admiral-stats.com/@muziyoshiz/ship_list' %><br></li>
-        <li><%= link_to_if_logged_in '「情報公開の設定」ページ', controller: 'publication', action: 'index' %> で設定を ON にすると、公開用 URL が割り当てられます。</li>
-        <li>公開したくない場合は、デフォルト設定（OFF）のままにしておけば公開されないのでご安心ください。</li>
+        <li>第2回イベントの情報をインポートできるようになりました。ただし、<strong class="text-primary">後段作戦は未対応</strong>です。</li>
+        <li>
+          第2回イベントの情報を、<%= link_to_if_logged_in '「イベントの進捗」ページ', controller: 'admiral_info', action: 'event' %>、
+          <%= link_to '「イベント攻略率」ページ', controller: 'global', action: 'event' %> で確認できるようになりました。
+        </li>
+        <li>提督情報、艦娘一覧のインポート機能を修正して、インポートできる情報（改装設計図の枚数など）を増やしました。</li>
+        <li>
+          Ruby版、PowerShell版、ブックマークレット版（すべてダウンロード）のエクスポータに「改装設計図一覧」エクスポート機能を追加しました。
+          エクスポータのアップデート方法は <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。</li>
       </ul>
     </li>
     <li>
