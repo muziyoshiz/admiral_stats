@@ -171,6 +171,11 @@ class AdmiralInfoController < ApplicationController
       @period = @event.periods.last
     end
 
+    # 作戦の開始日を取得（後段作戦の場合は、後段作戦の開始日）
+    # 前提1：後段作戦が開始しても、前段作戦をプレイできる
+    # 前提2：前段作戦と後段作戦の終了日は同じである
+    @started_at = (@period == 1 ? @event.period1_started_at : @event.started_at)
+
     set_meta_tags title: "イベントの進捗（#{event_name_and_period_to_text(@event, @period)}）"
 
     all_statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no, period: @period).to_a
