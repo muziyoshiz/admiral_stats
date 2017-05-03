@@ -220,7 +220,10 @@ class GlobalController < ApplicationController
     end
 
     # アップロード済みの提督数
-    @total_num = @statuses.map{|level, ss| ss.size }.max
+    # distinct.count(:admiral_id) とすると、
+    # SELECT DISTINCT COUNT(DISTINCT admiral_id) FROM ...
+    # という SQL が生成されてしまう（DISTINCT が多く、全件サーチになってしまう）ため、以下の記法にした
+    @total_num = EventProgressStatus.where(event_no: @event.event_no, period: 0).count('DISTINCT admiral_id')
 
     # クリアした提督数
     @cleared_nums = {}
