@@ -1,4 +1,7 @@
 class GlobalController < ApplicationController
+  # title ヘッダを生成するために読み込み
+  include EventPeriodHelper
+
   def ship_card_ownership
     set_meta_tags title: '艦これアーケードの艦娘カード入手率',
                   description: 'Admiral Stats に艦これアーケードのプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。'
@@ -185,16 +188,34 @@ class GlobalController < ApplicationController
       @event = @events.max{|e| e.event_no }
     end
 
-    set_meta_tags title: "イベント攻略率（#{@event.event_name}）"
+    # URLパラメータで作戦を指定されたらそれを表示し、指定されなければ最新の作戦を表示
+    if params[:period]
+      # 存在しない、または未実装の作戦が指定された場合は、ホーム画面にリダイレクトする
+      @period = params[:period].to_i
+      unless @event.periods.include?(@period)
+        redirect_to root_url
+        return
+      end
+    else
+      # period が指定されなかった場合は、実装済みの最新の作戦
+      # 前段作戦、後段作戦に分かれていない場合は 0 を返す
+      @period = @event.periods.last
+    end
+
+    # 作戦の開始日を取得（後段作戦の場合は、後段作戦の開始日）
+    # 前提1：後段作戦が開始しても、前段作戦をプレイできる
+    # 前提2：前段作戦と後段作戦の終了日は同じである
+    @started_at = (@period == 1 ? @event.period1_started_at : @event.started_at)
+
+    set_meta_tags title: "イベント攻略率（#{event_period_to_text(@event, @period)}）"
 
     # 各提督の、攻略済み周回数を、難易度別に取得
     @statuses = {}
     @event.levels.each do |level|
-      # TODO 前段作戦/後段作戦を切替可能にする（いまは前段作戦固定）
       @statuses[level] = EventProgressStatus.find_by_sql(
           [ 'SELECT admiral_id, max(cleared_loop_counts) AS max_cleared_loop_counts ' +
                 'FROM event_progress_statuses WHERE event_no = ? AND level = ? AND period = ? GROUP BY admiral_id',
-            @event.event_no, level, 0 ]
+            @event.event_no, level, @period ]
       )
     end
 

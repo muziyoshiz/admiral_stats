@@ -1,4 +1,6 @@
 module GlobalHelper
+  include EventPeriodHelper
+
   # 与えられた割合の値から、パーセント表記を返します。
   # nil の場合は 0 % を返します。
   def parcentage_by_rate(rate)

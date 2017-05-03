@@ -2,7 +2,7 @@ class AdmiralInfoController < ApplicationController
   before_action :authenticate
 
   # title ヘッダを生成するために読み込み
-  include AdmiralInfoHelper
+  include EventPeriodHelper
 
   # 暫定順位が「圏外」だった場合に、仮に表示する数値
   # @sophiarcp さんの検証結果によると、3000 位近辺がボーダーと思われる
@@ -176,7 +176,7 @@ class AdmiralInfoController < ApplicationController
     # 前提2：前段作戦と後段作戦の終了日は同じである
     @started_at = (@period == 1 ? @event.period1_started_at : @event.started_at)
 
-    set_meta_tags title: "イベントの進捗（#{event_name_and_period_to_text(@event, @period)}）"
+    set_meta_tags title: "イベントの進捗（#{event_period_to_text(@event, @period)}）"
 
     all_statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no, period: @period).to_a
 

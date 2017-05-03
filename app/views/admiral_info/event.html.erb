@@ -6,13 +6,13 @@
 <div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <%= event_name_and_period_to_text(@event, @period) %>
+      <%= event_period_to_text(@event, @period) %>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
       <% @events.each do |event| %>
           <% event.periods.each do |period| %>
-              <li><%= link_to_period event, period, controller: 'admiral_info', action: 'event' %></li>
+              <li><%= link_to_event_period event, period, controller: 'admiral_info', action: 'event' %></li>
           <% end %>
       <% end %>
     </ul>
