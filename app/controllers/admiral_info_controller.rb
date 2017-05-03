@@ -182,7 +182,13 @@ class AdmiralInfoController < ApplicationController
 
     # イベント進捗情報がなければ、処理を終了
     if all_statuses.blank?
-      render :action => 'event_blank'
+      if EventProgressStatus.exists?(admiral_id: current_admiral.id)
+        # 他のイベントはアップロード済みなら、他のイベントへのリンクを表示する
+        render :action => 'event_blank'
+      else
+        # どのイベントの結果もアップロードされていないなら、説明を表示する
+        render :action => 'event_guide'
+      end
       return
     end
 
