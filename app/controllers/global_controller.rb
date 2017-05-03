@@ -214,8 +214,8 @@ class GlobalController < ApplicationController
     @event.levels.each do |level|
       @statuses[level] = EventProgressStatus.find_by_sql(
           [ 'SELECT admiral_id, max(cleared_loop_counts) AS max_cleared_loop_counts ' +
-                'FROM event_progress_statuses WHERE event_no = ? AND level = ? AND period = ? GROUP BY admiral_id',
-            @event.event_no, level, @period ]
+                'FROM event_progress_statuses WHERE event_no = ? AND period = ? AND level = ? GROUP BY admiral_id',
+            @event.event_no, @period, level ]
       )
     end
 
@@ -223,7 +223,7 @@ class GlobalController < ApplicationController
     # distinct.count(:admiral_id) とすると、
     # SELECT DISTINCT COUNT(DISTINCT admiral_id) FROM ...
     # という SQL が生成されてしまう（DISTINCT が多く、全件サーチになってしまう）ため、以下の記法にした
-    @total_num = EventProgressStatus.where(event_no: @event.event_no, period: 0).count('DISTINCT admiral_id')
+    @total_num = EventProgressStatus.where(event_no: @event.event_no, period: @period).count('DISTINCT admiral_id')
 
     # クリアした提督数
     @cleared_nums = {}
