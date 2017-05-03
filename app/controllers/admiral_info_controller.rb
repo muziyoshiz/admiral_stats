@@ -1,6 +1,9 @@
 class AdmiralInfoController < ApplicationController
   before_action :authenticate
 
+  # title ヘッダを生成するために読み込み
+  include AdmiralInfoHelper
+
   # 暫定順位が「圏外」だった場合に、仮に表示する数値
   # @sophiarcp さんの検証結果によると、3000 位近辺がボーダーと思われる
   RANK_KENGAI = 3100
@@ -154,9 +157,23 @@ class AdmiralInfoController < ApplicationController
       @event = @events.max{|e| e.event_no }
     end
 
-    set_meta_tags title: "イベントの進捗（#{@event.event_name}）"
+    # URLパラメータで作戦を指定されたらそれを表示し、指定されなければ最新の作戦を表示
+    if params[:period]
+      # 存在しない、または未実装の作戦が指定された場合は、ホーム画面にリダイレクトする
+      @period = params[:period].to_i
+      unless @event.periods.include?(@period)
+        redirect_to root_url
+        return
+      end
+    else
+      # period が指定されなかった場合は、実装済みの最新の作戦
+      # 前段作戦、後段作戦に分かれていない場合は 0 を返す
+      @period = @event.periods.last
+    end
 
-    all_statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no).to_a
+    set_meta_tags title: "イベントの進捗（#{event_name_and_period_to_text(@event, @period)}）"
+
+    all_statuses = EventProgressStatus.where(admiral_id: current_admiral.id, event_no: @event.event_no, period: @period).to_a
 
     # イベント進捗情報がなければ、処理を終了
     if all_statuses.blank?
