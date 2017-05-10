@@ -105,8 +105,8 @@
   <% @event.levels.each_with_index do |level, idx| %>
       <div class="tab-pane<%== ' in active' if idx == 0 %>" id="history-<%= level.downcase %>">
         <%
-          statuses = @statuses.select{|s| s.level == level }
-          stages = @event.stages.select{|s| s.level == level }
+          statuses = @statuses.select{|s| s.level == level and s.period == @period }
+          stages = @event.stages.select{|s| s.level == level and s.period == @period }
         %>
         <div class="container">
           <div class="table-responsive-wrappable">
