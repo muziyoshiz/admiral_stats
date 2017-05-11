@@ -1,17 +1,19 @@
 <div class="page-header">
   <h2><%= title %></h2>
-  （開催期間：<%= @event.started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
+  （開催期間：<%= @started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
 </div>
 
 <div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <%= @event.event_name %>
+      <%= event_period_to_text(@event, @period) %>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <% @events.each do |e| %>
-          <li><%= link_to e.event_name, controller: 'admiral_info', action: 'event', event_no: e.event_no %></li>
+      <% @events.each do |event| %>
+          <% event.periods.each do |period| %>
+              <li><%= link_to_event_period event, period, controller: 'admiral_info', action: 'event' %></li>
+          <% end %>
       <% end %>
     </ul>
   </div>
@@ -30,9 +32,8 @@
       <tbody>
       <% @event.levels.each do |level| %>
           <%
-            # TODO 後段作戦との表示切り替えに対応
-            statuses = @statuses.select{|s| s.level == level and s.period == 0 }
-            stages = @event.stages.select{|s| s.level == level and s.period == 0 }
+            statuses = @statuses.select{|s| s.level == level and s.period == @period }
+            stages = @event.stages.select{|s| s.level == level and s.period == @period }
           %>
           <tr>
             <td><%= difficulty_level_to_text(level) %></td>
@@ -104,8 +105,8 @@
   <% @event.levels.each_with_index do |level, idx| %>
       <div class="tab-pane<%== ' in active' if idx == 0 %>" id="history-<%= level.downcase %>">
         <%
-          statuses = @statuses.select{|s| s.level == level }
-          stages = @event.stages.select{|s| s.level == level }
+          statuses = @statuses.select{|s| s.level == level and s.period == @period }
+          stages = @event.stages.select{|s| s.level == level and s.period == @period }
         %>
         <div class="container">
           <div class="table-responsive-wrappable">

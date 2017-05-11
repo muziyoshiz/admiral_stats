@@ -1,4 +1,7 @@
 module AdmiralInfoHelper
+  include EventPeriodHelper
+
+  # イベント進捗情報のテキスト表現を返します。
   def event_progress_status_to_text(stages, status)
     return '未開放' unless status.opened?
 

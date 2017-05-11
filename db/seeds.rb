@@ -2867,6 +2867,8 @@ event_stage_masters = [
         stage_mission_name: '掃討戦',
         ene_military_gauge_val: 0,
     },
+
+    # 第2回イベント
     {
         event_no: 2,
         level: 'HEI',
@@ -2901,6 +2903,42 @@ event_stage_masters = [
         stage_no: 4,
         display_stage_no: 0,
         stage_mission_name: '敵洋上戦力を排除せよ！',
+        ene_military_gauge_val: 0,
+    },
+    {
+        event_no: 2,
+        level: 'HEI',
+        period: 1,
+        stage_no: 1,
+        display_stage_no: 4,
+        stage_mission_name: '敵情偵察を開始せよ！',
+        ene_military_gauge_val: 2600,
+    },
+    {
+        event_no: 2,
+        level: 'HEI',
+        period: 1,
+        stage_no: 2,
+        display_stage_no: 5,
+        stage_mission_name: '敵集結地を強襲せよ！',
+        ene_military_gauge_val: 3400,
+    },
+    {
+        event_no: 2,
+        level: 'HEI',
+        period: 1,
+        stage_no: 3,
+        display_stage_no: 6,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
+        ene_military_gauge_val: 3600,
+    },
+    {
+        event_no: 2,
+        level: 'HEI',
+        period: 1,
+        stage_no: 4,
+        display_stage_no: 0,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
         ene_military_gauge_val: 0,
     },
     {
@@ -2941,6 +2979,42 @@ event_stage_masters = [
     },
     {
         event_no: 2,
+        level: 'OTU',
+        period: 1,
+        stage_no: 1,
+        display_stage_no: 4,
+        stage_mission_name: '敵情偵察を開始せよ！',
+        ene_military_gauge_val: 2500,
+    },
+    {
+        event_no: 2,
+        level: 'OTU',
+        period: 1,
+        stage_no: 2,
+        display_stage_no: 5,
+        stage_mission_name: '敵集結地を強襲せよ！',
+        ene_military_gauge_val: 3500,
+    },
+    {
+        event_no: 2,
+        level: 'OTU',
+        period: 1,
+        stage_no: 3,
+        display_stage_no: 6,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
+        ene_military_gauge_val: 3600,
+    },
+    {
+        event_no: 2,
+        level: 'OTU',
+        period: 1,
+        stage_no: 4,
+        display_stage_no: 0,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
+        ene_military_gauge_val: 0,
+    },
+    {
+        event_no: 2,
         level: 'KOU',
         period: 0,
         stage_no: 1,
@@ -2975,10 +3049,46 @@ event_stage_masters = [
         stage_mission_name: '敵洋上戦力を排除せよ！',
         ene_military_gauge_val: 0,
     },
+    {
+        event_no: 2,
+        level: 'KOU',
+        period: 1,
+        stage_no: 1,
+        display_stage_no: 4,
+        stage_mission_name: '敵情偵察を開始せよ！',
+        ene_military_gauge_val: 2700,
+    },
+    {
+        event_no: 2,
+        level: 'KOU',
+        period: 1,
+        stage_no: 2,
+        display_stage_no: 5,
+        stage_mission_name: '敵集結地を強襲せよ！',
+        ene_military_gauge_val: 3700,
+    },
+    {
+        event_no: 2,
+        level: 'KOU',
+        period: 1,
+        stage_no: 3,
+        display_stage_no: 6,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
+        ene_military_gauge_val: 3800,
+    },
+    {
+        event_no: 2,
+        level: 'KOU',
+        period: 1,
+        stage_no: 4,
+        display_stage_no: 0,
+        stage_mission_name: '敵大型超弩級戦艦を叩け！',
+        ene_military_gauge_val: 0,
+    },
 ]
 
 event_stage_masters.each do |master|
-  EventStageMaster.where(event_no: master[:event_no], level: master[:level], stage_no: master[:stage_no]).first_or_initialize.update(master)
+  EventStageMaster.where(event_no: master[:event_no], level: master[:level], period: master[:period], stage_no: master[:stage_no]).first_or_initialize.update(master)
 end
 
 

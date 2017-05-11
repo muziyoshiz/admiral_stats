@@ -50,6 +50,12 @@ class EventMaster < ApplicationRecord
   # このイベントの作戦番号（0〜）のリストを返します。
   # この event_master の no_of_periods が 2 以上でも、event_stage_master が未登録のものは除外して返します。
   def periods
-    (0..(no_of_periods - 1)).select{|period| stages.select{|s| s.period == period}.present? }
+    (0..(self.no_of_periods - 1)).select{|period| stages.select{|s| s.period == period }.present? }
+  end
+
+  # このイベントが多段作戦の場合は true を返します。
+  # 多段作戦かどうかは no_of_periods の値を見て判断し、未実装なものが含まれていても「多段作戦」と判断します。
+  def multi_period?
+    self.no_of_periods > 1
   end
 end

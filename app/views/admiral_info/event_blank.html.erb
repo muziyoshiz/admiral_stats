@@ -1,25 +1,34 @@
 <div class="page-header">
   <h2><%= title %></h2>
+  （開催期間：<%= @started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
 </div>
 
 <div class="row">
   <div class="col-sm-12">
-    <div class="panel panel-info">
+    <div class="panel panel-warning">
       <div class="panel-heading">
         <h3 class="panel-title">このページについて</h3>
       </div>
       <div class="panel-body">
-        このページにデータを表示するためには、<%= link_to '「インポート」', import_url %> にて、種別「イベント進捗情報」の
-        JSON ファイルをアップロードする必要があります。
-        <br>
-        以下は、ファイルのアップロード後に表示されるデータのサンプルです。
+        このイベントの進捗情報はまだインポートされていません。<br>
+        過去のイベントの進捗情報は、以下のリストを選択すると表示できます。
       </div>
     </div>
   </div>
 </div>
 
-<h3>サンプル</h3>
-
-<div class="row">
-  <%= image_tag 'admiral_info/admiral_info_event.png', width: '800', class: 'center-block' %>
+<div class="container range-selector">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= event_period_to_text(@event, @period) %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <% @events.each do |event| %>
+          <% event.periods.each do |period| %>
+              <li><%= link_to_event_period event, period, controller: 'admiral_info', action: 'event' %></li>
+          <% end %>
+      <% end %>
+    </ul>
+  </div>
 </div>

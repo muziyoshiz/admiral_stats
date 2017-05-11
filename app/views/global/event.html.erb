@@ -1,6 +1,6 @@
 <div class="page-header">
   <h2><%= title %></h2>
-  （開催期間：<%= @event.started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
+  （開催期間：<%= @started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
 </div>
 
 <div class="row">
@@ -30,12 +30,14 @@
 <div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      <%= @event.event_name %>
+      <%= event_period_to_text(@event, @period) %>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <% @events.each do |e| %>
-          <li><%= link_to e.event_name, controller: 'global', action: 'event', event_no: e.event_no %></li>
+      <% @events.each do |event| %>
+          <% event.periods.each do |period| %>
+              <li><%= link_to_event_period event, period, controller: 'global', action: 'event' %></li>
+          <% end %>
       <% end %>
     </ul>
   </div>
