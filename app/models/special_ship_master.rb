@@ -29,4 +29,16 @@ class SpecialShipMaster < ApplicationRecord
                 only_integer: true,
                 greater_than_or_equal_to: 0,
             }
+
+  # 追加されたカードのレアリティを表す数値
+  # 0: ノーマル相当
+  # 1: ホロ相当（運が上がる）
+  # 2: 中破相当（運が上がり、装甲が下がる）
+  validates :rarity,
+            presence: true,
+            numericality: {
+                only_integer: true,
+                greater_than_or_equal_to: 0,
+                less_than_or_equal_to: 2,
+            }
 end
