@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+hyuga_kai:
+  book_no: 103
+  card_index: 3
+  remodel_level: 1
+  rarity: 1
+  # 第2回イベントの前段作戦開始日
+  implemented_at: <%= Time.parse('2017-04-26T07:00:00+09:00') %>
+
+ise_kai:
+  book_no: 102
+  card_index: 3
+  remodel_level: 1
+  rarity: 1
+  # 第2回イベントの後段作戦開始日
+  implemented_at: <%= Time.parse('2017-05-11T07:00:00+09:00') %>

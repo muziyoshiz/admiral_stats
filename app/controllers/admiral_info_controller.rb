@@ -213,7 +213,7 @@ class AdmiralInfoController < ApplicationController
     @statuses = @statuses.sort_by{|s| s.exported_at }.reverse
 
     # この期間限定海域での新艦娘
-    @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at)
+    @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order('book_no')
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
     kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
@@ -245,6 +245,19 @@ class AdmiralInfoController < ApplicationController
           @cards[card.book_no][card.card_index] = :acquired
         end
       end
+    end
+
+    # この期間限定海域で実装された特別カード
+    @special_ships = SpecialShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order('book_no, card_index')
+
+    # 取得済みのカードを調べた結果
+    @special_cards = {}
+
+    @special_ships.each do |ship|
+      new_card = ShipCard.where('admiral_id = ? AND book_no = ? AND card_index = ? AND first_exported_at >= ? AND first_exported_at <= ?',
+                                current_admiral.id, ship.book_no, ship.card_index, @event.started_at, @event.ended_at)
+      @special_cards[ship.book_no] ||= {}
+      @special_cards[ship.book_no][ship.card_index] = (new_card.exists? ? :acquired : :not_acquired)
     end
   end
 

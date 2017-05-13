@@ -404,21 +404,49 @@ class ShipInfoController < ApplicationController
 
     # 実装済みの艦娘のマスタデータを全入手
     ship_masters = ShipMaster.where.not(implemented_at: nil)
+
     # マスタデータの更新データを全入手
     updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
 
+    # 特別カードのマスタデータを全入手
+    special_ship_masters = SpecialShipMaster.where.not(implemented_at: nil)
+
     # どの時刻にカードが何枚増えたかを調べる
     # gains[0..8][時刻] = その時刻に増えた枚数
+    # 0〜9は、N、Nホロ、N中破、改、改ホロ、改中破、改二、改二ホロ、改二中破、を表す
     # 注意：以下のように宣言すると、すべて同じオブジェクトになってしまう
     # nums = Array.new(9, {})
     gains = Array.new(9){ Hash.new }
 
     ship_cards.each do |card|
+      # 特別カードの場合は、通常とは別の処理をする
+      sp_ship_master = special_ship_masters.find{|m| m.book_no == card.book_no and m.card_index == card.card_index }
+      if sp_ship_master
+        case sp_ship_master.remodel_level
+          when 0
+            gains[sp_ship_master.rarity][card.first_exported_at] ||= 0
+            gains[sp_ship_master.rarity][card.first_exported_at] += 1
+          when 1
+            gains[sp_ship_master.rarity + 3][card.first_exported_at] ||= 0
+            gains[sp_ship_master.rarity + 3][card.first_exported_at] += 1
+          when 2
+            gains[sp_ship_master.rarity + 6][card.first_exported_at] ||= 0
+            gains[sp_ship_master.rarity + 6][card.first_exported_at] += 1
+          else
+            # 改二より上のカードは現時点で未実装のため、単純に無視する
+        end
+
+        next
+      end
+
       ship_master = ship_masters.find{|m| m.book_no == card.book_no }
 
       # 更新データが存在する場合は、そちらを優先する
       updated_master = updated_ship_masters.find{|m| m.book_no == card.book_no }
       ship_master = updated_master if updated_master
+
+      # マスタデータに登録されている要素数を、card_index が超えている場合は、無効なデータとして無視する
+      next if card.card_index >= ship_master.variation_num
 
       case ship_master.remodel_level
         when 0
@@ -625,8 +653,14 @@ class ShipInfoController < ApplicationController
     # マスタデータの更新データを全入手
     updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
 
+    # 特別カードのマスタデータを全入手
+    special_ship_masters = SpecialShipMaster.where.not(implemented_at: nil)
+
     # 艦娘追加またはマスタデータの更新が行われたタイムスタンプの抽出
-    timestamps = (ship_masters.map{|m| m.implemented_at } + updated_ship_masters.map{|m| m.implemented_at }).uniq.sort
+    timestamps = (ship_masters.map{|m| m.implemented_at } +
+        updated_ship_masters.map{|m| m.implemented_at } +
+        special_ship_masters.map{|m| m.implemented_at }
+    ).uniq.sort
 
     # card_index および時刻ごとの増加枚数を計算
     gains = Array.new(9){ Hash.new }
@@ -653,6 +687,20 @@ class ShipInfoController < ApplicationController
     updated_ship_masters.each do |us|
       if us.remodel_level == 0 and us.variation_num == 6
         (3..5).each{|idx| gains[idx][us.implemented_at] += 1 }
+      end
+    end
+
+    # 特別カードは、改造レベルがそれぞれ別になる可能性があるため、レコード内の remodel_level を参照
+    special_ship_masters.each do |ss|
+      case ss.remodel_level
+        when 0
+          gains[ss.rarity][ss.implemented_at] += 1
+        when 1
+          gains[ss.rarity + 3][ss.implemented_at] += 1
+        when 2
+          gains[ss.rarity + 6][ss.implemented_at] += 1
+        else
+          # 改二より上のカードは現時点で未実装のため、単純に無視する
       end
     end
 

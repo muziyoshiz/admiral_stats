@@ -2762,6 +2762,31 @@ updated_ship_masters.each do |ship_master|
   UpdatedShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
 end
 
+special_ship_masters = [
+    {
+        # 日向改
+        book_no: 103,
+        card_index: 3,
+        remodel_level: 1,
+        rarity: 1,
+        # 第2回イベントの前段作戦開始日
+        implemented_at: '2017-04-26T07:00:00+09:00',
+    },
+    {
+        # 伊勢改
+        book_no: 102,
+        card_index: 3,
+        remodel_level: 1,
+        rarity: 1,
+        # 第2回イベントの前段作戦開始日
+        implemented_at: '2017-05-11T07:00:00+09:00',
+    }
+]
+
+special_ship_masters.each do |ship_master|
+    SpecialShipMaster.where(book_no: ship_master[:book_no], card_index: ship_master[:card_index]).first_or_initialize.update(ship_master)
+end
+
 event_masters = [
     {
         event_no: 1,
@@ -3090,5 +3115,3 @@ event_stage_masters = [
 event_stage_masters.each do |master|
   EventStageMaster.where(event_no: master[:event_no], level: master[:level], period: master[:period], stage_no: master[:stage_no]).first_or_initialize.update(master)
 end
-
-
