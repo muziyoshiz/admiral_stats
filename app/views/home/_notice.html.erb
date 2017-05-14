@@ -24,24 +24,14 @@
       まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
     </li>
     <li>
+      2017年5月14日更新：<%= link_to_if_logged_in '「艦娘一覧」ページ', controller: 'ship_list', action: 'index' %> で改装設計図の枚数表示に対応しました。
+      「設計図の表示に切り替え」ボタンを押すと、一番右の列に改装設計図の枚数が表示されます。
+    </li>
+    <li>
       2017年5月13日更新：一部のページ（<%= link_to_if_logged_in 'イベントの進捗', controller: 'admiral_info', action: 'event' %>、<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %>）で、オリジナルデザインの「伊勢改」「日向改」のデータの表示に対応しました。
     </li>
     <li>
       2017年5月12日更新：第2回イベントの後段作戦のイベント進捗情報に対応しました。
-    </li>
-    <li>
-      2017年4月30日更新：第2回イベント（REVISION 5）での SEGA 公式サイトのアップデートに対応して、以下の修正を行いました。
-      <ul>
-        <li>第2回イベントの情報をインポートできるようになりました。ただし、<strong class="text-primary">後段作戦は未対応</strong>です。</li>
-        <li>
-          第2回イベントの情報を、<%= link_to_if_logged_in '「イベントの進捗」ページ', controller: 'admiral_info', action: 'event' %>、
-          <%= link_to '「イベント攻略率」ページ', controller: 'global', action: 'event' %> で確認できるようになりました。
-        </li>
-        <li>提督情報、艦娘一覧のインポート機能を修正して、インポートできる情報（改装設計図の枚数など）を増やしました。</li>
-        <li>
-          Ruby版、PowerShell版、ブックマークレット版（すべてダウンロード）のエクスポータに「改装設計図一覧」エクスポート機能を追加しました。
-          エクスポータのアップデート方法は <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。</li>
-      </ul>
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
