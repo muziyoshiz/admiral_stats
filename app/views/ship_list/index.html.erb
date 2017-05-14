@@ -68,6 +68,7 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">レベル</th>
         <th class="hidden">レベル（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">設計図</th>
+        <th class="hidden">設計図（ソート用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -91,6 +92,7 @@
         <th class="text-left">レベル</th>
         <th class="hidden">レベル（ソート用）</th>
         <th class="text-left">設計図</th>
+        <th class="hidden">設計図（ソート用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -157,11 +159,20 @@
                   0
               <% end %>
             </td>
-            <td class="numeric">
-              <% if @statuses[ship.book_no] %>
+            <% if ship.implemented_at and ship.implemented_at <= Time.now %>
+                <% if @statuses[ship.book_no] %>
+                    <td class="numeric"><%= @statuses[ship.book_no][:blueprint_total_num] %></td>
+                <% else %>
+                    <td class="text-left">未取得</td>
+                <% end %>
+            <% else %>
+                <td class="text-left not-implemented">未配備</td>
+            <% end %>
+            <td class="hidden">
+              <% if ship.implemented_at and ship.implemented_at <= Time.now and @statuses[ship.book_no] %>
                   <%= @statuses[ship.book_no][:blueprint_total_num] %>
               <% else %>
-                  0
+                  -1
               <% end %>
             </td>
           </tr>
@@ -191,6 +202,8 @@
         { "iDataSort": 15, "aTargets": [ 14 ] },
         <!-- 文字列表示を含むレベル列を、数値通りにソートするための設定 -->
         { "iDataSort": 17, "aTargets": [ 16 ] },
+        <!-- 文字列表示を含む設計図列を、数値通りにソートするための設定 -->
+        { "iDataSort": 19, "aTargets": [ 18 ] },
         <!-- デフォルト状態で星の数の列(12, 14)と、改装設計図の枚数の列(18)を隠すための設定 -->
         { "bVisible": false, "aTargets": [ 12, 14, 18 ] },
       ],
