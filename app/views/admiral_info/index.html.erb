@@ -54,6 +54,13 @@
             <%== h_span_for_delta(@first_status.rank, @last_status.rank) %>
           </td>
         </tr>
+        <tr>
+          <th class="text-left">甲種勲章</th>
+          <td class="numeric">
+            <%= number_with_delimiter(@last_status.kou_medal) %>
+            <%== h_span_for_delta(@first_status.kou_medal, @last_status.kou_medal) %>
+          </td>
+        </tr>
       </table>
     </div>
   </div>
