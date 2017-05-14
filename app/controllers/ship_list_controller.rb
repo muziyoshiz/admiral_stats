@@ -77,6 +77,10 @@ class ShipListController < ApplicationController
       @statuses[status.book_no][:star_num] ||= []
       @statuses[status.book_no][:star_num][(status.remodel_level % 2)] = status.star_num
 
+      # 改装設計図の枚数（NULL の場合は 0 と見なす）
+      @statuses[status.book_no][:blueprint_total_num] = status.blueprint_total_num
+      @statuses[status.book_no][:blueprint_total_num] ||= 0
+
       # 艦娘一覧が空ではないことを表すフラグを立てる
       @is_blank = false
     end
