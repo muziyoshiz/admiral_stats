@@ -258,11 +258,13 @@ class GlobalController < ApplicationController
         @cleared_loop_counts[level][cnt] = @statuses[level].select{|s| s.max_cleared_loop_counts == cnt }.size
       end
 
-      @cleared_loop_counts[level][10] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 10 and s.max_cleared_loop_counts < 20 }.size
-      @cleared_loop_counts[level][11] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 20 and s.max_cleared_loop_counts < 30 }.size
-      @cleared_loop_counts[level][12] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 30 and s.max_cleared_loop_counts < 40 }.size
-      @cleared_loop_counts[level][13] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 40 and s.max_cleared_loop_counts < 50 }.size
-      @cleared_loop_counts[level][14] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 50 }.size
+      # 周回数が10台〜90台の提督数
+      (1..9).each do |cnt10x|
+        @cleared_loop_counts[level][10 + (cnt10x - 1)] =
+            @statuses[level].select{|s| s.max_cleared_loop_counts >= (10 * cnt10x) and s.max_cleared_loop_counts < (10 * (cnt10x + 1)) }.size
+      end
+
+      @cleared_loop_counts[level][19] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 100 }.size
     end
   end
 end

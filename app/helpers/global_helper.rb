@@ -44,6 +44,8 @@ module GlobalHelper
     # クリアした提督の総数
     total_cleared_num = total_num - cleared_loop_counts[0]
 
+    # cnt: 配列のインデックス（周回数を表す）
+    # num: 各周回数に該当する提督数
     cleared_loop_counts.each_with_index do |num, cnt|
       next if num == 0 or cnt == 0
       if cnt < 10
@@ -56,7 +58,7 @@ module GlobalHelper
         cnt_start = ((cnt - 10) + 1) * 10
         cnt_end = ((cnt - 10) + 2) * 10 - 1
 
-        if num == cleared_loop_counts.size - 1
+        if cnt == cleared_loop_counts.size - 1
           # 配列の最後は、それ以上すべての回数を表す
           res << {
               name: "#{cnt_start} 周以上",
