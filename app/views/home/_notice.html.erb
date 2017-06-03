@@ -17,22 +17,20 @@
           <br>
           その場合は2〜3日お待ちいただくか、 <%= link_to_twitter_admiral_stats %> や <%= link_to 'Gitter のチャットルーム', gitter_url, :target => 'blank' %> まで不具合のご報告をお願いします。
         </li>
+        <li>
+          <strong class="text-primary">【重要なお知らせ】</strong><br>
+          すべてのエクスポータに、Admiral Stats への自動アップロード機能を実装完了しました。<strong>Safari および iOS でもお使いいただけます</strong>。<br>
+          まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
+        </li>
     <% end %>
     <li>
-      <strong class="text-primary">【重要なお知らせ】</strong><br>
-      すべてのエクスポータに、Admiral Stats への自動アップロード機能を実装完了しました。<strong>Safari および iOS でもお使いいただけます</strong>。<br>
-      まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
+      <strong class="text-danger">2017年6月3日更新：【不具合と、その修正完了のお知らせ】</strong><br>
+      PowerShell 版のエクスポータに、「自動アップロードした場合に装備名が文字化けする不具合」がありました。<br>
+      最新版（v1.7.1〜）で修正しましたので、PowerShell 版のユーザはアップデートをお願いします（<%= link_to 'ダウンロードページ', 'https://github.com/muziyoshiz/admiral_stats_exporter/releases', target: '_blank' %>）。
     </li>
     <li>
       2017年5月24日更新：mimikun さん開発の <%= link_to 'Python 版エクスポータ', 'https://github.com/mimikun/admiral_stats_exporter_python', target: '_blank' %> に自動アップロード機能が追加されました！
       <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> のコメントを更新しました。
-    </li>
-    <li>
-      2017年5月14日更新：<%= link_to_if_logged_in '「艦娘一覧」ページ', controller: 'ship_list', action: 'index' %> で改装設計図の枚数表示に対応しました。
-      「設計図の表示に切り替え」ボタンを押すと、一番右の列に改装設計図の枚数が表示されます。
-    </li>
-    <li>
-      2017年5月13日更新：一部のページ（<%= link_to_if_logged_in 'イベントの進捗', controller: 'admiral_info', action: 'event' %>、<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %>）で、オリジナルデザインの「伊勢改」「日向改」のデータの表示に対応しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
