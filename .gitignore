@@ -46,5 +46,8 @@ bower.json
 # Twitter のキーを管理するための、direnv の設定ファイル
 .envrc
 
+# Vagrant の自動生成するファイル
+.vagrant
+
 # プリコンパイルの結果を git リポジトリから除外
 /public/assets

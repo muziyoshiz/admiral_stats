@@ -1,0 +1,47 @@
+---
+- name: インストール済みの mariadb-libs の削除
+  yum: name=mariadb-libs state=absent
+
+- name: MySQL のリポジトリのインストール有無を確認
+  stat: path=/etc/yum.repos.d/mysql-community.repo
+  register: mysql_repo
+
+- name: MySQL のリポジトリを登録
+  yum: name=http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm state=installed
+  when: mysql_repo.stat.exists == false
+
+- name: MySQL サーバのインストール
+  yum: name=mysql-community-server-{{ mysql_version }} state=installed
+
+- name: MySQL 関係のライブラリのインストール（Rails に必要）
+  yum: name=mysql-community-devel-{{ mysql_version }} state=installed
+
+# 2回実行しても、my.cnf に二重に書き込まれることはない
+# utf8 は utf8mb4 とすべきだが、本番を utf8 で構築してしまったのでそちらに合わせる
+- name: my.cnf の修正
+  blockinfile:
+    dest: /etc/my.cnf
+    insertafter: EOF
+    block: |
+      innodb_buffer_pool_size = 1408M
+      character-set-server = utf8
+      default_password_lifetime = 0
+      bind-address = localhost
+      sql_mode = STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+      default-time-zone='+00:00'
+      # Allow blank password for development
+      skip-grant-tables
+
+- name: MySQL の有効化
+  command: systemctl enable mysqld.service
+
+- name: MySQL の起動
+  command: systemctl restart mysqld.service
+
+# 使用する VM で firewalld が有効な場合は、以下のタスクを有効にする
+#
+# - name: MySQL 接続のためのファイアウォール設定
+#   command: firewall-cmd --add-service=mysql --zone=public --permanent
+#
+# - name: ファイアウォール設定のリロード
+#  command: firewall-cmd --reload

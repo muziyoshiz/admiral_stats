@@ -1,0 +1,37 @@
+# gcc-c++ は、therubyracer のために必要
+# 他は rails のために必要
+- name: Ruby のインストールに必要なライブラリのインストール
+  yum: name={{ item }} state=installed
+  with_items:
+    - openssl-devel
+    - readline-devel
+    - zlib-devel
+    - gcc-c++
+
+- name: RVM がインストール済みかどうか確認する
+  stat: path=/usr/local/rvm
+  register: rvm_stat
+
+- block:
+    - name: RVM のインストールに必要な証明書のインストール
+      command: gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+
+    - name: RVM のインストール
+      shell: \curl -sSL https://get.rvm.io | sudo bash -s stable
+
+    # shell: rvm install {{ ruby_version }} ではなぜか失敗する
+    - name: Ruby のインストール
+      command: /bin/bash -l -c "rvm install {{ ruby_version }} && rvm --default {{ ruby_version }}"
+
+    - name: Ruby を使うユーザを rvm グループに追加
+      user: name={{ item }} groups=rvm append=yes
+      with_items:
+        - vagrant
+
+  when: not rvm_stat.stat.exists
+
+- name: Bundler のインストール
+  command: /bin/bash -l -c "gem install bundler"
+
+- name: Rails のインストール
+  command: /bin/bash -l -c "gem install rails"
