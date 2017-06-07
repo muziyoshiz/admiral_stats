@@ -1348,7 +1348,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '夕雲',
         variation_num: 6,
-        
+        # 2017-06-08：3隻追加（夕雲、巻雲、長波）
+        implemented_at: '2017-06-08T07:00:00+09:00',
     },
     {
         book_no: 134,
@@ -1357,7 +1358,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '巻雲',
         variation_num: 6,
-        
+        # 2017-06-08：3隻追加（夕雲、巻雲、長波）
+        implemented_at: '2017-06-08T07:00:00+09:00',
     },
     {
         book_no: 135,
@@ -1366,7 +1368,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '長波',
         variation_num: 6,
-        
+        # 2017-06-08：3隻追加（夕雲、巻雲、長波）
+        implemented_at: '2017-06-08T07:00:00+09:00',
     },
     {
         book_no: 136,
