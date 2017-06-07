@@ -1,0 +1,20 @@
+---
+- name: epel-release のインストール
+  yum: name=epel-release state=installed
+
+- name: ntp のインストール
+  yum: name=ntp state=installed
+
+- name: タイムゾーンの設定
+  command: timedatectl set-timezone Asia/Tokyo
+
+- name: ハードウェアクロックをデフォルトの UTC に設定（CentOS 7 からの推奨値）
+  command: timedatectl set-local-rtc 0
+
+- name: NTP の有効化
+  command: timedatectl set-ntp true
+
+- name: 基本的なソフトのインストール
+  yum: name={{ item }} state=installed
+  with_items:
+    - git

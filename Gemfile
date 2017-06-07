@@ -14,7 +14,9 @@ gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'therubyracer', platforms: :ruby
+# therubyracer の Ruby 2.4.0 対応は 0.12.3 以降
+# https://stackoverflow.com/questions/41461977/after-ruby-2-4-upgrade-error-while-trying-to-load-the-gem-uglifier-bundler
+gem 'therubyracer', '~> 0.12.3', platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -63,6 +65,10 @@ gem 'jquery-datatables-rails', '~> 3.4.0'
 gem 'highcharts-rails', '~> 4.2.5'
 
 gem 'admiral_stats_parser', '1.7.0'
+
+# Ruby 2.4.1 で json gem v1.8.3 をビルドできない問題への対応 → gem 側の問題が解決したらこの行は削除する
+# http://qiita.com/shinichinomura/items/41e03d7e4fa56841e654
+gem 'json', github: 'flori/json', branch: 'v1.8'
 
 # Twitter Oauth
 gem 'omniauth'

@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: yes
+  become_user: root
+  vars:
+    # TODO 2.4.1 に上げる（Rails 側のバージョンを先に上げないと、一部うまく動作しない）
+    # 参考: http://qiita.com/KTakata/items/7bc8057b3b0ca6759b12
+    ruby_version: 2.3.1
+    mysql_version: 5.7.18
+  roles:
+    - common
+    - database
+    - ruby
+    - admiral_stats
