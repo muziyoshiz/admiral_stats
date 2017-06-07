@@ -1,3 +1,4 @@
+---
 # gcc-c++ は、therubyracer のために必要
 # 他は rails のために必要
 - name: Ruby のインストールに必要なライブラリのインストール
