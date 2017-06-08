@@ -12,13 +12,17 @@ class ApplicationController < ActionController::Base
   private
 
   def current_admiral
-    return unless session[:admiral_id]
-    @current_admiral ||= Admiral.find(session[:admiral_id])
+    # ローカル開発環境では、以下の状況が実際に起こりうる（何度か起こっている）
+    #   - セッション情報が正しい鍵で作られている
+    #   - しかし、その中に含まれる admiral_id が DB 上にまだ存在しない
+    # そのような場合もエラー画面が出ずに動作するように、find の代わりに find_by を使う
+    return nil unless session[:admiral_id]
+    @current_admiral ||= Admiral.find_by(id: session[:admiral_id])
   end
 
   def logged_in?
     # !! は、返り値が nil の場合に、nil の代わりに false を返すための構文
-    !!session[:admiral_id]
+    !!current_admiral
   end
 
   # before_action で認証状態をチェックするためのメソッド
