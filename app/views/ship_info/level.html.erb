@@ -60,6 +60,8 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レベル</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">経験値</th>
         <th class="hidden">経験値増加量（ソート用）</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 30</th>
+        <th class="hidden">レベル 30 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 50</th>
         <th class="hidden">レベル 50 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 70</th>
@@ -77,6 +79,8 @@
         <th class="text-left">レベル</th>
         <th class="text-left">経験値</th>
         <th class="hidden">経験値増加量（ソート用）</th>
+        <th class="text-left">レベル 30</th>
+        <th class="hidden">レベル 30 到達日（ソート用）</th>
         <th class="text-left">レベル 50</th>
         <th class="hidden">レベル 50 到達日（ソート用）</th>
         <th class="text-left">レベル 70</th>
@@ -99,6 +103,15 @@
               <br><span class="increase"><i class="glyphicon glyphicon-arrow-up"></i> <%= number_with_delimiter(@increased_exps[book_no]) %></span>
             </td>
             <td class="hidden"><%= @increased_exps[book_no] %></td>
+            <% if forecast[:lv30_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv30_soon] %>">
+                  <%= forecast[:lv30_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv30_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <td class="hidden"><%= forecast[:lv30_at] %></td>
             <% if forecast[:lv50_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv50_soon] %>">
                   <%= forecast[:lv50_at].to_s(:date) %>
