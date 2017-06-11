@@ -2,6 +2,7 @@
 @import "bootstrap-sprockets";
 // navbar をレスポンシブデザイン対応に変更する閾値
 $grid-float-breakpoint: 1200px;
+
 @import "bootstrap";
 @import "dataTables/bootstrap/3/jquery.dataTables.bootstrap";
 
