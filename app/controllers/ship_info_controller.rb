@@ -132,7 +132,13 @@ class ShipInfoController < ApplicationController
       # 1 秒あたりの増加経験値 = 経験値の差 / 経過時間(秒、float 型)
       exp_per_sec = (s_end.estimated_exp - s_begin.estimated_exp).to_f / (s_end.exported_at - s_begin.exported_at)
 
-      # Lv 50 到達予想時間（Lv 70 の経験値は 122,500）
+      # Lv 30 到達予想時間（Lv 30 の経験値は 43,500）
+      if s_end.level < 30
+        forecast[:lv30_at] = s_begin.exported_at + (43500 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv30_rest] = 43500 - s_end.estimated_exp
+      end
+
+      # Lv 50 到達予想時間（Lv 50 の経験値は 122,500）
       if s_end.level < 50
         forecast[:lv50_at] = s_begin.exported_at + (122500 - s_begin.estimated_exp) / exp_per_sec
         forecast[:lv50_rest] = 122500 - s_end.estimated_exp
@@ -159,6 +165,8 @@ class ShipInfoController < ApplicationController
 
     # 到達予想日が最も近い艦娘をハイライト
     # min_by の返り値は [ book_no, forecast ] という配列になる
+    soon = @forecasts.select{|b, f| f[:lv30_at] }.min_by{|b, f| f[:lv30_at] }
+    soon[1][:lv30_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv50_at] }.min_by{|b, f| f[:lv50_at] }
     soon[1][:lv50_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv70_at] }.min_by{|b, f| f[:lv70_at] }
