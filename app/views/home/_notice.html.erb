@@ -24,6 +24,9 @@
         </li>
     <% end %>
     <li>
+      2017年6月11日更新：<%= link_to_if_logged_in '「レベル・経験値（艦娘別）」ページ', controller: 'ship_info', action: 'level' %> に、Lv 30 到達予想日の表示を追加しました（<%= link_to 'Pull Request #10', 'https://github.com/muziyoshiz/admiral_stats/pull/10' %>）。Thanks mimikun!
+    </li>
+    <li>
       <strong class="text-danger">2017年6月3日更新：【不具合と、その修正完了のお知らせ】</strong><br>
       <ul>
         <li>
@@ -34,10 +37,6 @@
           <%= link_to '「イベント攻略率」ページ', controller: 'global', action: 'event' %> で、攻略済み周回数が<strong class="text-danger">60周以上</strong>の場合に、正しく表示できていなかった不具合を修正しました。
         </li>
       </ul>
-    </li>
-    <li>
-      2017年5月24日更新：mimikun さん開発の <%= link_to 'Python 版エクスポータ', 'https://github.com/mimikun/admiral_stats_exporter_python', target: '_blank' %> に自動アップロード機能が追加されました！
-      <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> のコメントを更新しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
