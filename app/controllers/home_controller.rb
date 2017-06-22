@@ -51,6 +51,11 @@ class HomeController < ApplicationController
       ship_masters[master.book_no] = master
     end
 
+    special_ship_masters = {}
+    SpecialShipMaster.all.each do |master|
+      special_ship_masters[master.book_no] = master
+    end
+
     # 活動記録を格納する配列
     @histories = []
 
@@ -66,6 +71,8 @@ class HomeController < ApplicationController
     ship_cards.sort_by{|c| [ c.first_exported_at, c.book_no ] }.each do |card|
       desc, clazz = nil, nil
       master = ship_masters[card.book_no]
+
+      # TODO (remodel_level, card_index) の組み合わせと、レアリティの対応テーブルを用意して、コード短縮する
       case master.remodel_level
         when 0
           counters[card.card_index] += 1 if card.card_index.between?(0, 5)
@@ -114,6 +121,23 @@ class HomeController < ApplicationController
               desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[8]} 隻目の改二（中破）です。"
               clazz = 'kai2-chuha'
           end
+      end
+
+      # 通常の艦娘カードのマスタデータに含まれない場合は、限定カードから探す
+      unless desc
+        sp_master = special_ship_masters[card.book_no]
+        if sp_master
+          case sp_master.remodel_level
+            when 1
+              case sp_master.rarity
+                when 1
+                  counters[4] += 1
+                  desc = "#{master.ship_name}（ホロ・限定カード） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。"
+                  clazz = 'kai-holo'
+              end
+              # TODO 他の分岐も足す
+          end
+        end
       end
 
       if desc
