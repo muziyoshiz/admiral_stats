@@ -54,7 +54,6 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">図鑑 No.</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦型</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦番号</th>
-        <th class="hidden">艦番号（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">N</th>
@@ -71,7 +70,6 @@
             <td class="numeric hidden-xs"><%= ship.book_no %></td>
             <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class %></td>
             <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class_index %>番艦</td>
-            <td class="hidden"><%= ship.ship_class_index %></td>
             <td class="text-left hidden-xs"><%= ship.ship_type %></td>
             <td class="text-left"><%= ship.ship_name %></td>
             <% 6.times do |idx| %>
@@ -98,7 +96,6 @@
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">図鑑 No.</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦型</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 hidden-sm hidden-xs">艦番号</th>
-            <th class="hidden">艦番号（ソート用）</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">限定カード</th>
@@ -111,7 +108,6 @@
                 <td class="numeric hidden-xs"><%= ship.book_no %></td>
                 <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class %></td>
                 <td class="text-left hidden-sm hidden-xs"><%= ship.ship_class_index %>番艦</td>
-                <td class="hidden"><%= ship.ship_class_index %></td>
                 <td class="text-left hidden-xs"><%= ship.ship_type %></td>
                 <td class="text-left"><%= ship.ship_name %></td>
                 <% if @special_cards[sship.book_no][sship.card_index].nil? %>
