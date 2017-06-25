@@ -24,6 +24,9 @@
         </li>
     <% end %>
     <li>
+      2017年6月25日更新：ログイン後に表示される活動記録に、伊勢改・日向改の限定カードが表示されるようになりました。なお、艦娘一覧にはまだ表示できていません（UI 検討中です）。
+    </li>
+    <li>
       2017年6月11日更新：<%= link_to_if_logged_in '「レベル・経験値（艦娘別）」ページ', controller: 'ship_info', action: 'level' %> に、Lv 30 到達予想日の表示を追加しました（<%= link_to 'Pull Request #10', 'https://github.com/muziyoshiz/admiral_stats/pull/10' %>）。Thanks mimikun!
     </li>
     <li>

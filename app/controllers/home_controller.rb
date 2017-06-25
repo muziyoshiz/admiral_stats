@@ -124,6 +124,7 @@ class HomeController < ApplicationController
       end
 
       # 通常の艦娘カードのマスタデータに含まれない場合は、限定カードから探す
+      # TODO 今後ほかの限定カードが追加されたら、データの傾向がわかるので、この分岐の書き方を見直す
       unless desc
         sp_master = special_ship_masters[card.book_no]
         if sp_master
@@ -135,7 +136,6 @@ class HomeController < ApplicationController
                   desc = "#{master.ship_name}（ホロ・限定カード） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。"
                   clazz = 'kai-holo'
               end
-              # TODO 他の分岐も足す
           end
         end
       end
