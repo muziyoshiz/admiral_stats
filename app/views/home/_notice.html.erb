@@ -24,22 +24,14 @@
         </li>
     <% end %>
     <li>
+      2017年6月30日更新：開発者のブログで <%= link_to '第2回イベント「南方海域強襲偵察！」のプレイデータ解析 〜甲種勲章の十分条件は何だったのか？', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %> を公開しました。
+      甲クリア提督の平均レベルや大北改二の所有率などを分析したので、そういうデータに興味あるかたはどうぞ。
+    </li>
+    <li>
       2017年6月25日更新：ログイン後に表示される活動記録に、伊勢改・日向改の限定カードが表示されるようになりました。なお、艦娘一覧にはまだ表示できていません（UI 検討中です）。
     </li>
     <li>
       2017年6月11日更新：<%= link_to_if_logged_in '「レベル・経験値（艦娘別）」ページ', controller: 'ship_info', action: 'level' %> に、Lv 30 到達予想日の表示を追加しました（<%= link_to 'Pull Request #10', 'https://github.com/muziyoshiz/admiral_stats/pull/10' %>）。Thanks mimikun!
-    </li>
-    <li>
-      <strong class="text-danger">2017年6月3日更新：【不具合と、その修正完了のお知らせ】</strong><br>
-      <ul>
-        <li>
-          PowerShell 版のエクスポータに、「自動アップロードした場合に装備名が文字化けする不具合」がありました。<br>
-          最新版（v1.7.1〜）で修正しましたので、PowerShell 版のユーザはアップデートをお願いします（<%= link_to 'ダウンロードページ', 'https://github.com/muziyoshiz/admiral_stats_exporter/releases', target: '_blank' %>）。
-        </li>
-        <li>
-          <%= link_to '「イベント攻略率」ページ', controller: 'global', action: 'event' %> で、攻略済み周回数が<strong class="text-danger">60周以上</strong>の場合に、正しく表示できていなかった不具合を修正しました。
-        </li>
-      </ul>
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>

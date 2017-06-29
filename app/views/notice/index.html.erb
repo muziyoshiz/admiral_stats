@@ -6,6 +6,18 @@
   <h3>2017年</h3>
   <ul>
     <li>
+      <strong class="text-danger">2017年6月3日更新：【不具合と、その修正完了のお知らせ】</strong><br>
+      <ul>
+        <li>
+          PowerShell 版のエクスポータに、「自動アップロードした場合に装備名が文字化けする不具合」がありました。<br>
+          最新版（v1.7.1〜）で修正しましたので、PowerShell 版のユーザはアップデートをお願いします（<%= link_to 'ダウンロードページ', 'https://github.com/muziyoshiz/admiral_stats_exporter/releases', target: '_blank' %>）。
+        </li>
+        <li>
+          <%= link_to '「イベント攻略率」ページ', controller: 'global', action: 'event' %> で、攻略済み周回数が<strong class="text-danger">60周以上</strong>の場合に、正しく表示できていなかった不具合を修正しました。
+        </li>
+      </ul>
+    </li>
+    <li>
       2017年5月24日更新：mimikun さん開発の <%= link_to 'Python 版エクスポータ', 'https://github.com/mimikun/admiral_stats_exporter_python', target: '_blank' %> に自動アップロード機能が追加されました！
       <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> のコメントを更新しました。
     </li>
