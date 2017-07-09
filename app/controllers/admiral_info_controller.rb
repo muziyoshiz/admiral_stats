@@ -247,17 +247,17 @@ class AdmiralInfoController < ApplicationController
       end
     end
 
+    # NOTICE 以下は、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
     # この期間限定海域で実装された特別カード
-    @special_ships = SpecialShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order('book_no, card_index')
+    @special_ships = SpecialShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order(:book_no)
 
-    # 取得済みのカードを調べた結果
+    # 特別カードの入手状況を調べる
+    # 取得済みは :acquired、未取得は :not_acquired
     @special_cards = {}
-
-    @special_ships.each do |ship|
-      new_card = ShipCard.where('admiral_id = ? AND book_no = ? AND card_index = ? AND first_exported_at >= ? AND first_exported_at <= ?',
-                                current_admiral.id, ship.book_no, ship.card_index, @event.started_at, @event.ended_at)
-      @special_cards[ship.book_no] ||= {}
-      @special_cards[ship.book_no][ship.card_index] = (new_card.exists? ? :acquired : :not_acquired)
+    @special_ships.each do |sship|
+      exists = ShipCard.where('admiral_id = ? AND book_no = ? AND card_index = ? AND first_exported_at >= ? AND first_exported_at <= ?',
+                              current_admiral.id, sship.book_no, sship.card_index, @event.started_at, @event.ended_at).exists?
+      @special_cards[sship.book_no] = exists ? :acquired : :not_acquired
     end
   end
 

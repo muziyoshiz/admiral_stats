@@ -31,6 +31,26 @@ module ApplicationHelper
     [:month, :three_months, :half_year, :year, :all]
   end
 
+  # 特別カードの階層レベルおよびレアリティを、文字表現に変換します。
+  def special_ship_rarity_to_s(special_ship)
+    first_half = case special_ship.remodel_level
+                   when 0
+                     'N'
+                   when 1
+                     '改'
+                   when 2
+                     '改二'
+                 end
+    latter_half = case special_ship.rarity
+                    when 1
+                      'ホロ'
+                    when 2
+                      '中破'
+                  end
+
+    first_half + latter_half
+  end
+
   # イベント難易度を日本語表記に変換します。
   def difficulty_level_to_text(level)
     case level
