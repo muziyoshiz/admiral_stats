@@ -16,23 +16,27 @@
     <p>
       Admiral Stats は艦これアーケードのプレイデータを表示するサイトです。<br>
       <%= link_to 'SEGA 公式のプレイヤーズサイト', sega_url, :target => '_blank' %>
-      が対応していない、時系列での可視化に対応しています。また、Lv99 到達日の予想機能なども備えています。
+      が対応していない、時系列での可視化に対応しています。また、<%= link_to '他提督との比較機能', controller: 'global', action: 'event' %>、プレイデータ公開機能なども備えています。
     </p>
     <h4 class="text-info">サンプル 1：カードの入手履歴</h4>
     <p>
       <%= image_tag 'home/sample_home.png', class: 'img-responsive img-thumbnail' %>
     </p>
-    <h4 class="text-info">サンプル 2：カードの入手数・入手率のグラフ</h4>
-    <p>
-      <%= image_tag 'home/sample_chart_num.png', class: 'img-responsive img-thumbnail' %>
-    </p>
-    <h4 class="text-info">サンプル 3：レベル・経験値のグラフ</h4>
+    <h4 class="text-info">サンプル 2：レベル・経験値のグラフ</h4>
     <p>
       <%= image_tag 'home/sample_chart_level.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+    <h4 class="text-info">サンプル 3：レベル 99 到達予想日</h4>
+    <p>
+      <%= image_tag 'home/sample_lv99_forecast.png', class: 'img-responsive img-thumbnail' %>
     </p>
     <h4 class="text-info">サンプル 4：カード入手状況の一覧表示</h4>
     <p>
       <%= image_tag 'home/sample_ship_list.png', class: 'img-responsive img-thumbnail' %>
+    </p>
+    <h4 class="text-info">サンプル 5：イベントの進捗履歴</h4>
+    <p>
+      <%= image_tag 'home/sample_event_progress.png', class: 'img-responsive img-thumbnail' %>
     </p>
   </div>
   <div class="col-md-6">
