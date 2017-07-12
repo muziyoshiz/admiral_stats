@@ -1054,7 +1054,7 @@ ship_masters = [
         ship_class_index: 1,
         ship_type: '軽空母',
         ship_name: '千歳航',
-        variation_num: 3,
+        variation_num: 6,
         
     },
     {
@@ -1063,7 +1063,7 @@ ship_masters = [
         ship_class_index: 2,
         ship_type: '軽空母',
         ship_name: '千代田航',
-        variation_num: 3,
+        variation_num: 6,
         
     },
     {
