@@ -230,7 +230,7 @@ class ShipInfoController < ApplicationController
     # キーは艦種で値は [時刻, 合計経験値 または 平均経験値] の配列
     exps, avg_exps = {}, {}
     # キーは艦種で値は [時刻, 星5の艦娘数] の配列
-    five_stars, five_stars_kai, five_stars_kai2 = {}, {}, {}
+    five_stars, five_stars_kai, five_stars_kai2, five_stars_kai3 = {}, {}, {}, {}
     # キーは艦種で値は [時刻, 艦娘数] の配列
     nums = {}
 
@@ -291,11 +291,13 @@ class ShipInfoController < ApplicationController
       type_5stars = {}
       type_5stars_kai = {}
       type_5stars_kai2 = {}
+      type_5stars_kai3 = {}
 
       statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
         type_5stars[s.exported_at] ||= 0
         type_5stars_kai[s.exported_at] ||= 0
         type_5stars_kai2[s.exported_at] ||= 0
+        type_5stars_kai3[s.exported_at] ||= 0
         if s.star_num == 5
           case s.remodel_level
             when 0
@@ -305,7 +307,8 @@ class ShipInfoController < ApplicationController
             when 2
               type_5stars_kai2[s.exported_at] += 1
             else
-              # 改二より上のカードは現時点で未実装のため、単純に無視する
+              # 改二より上のカードは、すべて「改三以上」として扱う
+              type_5stars_kai3[s.exported_at] += 1
           end
         end
       end
@@ -313,6 +316,7 @@ class ShipInfoController < ApplicationController
       five_stars[ship_type] = type_5stars.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars[exported_at] ] }
       five_stars_kai[ship_type] = type_5stars_kai.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai[exported_at] ] }
       five_stars_kai2[ship_type] = type_5stars_kai2.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai2[exported_at] ] }
+      five_stars_kai3[ship_type] = type_5stars_kai3.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai3[exported_at] ] }
     end
 
     @series_total_level = []
@@ -371,11 +375,19 @@ class ShipInfoController < ApplicationController
       }
     end
 
+    @series_5stars_kai3 = []
+    ship_types.each do |ship_type|
+      @series_5stars_kai3 << {
+          'name' => ship_type,
+          'data' => five_stars_kai3[ship_type],
+      }
+    end
+
     # サマリのためのデータ取得
-    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_5stars_kai2, @first_nums =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, nums].map{|v| first_st_values(v) }
-    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_5stars_kai2, @last_nums =
-        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, nums].map{|v| last_st_values(v) }
+    @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_5stars_kai2, @first_5stars_kai3, @first_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, five_stars_kai3, nums].map{|v| first_st_values(v) }
+    @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_5stars_kai2, @last_5stars_kai3, @last_nums =
+        [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, five_stars_kai3, nums].map{|v| last_st_values(v) }
   end
 
   # カード入手数・入手率の表示

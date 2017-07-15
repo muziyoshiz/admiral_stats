@@ -40,7 +40,7 @@
     <table id="table-summary" class="table table-striped table-bordered" cellspacing="0" width="100%">
       <thead>
       <tr>
-        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">艦種</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦種</th>
         <th class="hidden">デフォルトの表示順（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">平均レベル</th>
         <th class="hidden">平均レベル（ソート用）</th>
@@ -58,6 +58,8 @@
         <th class="hidden">★5(改)（ソート用）</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5(改二)</th>
         <th class="hidden">★5(改二)（ソート用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">★5(改三以上)</th>
+        <th class="hidden">★5(改三以上)（ソート用）</th>
       </tr>
       </thead>
       <tbody>
@@ -145,6 +147,16 @@
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
+          <% if @last_5stars_kai3[st] %>
+              <td class="numeric hidden-xs">
+                <%= @last_5stars_kai3[st] %>
+                <%== h_span_for_delta(@first_5stars_kai3[st], @last_5stars_kai3[st]) %>
+              </td>
+              <td class="hidden"><%= @last_5stars_kai3[st] %></td>
+          <% else %>
+              <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
+              <td class="hidden">0</td>
+          <% end %>
         </tr>
       <% end %>
       </tbody>
@@ -177,6 +189,10 @@
 <hr>
 
 <div id="chart-5stars-kai2" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-5stars-kai3" style="width:100%; height:400px;"></div>
 
 <script type="application/javascript">
   // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
@@ -292,6 +308,21 @@
     }));
   });
 
+  $(function () {
+    $('#chart-5stars-kai3').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+      title: {
+        text: '★5艦娘数（改三以上）'
+      },
+      yAxis: {
+        title: {
+          text: '艦娘数'
+        },
+        min: 0
+      },
+      series: <%== @series_5stars_kai3.to_json %>
+    }));
+  });
+
   $(document).ready(function() {
     $('#table-summary').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       <!-- サマリに検索は不要なため、無効化 -->
@@ -308,6 +339,7 @@
         { "iDataSort": 13, "aTargets": [ 12 ] },
         { "iDataSort": 15, "aTargets": [ 14 ] },
         { "iDataSort": 17, "aTargets": [ 16 ] },
+        { "iDataSort": 19, "aTargets": [ 18 ] },
       ],
     }));
   } );
