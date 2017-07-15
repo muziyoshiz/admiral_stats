@@ -32,6 +32,9 @@
                   <li>例2）すでに北上改二を入手している場合に、ノーマル北上、北上改の装備を強調表示</li>
                 </ul>
               </li>
+              <li>
+                <strong class="text-danger">【装備名が文字化けしている場合】</strong><%= link_to 'PowerShell 版エクスポータ', 'https://github.com/muziyoshiz/admiral_stats_exporter' %> のアップデートをお願いします。この文字化けの不具合は v1.7.1 以降で解決しています。
+              </li>
             </ul>
           </div>
         </div>
@@ -56,8 +59,8 @@
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-ms-1 col-xs-1">図鑑 No.</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
-        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">改</th>
-        <th class="hidden">改（ソートおよび検索用）</th>
+        <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">改装Lv</th>
+        <th class="hidden">改装Lv（ソートおよび検索用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット1</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">スロット2</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-ms-2 col-xs-2">スロット3</th>
@@ -91,13 +94,24 @@
             <td class="text-left hidden-xs"><%= ship.ship_type_by_status(status) %></td>
             <td class="text-left"><%= ship.ship_name %></td>
             <td class="text-left">
-              <% if status.remodel_level == 1 %>
-                  改
-              <% elsif status.remodel_level == 2 %>
-                  改二
-              <% else %>
-                  <span class="hidden">N</span>
-              <% end %>
+              <%
+                remodel_lv = case status.remodel_level
+                               when 1
+                                 '改'
+                               when 2
+                                 '改二'
+                               when 3
+                                 '改三'
+                               when 4
+                                 '改四'
+                               when 5
+                                 '改五'
+                               else
+                                 # ノーマル艦娘のみを検索するための文字列
+                                 '<span class="hidden">N</span>'
+                             end
+              %>
+              <%= remodel_lv.html_safe %>
             </td>
             <td class="hidden"><%= status.remodel_level %></td>
             <% 4.times.each do |idx| %>
