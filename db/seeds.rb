@@ -1055,7 +1055,10 @@ ship_masters = [
         ship_type: '軽空母',
         ship_name: '千歳航',
         variation_num: 6,
-        
+        # 千歳航は remodel_level 3, 千歳航改は remodel_level 4 扱い
+        remodel_level: 3,
+        # 2017-07-13：3隻追加（夕立改二、千歳航/航改、千代田航/航改）
+        implemented_at: '2017-07-13T07:00:00+09:00',
     },
     {
         book_no: 105,
@@ -1064,7 +1067,10 @@ ship_masters = [
         ship_type: '軽空母',
         ship_name: '千代田航',
         variation_num: 6,
-        
+        # 千代田航は remodel_level 3, 千代田航改は remodel_level 4 扱い
+        remodel_level: 3,
+        # 2017-07-13：3隻追加（夕立改二、千歳航/航改、千代田航/航改）
+        implemented_at: '2017-07-13T07:00:00+09:00',
     },
     {
         book_no: 106,

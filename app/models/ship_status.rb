@@ -25,12 +25,13 @@ class ShipStatus < ApplicationRecord
   # 2: 改二, 千歳/千代田 甲
   # 3: 千歳/千代田 航
   # 4: 千歳/千代田 航改
+  # 5: 千歳/千代田 航改二
   validates :remodel_level,
             presence: true,
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 0,
-#                less_than_or_equal_to: 2,
+                less_than_or_equal_to: 5,
             }
 
   # レベル

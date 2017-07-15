@@ -63,7 +63,8 @@ class HomeController < ApplicationController
     # 0, 1, 2 -> ノーマルの通常、ホロ、中破
     # 3, 4, 5 -> 改の通常、ホロ、中破
     # 6, 7, 8 -> 改二の通常、ホロ、中破
-    counters = Array.new(9, 0)
+    # 9, 10, 11 -> 改三以上の通常、ホロ、中破
+    counters = Array.new(12, 0)
 
     # カードをソートするためのインデックス
     index = 0
@@ -120,6 +121,48 @@ class HomeController < ApplicationController
             when 2
               desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[8]} 隻目の改二（中破）です。"
               clazz = 'kai2-chuha'
+          end
+        when 3..5
+          # remodel_level が 3 以上の艦娘は、すべて「改三以上」として扱う
+          counters[(card.card_index % 3) + 9] += 1 if card.card_index.between?(0, 5)
+
+          # 艦娘名表示は、名前に「改」を付けるか付けないかを判断するために、remodel_level で処理を分岐する必要がある
+          case master.remodel_level
+            when 3
+              # 千歳航、千代田航、およびコンバート艦娘がここに該当
+              case card.card_index
+                when 0
+                  desc = "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
+                  clazz = 'kai3'
+                when 1
+                  desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
+                  clazz = 'kai3-holo'
+                when 2
+                  desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
+                  clazz = 'kai3-chuha'
+                when 3
+                  desc = "#{master.ship_name}改 が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
+                  clazz = 'kai3'
+                when 4
+                  desc = "#{master.ship_name}改（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
+                  clazz = 'kai3-holo'
+                when 5
+                  desc = "#{master.ship_name}改（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
+                  clazz = 'kai3-chuha'
+              end
+            when 5
+              # 千歳航改二、千代田航改二のみがここに該当
+              case card.card_index
+                when 0
+                  desc = "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
+                  clazz = 'kai3'
+                when 1
+                  desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
+                  clazz = 'kai3-holo'
+                when 2
+                  desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
+                  clazz = 'kai3-chuha'
+              end
           end
       end
 
