@@ -432,11 +432,11 @@ class ShipInfoController < ApplicationController
     special_ship_masters = SpecialShipMaster.where.not(implemented_at: nil)
 
     # どの時刻にカードが何枚増えたかを調べる
-    # gains[0..8][時刻] = その時刻に増えた枚数
-    # 0〜9は、N、Nホロ、N中破、改、改ホロ、改中破、改二、改二ホロ、改二中破、を表す
+    # gains[0..11][時刻] = その時刻に増えた枚数
+    # 0〜11は、N、Nホロ、N中破、改、改ホロ、改中破、改二、改二ホロ、改二中破、改三以上、改三以上ホロ、改三以上中破を表す
     # 注意：以下のように宣言すると、すべて同じオブジェクトになってしまう
-    # nums = Array.new(9, {})
-    gains = Array.new(9){ Hash.new }
+    # nums = Array.new(12, {})
+    gains = Array.new(12){ Hash.new }
 
     ship_cards.each do |card|
       # 特別カードの場合は、通常とは別の処理をする
@@ -453,7 +453,9 @@ class ShipInfoController < ApplicationController
             gains[sp_ship_master.rarity + 6][card.first_exported_at] ||= 0
             gains[sp_ship_master.rarity + 6][card.first_exported_at] += 1
           else
-            # 改二より上のカードは現時点で未実装のため、単純に無視する
+            # 改二より上のカードは、すべて「改三以上」として扱う
+            gains[sp_ship_master.rarity + 9][card.first_exported_at] ||= 0
+            gains[sp_ship_master.rarity + 9][card.first_exported_at] += 1
         end
 
         next
@@ -484,7 +486,9 @@ class ShipInfoController < ApplicationController
           gains[card.card_index + 6][card.first_exported_at] ||= 0
           gains[card.card_index + 6][card.first_exported_at] += 1
         else
-          # 改二より上のカードは現時点で未実装のため、単純に無視する
+          # 改二より上のカードは、すべて「改三以上」として扱う
+          gains[(card.card_index % 3) + 9][card.first_exported_at] ||= 0
+          gains[(card.card_index % 3) + 9][card.first_exported_at] += 1
       end
     end
 
@@ -501,11 +505,11 @@ class ShipInfoController < ApplicationController
     last_timestamp = timestamps.last
 
     # 最終的な枚数を調べる
-    # nums[0..8][時刻] = その時刻までに入手した枚数
-    nums = Array.new(9){ Hash.new }
+    # nums[0..11][時刻] = その時刻までに入手した枚数
+    nums = Array.new(12){ Hash.new }
 
     # 時刻順に積算していく
-    9.times do |idx|
+    12.times do |idx|
       # 1つ前の時刻の値
       prev_num = 0
 
@@ -521,28 +525,28 @@ class ShipInfoController < ApplicationController
     end
 
     # タイムスタンプの最初の日付、および最後の日付の枚数を配列に記録
-    @first_nums = 9.times.map{|idx| nums[idx][first_timestamp] }
-    @last_nums = 9.times.map{|idx| nums[idx][last_timestamp] }
+    @first_nums = 12.times.map{|idx| nums[idx][first_timestamp] }
+    @last_nums = 12.times.map{|idx| nums[idx][last_timestamp] }
 
     # 実装済みの枚数を調べる
-    # nums[0..8][時刻] = その時刻までに実装された枚数
-    impls = Array.new(9){ Hash.new }
+    # nums[0..11][時刻] = その時刻までに実装された枚数
+    impls = Array.new(12){ Hash.new }
 
     # ship_masters テーブルからカード枚数の情報を生成
     released_nums = get_released_nums
 
     # 時刻順に取得していく
-    9.times do |idx|
+    12.times do |idx|
       timestamps.each do |timestamp|
         impls[idx][timestamp] = get_total(released_nums, idx, timestamp)
       end
     end
 
     # 現時点のカード総数に対する割合を計算
-    # rates[0..8][時刻] = 割合
-    rates = Array.new(9){ Hash.new }
+    # rates[0..11][時刻] = 割合
+    rates = Array.new(12){ Hash.new }
 
-    9.times do |idx|
+    12.times do |idx|
       timestamps.each do |exported_at|
         if impls[idx][exported_at] == 0
           # 改二が未実装の期間の場合は、0 にする
@@ -555,8 +559,8 @@ class ShipInfoController < ApplicationController
     end
 
     # タイムスタンプの最初の日付、および最後の日付の割合を配列に記録
-    @first_rates = 9.times.map{|idx| rates[idx][first_timestamp] }
-    @last_rates = 9.times.map{|idx| rates[idx][last_timestamp] }
+    @first_rates = 12.times.map{|idx| rates[idx][first_timestamp] }
+    @last_rates = 12.times.map{|idx| rates[idx][last_timestamp] }
 
     # 全体の数および割合を計算
     total_num_data = []
@@ -567,8 +571,8 @@ class ShipInfoController < ApplicationController
       next if beginning_of_range and exported_at < beginning_of_range
 
       timestamp = exported_at.to_i * 1000
-      num = 9.times.map{|idx| nums[idx][exported_at] }.sum
-      num_impl = 9.times.map{|idx| impls[idx][exported_at] }.sum
+      num = 12.times.map{|idx| nums[idx][exported_at] }.sum
+      num_impl = 12.times.map{|idx| impls[idx][exported_at] }.sum
       total_num_data << [ timestamp, num ]
       total_rate_data << [ timestamp, (100.0 * num / num_impl).round(1) ]
       total_impl_data << [ timestamp, num_impl ]
@@ -586,7 +590,7 @@ class ShipInfoController < ApplicationController
       @last_total_rate = total_rate_data.last[1]
     end
 
-    %w(N Nホロ N中破 改 改ホロ 改中破 改二 改二ホロ 改二中破).each_with_index do |name, idx|
+    %w(N Nホロ N中破 改 改ホロ 改中破 改二 改二ホロ 改二中破 改三以上 改三以上ホロ 改三以上中破).each_with_index do |name, idx|
       num_data = []
       timestamps.each do |exported_at|
         # 指定された期間の結果のみプロット
@@ -686,9 +690,9 @@ class ShipInfoController < ApplicationController
     ).uniq.sort
 
     # card_index および時刻ごとの増加枚数を計算
-    gains = Array.new(9){ Hash.new }
+    gains = Array.new(12){ Hash.new }
     # 初期値の設定
-    9.times.each{|idx| timestamps.each{|t| gains[idx][t] = 0 } }
+    12.times.each{|idx| timestamps.each{|t| gains[idx][t] = 0 } }
 
     ship_masters.each do |s|
       case s.remodel_level
@@ -701,7 +705,8 @@ class ShipInfoController < ApplicationController
           # 改二から始まる図鑑 No. の場合は、1枚目のカードを改二と見なす
           s.variation_num.times.each{|idx| gains[idx + 6][s.implemented_at] += 1 }
         else
-          # 改二より上のカードは現時点で未実装のため、単純に無視する
+          # 改二以上から始まる図鑑 No. の場合は、すべてのカードを改三以上と見なす
+          s.variation_num.times.each{|idx| gains[(idx % 3) + 9][s.implemented_at] += 1 }
       end
     end
 
@@ -723,13 +728,14 @@ class ShipInfoController < ApplicationController
         when 2
           gains[ss.rarity + 6][ss.implemented_at] += 1
         else
-          # 改二より上のカードは現時点で未実装のため、単純に無視する
+          # 改二より上のカードは、すべて「改三以上」として扱う
+          gains[ss.rarity + 9][ss.implemented_at] += 1
       end
     end
 
     # card_index ごとのカード総数を計算
-    released_nums = Array.new(9){ Array.new }
-    9.times.each do |idx|
+    released_nums = Array.new(12){ Array.new }
+    12.times.each do |idx|
       prev_num = 0
       timestamps.each do |implemented_at|
         num = prev_num + gains[idx][implemented_at]
