@@ -22,7 +22,9 @@ class ShipStatus < ApplicationRecord
   # （未改造の艦娘と、改造済みの艦娘が、別のデータとして返される）
   # 0: 未改造
   # 1: 改
-  # 2: 改二
+  # 2: 改二, 千歳/千代田 甲
+  # 3: 千歳/千代田 航
+  # 4: 千歳/千代田 航改
   validates :remodel_level,
             presence: true,
             numericality: {

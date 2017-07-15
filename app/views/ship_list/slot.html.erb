@@ -81,8 +81,11 @@
       </tfoot>
       <tbody>
       <% @statuses.each do |status| %>
-          <% ship = @ships[status.book_no] %>
-          <% upper_level_exists = upper_level_exists_for?(status, @ships, @statuses) %>
+          <%
+            ship = @ships[status.book_no]
+            next unless ship
+            upper_level_exists = upper_level_exists_for?(status, @ships, @statuses)
+          %>
           <tr <%== 'class="unused-normal"' if upper_level_exists %>>
             <td class="numeric"><%= ship.book_no %></td>
             <td class="text-left hidden-xs"><%= ship.ship_type_by_status(status) %></td>

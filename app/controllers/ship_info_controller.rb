@@ -453,6 +453,9 @@ class ShipInfoController < ApplicationController
       updated_master = updated_ship_masters.find{|m| m.book_no == card.book_no }
       ship_master = updated_master if updated_master
 
+      # マスタデータも更新データもない場合は、未対応のデータとして無視する
+      next unless ship_master
+
       # マスタデータに登録されている要素数を、card_index が超えている場合は、無効なデータとして無視する
       next if card.card_index >= ship_master.variation_num
 
