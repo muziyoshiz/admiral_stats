@@ -1,7 +1,7 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   # Insert CORS request headers for API responses
   allow do
-    # Access-Control-Allow-Origin: (Origin に書かれたものをそのまま返す)
+    # Access-Control-Allow-Origin: * (どのドメインからのアクセスも許す)
     origins '*'
 
     # Access-Control-Allow-Methods: GET, POST, OPTIONS

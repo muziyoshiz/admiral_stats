@@ -94,11 +94,12 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info'
         ]), @response.body
 
-    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
     assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
     assert_nil @response.headers['Access-Control-Allow-Headers']
     assert_equal '3600', @response.headers['Access-Control-Max-Age']
-    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
+    # credential (cookieなど) を使う場合は true に設定する必要があるが、Admiral Stats では不要
+    assert_nil @response.headers['Access-Control-Allow-Credentials']
   end
 
   test 'data_types Origin および Access-Control-Request-Headers ヘッダがある場合' do
@@ -120,12 +121,13 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info'
         ]), @response.body
 
-    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
     assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
     # GET に対しては、Access-Control-Allow-Headers が返されない
     assert_nil @response.headers['Access-Control-Allow-Headers']
     assert_equal '3600', @response.headers['Access-Control-Max-Age']
-    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
+    # credential (cookieなど) を使う場合は true に設定する必要があるが、Admiral Stats では不要
+    assert_nil @response.headers['Access-Control-Allow-Credentials']
   end
 
   test 'Authorizationヘッダを指定しない場合' do
@@ -381,11 +383,12 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     records = AdmiralStatus.where(admiral_id: 1, exported_at: exported_at)
     assert_equal true, records.exists?
 
-    assert_equal 'https://kancolle-arcade.net', @response.headers['Access-Control-Allow-Origin']
+    assert_equal '*', @response.headers['Access-Control-Allow-Origin']
     assert_equal 'GET, POST, OPTIONS', @response.headers['Access-Control-Allow-Methods']
     assert_nil @response.headers['Access-Control-Allow-Headers']
     assert_equal '3600', @response.headers['Access-Control-Max-Age']
-    assert_equal 'true', @response.headers['Access-Control-Allow-Credentials']
+    # credential (cookieなど) を使う場合は true に設定する必要があるが、Admiral Stats では不要
+    assert_nil @response.headers['Access-Control-Allow-Credentials']
   end
 
   test '同じ日時の基本情報をインポート済みの場合' do
