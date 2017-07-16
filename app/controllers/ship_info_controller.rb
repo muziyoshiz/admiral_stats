@@ -319,71 +319,17 @@ class ShipInfoController < ApplicationController
       five_stars_kai3[ship_type] = type_5stars_kai3.keys.map{|exported_at| [ exported_at.to_i * 1000, type_5stars_kai3[exported_at] ] }
     end
 
-    @series_total_level = []
-    ship_types.each do |ship_type|
-      @series_total_level << {
-          'name' => ship_type,
-          'data' => levels[ship_type],
-      }
-    end
+    # Highcharts のグラフ描画のための series データ作成
+    @series_total_level   = create_highcharts_series_from_data_per_ship_type(ship_types, levels)
+    @series_total_exp     = create_highcharts_series_from_data_per_ship_type(ship_types, exps)
+    @series_average_level = create_highcharts_series_from_data_per_ship_type(ship_types, avg_levels)
+    @series_average_exp   = create_highcharts_series_from_data_per_ship_type(ship_types, avg_exps)
+    @series_5stars        = create_highcharts_series_from_data_per_ship_type(ship_types, five_stars)
+    @series_5stars_kai    = create_highcharts_series_from_data_per_ship_type(ship_types, five_stars_kai)
+    @series_5stars_kai2   = create_highcharts_series_from_data_per_ship_type(ship_types, five_stars_kai2)
+    @series_5stars_kai3   = create_highcharts_series_from_data_per_ship_type(ship_types, five_stars_kai3)
 
-    @series_total_exp = []
-    ship_types.each do |ship_type|
-      @series_total_exp << {
-          'name' => ship_type,
-          'data' => exps[ship_type],
-      }
-    end
-
-    @series_average_level = []
-    ship_types.each do |ship_type|
-      @series_average_level << {
-          'name' => ship_type,
-          'data' => avg_levels[ship_type],
-      }
-    end
-
-    @series_average_exp = []
-    ship_types.each do |ship_type|
-      @series_average_exp << {
-          'name' => ship_type,
-          'data' => avg_exps[ship_type],
-      }
-    end
-
-    @series_5stars = []
-    ship_types.each do |ship_type|
-      @series_5stars << {
-          'name' => ship_type,
-          'data' => five_stars[ship_type],
-      }
-    end
-
-    @series_5stars_kai = []
-    ship_types.each do |ship_type|
-      @series_5stars_kai << {
-          'name' => ship_type,
-          'data' => five_stars_kai[ship_type],
-      }
-    end
-
-    @series_5stars_kai2 = []
-    ship_types.each do |ship_type|
-      @series_5stars_kai2 << {
-          'name' => ship_type,
-          'data' => five_stars_kai2[ship_type],
-      }
-    end
-
-    @series_5stars_kai3 = []
-    ship_types.each do |ship_type|
-      @series_5stars_kai3 << {
-          'name' => ship_type,
-          'data' => five_stars_kai3[ship_type],
-      }
-    end
-
-    # サマリのためのデータ取得
+    # 期間内の最初と最後のデータ取得
     @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_5stars, @first_5stars_kai, @first_5stars_kai2, @first_5stars_kai3, @first_nums =
         [levels, avg_levels, exps, avg_exps, five_stars, five_stars_kai, five_stars_kai2, five_stars_kai3, nums].map{|v| first_st_values(v) }
     @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_5stars, @last_5stars_kai, @last_5stars_kai2, @last_5stars_kai3, @last_nums =
@@ -631,6 +577,19 @@ class ShipInfoController < ApplicationController
   end
 
   private
+
+  # 艦種別に作られたデータから、Highcharts のグラフ描画のための series を作成します。
+  def create_highcharts_series_from_data_per_ship_type(ship_types, data_per_ship_type)
+    series = []
+    ship_types.each do |ship_type|
+      series << {
+          'name' => ship_type,
+          'data' => data_per_ship_type[ship_type],
+      }
+    end
+
+    series
+  end
 
   # 範囲を表すシンボルをもとに、その範囲の開始時刻を返します。
   def get_beginning_of_range_by(range)
