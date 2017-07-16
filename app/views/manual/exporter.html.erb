@@ -351,14 +351,22 @@
         Admiral Stats が将来的にサポートする可能性のある、すべてのプレイデータをダウンロードします。<br>
         アップロードは <%= link_to_if_logged_in '「インポート」ページ', import_url %> から手動で行ってください。
       </div>
-      <p>
-        どうしても PC を使えない場合は、以下の手順でもブックマークを登録できます。
-      <ul>
-        <li>手順 1. 適当なページでブックマークを作る</li>
-        <li>手順 2. いずれかのリンクの上で長押しして、「リンクアドレスをコピー」を選択</li>
-        <li>手順 3. 手順 1 で作ったブックマークを編集し、手順 2 でコピーしたリンクを URL 欄に貼り付け</li>
-      </ul>
-      </p>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-10">
+          <div class="panel panel-primary">
+            <div class="panel-heading">PC を使えない場合のインストール方法</div>
+            <div class="panel-body">
+              <%= link_to '艦これアーケード 攻略wiki 艦らぼ', 'http://kancolle-arcade-labo.com/', target: '_blank' %> にて、有志の方が詳しく解説してくれています。こちらもご参考ください。
+              <ul>
+                <li>Android の場合：<%= link_to 'Admiral Statsの使い方', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
+                <li>iOS の場合：<%= link_to 'Admiral Statsの設定方法(iOS版)', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%C0%DF%C4%EA%CA%FD%CB%A1%28iOS%C8%C7%29', target: '_blank' %></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <h4>実行方法</h4>
