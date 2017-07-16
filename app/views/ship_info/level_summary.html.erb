@@ -117,42 +117,42 @@
               <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_5stars[st] %>
+          <% if @last_stars[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_5stars[st] %>
-                <%== h_span_for_delta(@first_5stars[st], @last_5stars[st]) %>
+                <%= @last_stars[st] %>
+                <%== h_span_for_delta(@first_stars[st], @last_stars[st]) %>
               </td>
-              <td class="hidden"><%= @last_5stars[st] %></td>
+              <td class="hidden"><%= @last_stars[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_5stars_kai[st] %>
+          <% if @last_kai_stars[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_5stars_kai[st] %>
-                <%== h_span_for_delta(@first_5stars_kai[st], @last_5stars_kai[st]) %>
+                <%= @last_kai_stars[st] %>
+                <%== h_span_for_delta(@first_kai_stars[st], @last_kai_stars[st]) %>
               </td>
-              <td class="hidden"><%= @last_5stars_kai[st] %></td>
+              <td class="hidden"><%= @last_kai_stars[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_5stars_kai2[st] %>
+          <% if @last_kai2_stars[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_5stars_kai2[st] %>
-                <%== h_span_for_delta(@first_5stars_kai2[st], @last_5stars_kai2[st]) %>
+                <%= @last_kai2_stars[st] %>
+                <%== h_span_for_delta(@first_kai2_stars[st], @last_kai2_stars[st]) %>
               </td>
-              <td class="hidden"><%= @last_5stars_kai2[st] %></td>
+              <td class="hidden"><%= @last_kai2_stars[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
           <% end %>
-          <% if @last_5stars_kai3[st] %>
+          <% if @last_kai3_stars[st] %>
               <td class="numeric hidden-xs">
-                <%= @last_5stars_kai3[st] %>
-                <%== h_span_for_delta(@first_5stars_kai3[st], @last_5stars_kai3[st]) %>
+                <%= @last_kai3_stars[st] %>
+                <%== h_span_for_delta(@first_kai3_stars[st], @last_kai3_stars[st]) %>
               </td>
-              <td class="hidden"><%= @last_5stars_kai3[st] %></td>
+              <td class="hidden"><%= @last_kai3_stars[st] %></td>
           <% else %>
               <td class="none hidden-xs"><i class="glyphicon glyphicon-minus"></i></td>
               <td class="hidden">0</td>
@@ -180,19 +180,19 @@
 
 <hr>
 
-<div id="chart-5stars" style="width:100%; height:400px;"></div>
+<div id="chart-stars" style="width:100%; height:400px;"></div>
 
 <hr>
 
-<div id="chart-5stars-kai" style="width:100%; height:400px;"></div>
+<div id="chart-kai-stars" style="width:100%; height:400px;"></div>
 
 <hr>
 
-<div id="chart-5stars-kai2" style="width:100%; height:400px;"></div>
+<div id="chart-kai2-stars" style="width:100%; height:400px;"></div>
 
 <hr>
 
-<div id="chart-5stars-kai3" style="width:100%; height:400px;"></div>
+<div id="chart-kai3-stars" style="width:100%; height:400px;"></div>
 
 <script type="application/javascript">
   // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
@@ -214,7 +214,7 @@
         },
         min: 0
       },
-      series: <%== @series_average_level.to_json %>
+      series: <%== @series_avg_levels.to_json %>
     }));
   });
 
@@ -229,7 +229,7 @@
         },
         min: 0
       },
-      series: <%== @series_total_level.to_json %>
+      series: <%== @series_levels.to_json %>
     }));
   });
 
@@ -244,7 +244,7 @@
         },
         min: 0
       },
-      series: <%== @series_average_exp.to_json %>
+      series: <%== @series_avg_exps.to_json %>
     }));
   });
 
@@ -259,12 +259,12 @@
         },
         min: 0
       },
-      series: <%== @series_total_exp.to_json %>
+      series: <%== @series_exps.to_json %>
     }));
   });
 
   $(function () {
-    $('#chart-5stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+    $('#chart-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（ノーマル）'
       },
@@ -274,12 +274,12 @@
         },
         min: 0
       },
-      series: <%== @series_5stars.to_json %>
+      series: <%== @series_stars.to_json %>
     }));
   });
 
   $(function () {
-    $('#chart-5stars-kai').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+    $('#chart-kai-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（改）'
       },
@@ -289,12 +289,12 @@
         },
         min: 0
       },
-      series: <%== @series_5stars_kai.to_json %>
+      series: <%== @series_kai_stars.to_json %>
     }));
   });
 
   $(function () {
-    $('#chart-5stars-kai2').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+    $('#chart-kai2-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（改二）'
       },
@@ -304,12 +304,12 @@
         },
         min: 0
       },
-      series: <%== @series_5stars_kai2.to_json %>
+      series: <%== @series_kai2_stars.to_json %>
     }));
   });
 
   $(function () {
-    $('#chart-5stars-kai3').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+    $('#chart-kai3-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
         text: '★5艦娘数（改三以上）'
       },
@@ -319,7 +319,7 @@
         },
         min: 0
       },
-      series: <%== @series_5stars_kai3.to_json %>
+      series: <%== @series_kai3_stars.to_json %>
     }));
   });
 
