@@ -9,11 +9,7 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'レベル・経験値（艦娘別）'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
-      @range = params[:range].to_sym
-    else
-      @range = :month
-    end
+    @range = ShipInfoController.get_range_symbol(params[:range])
 
     if @range == :all
       # 図鑑 No. 順に、レベルの情報を取り出す
@@ -22,7 +18,7 @@ class ShipInfoController < ApplicationController
       statuses = ShipStatus.where(admiral_id: current_admiral.id).
           group(:book_no, :exported_at).order(book_no: :asc, exported_at: :asc)
     else
-      beginning_of_range = get_beginning_of_range_by(@range)
+      beginning_of_range = ShipInfoController.get_beginning_of_range_by(@range)
 
       # 図鑑 No. 順に、レベルの情報を取り出す
       # remodel_level の値にかかわらず、level は同じになるはずなので、GROUP BY で重複排除する
@@ -182,142 +178,54 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'レベル・経験値・★5艦娘数（艦種別）'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
-      @range = params[:range].to_sym
-    else
-      @range = :month
-    end
+    @range = ShipInfoController.get_range_symbol(params[:range])
 
     if @range == :all
       # 図鑑 No. 順に、レベルの情報を取り出す
       # book_no が同じでも remodel_level が違うと艦種が変わる艦娘がいる（伊勢、日向）
       # そのため、remodel_level も取得する
-      statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
+      ship_statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
     else
-      beginning_of_range = get_beginning_of_range_by(@range)
+      beginning_of_range = ShipInfoController.get_beginning_of_range_by(@range)
 
       # 図鑑 No. 順に、レベルの情報を取り出す
       # book_no が同じでも remodel_level が違うと艦種が変わる艦娘がいる（伊勢、日向）
       # そのため、remodel_level も取得する
-      statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
+      ship_statuses = ShipStatus.where(admiral_id: current_admiral.id, exported_at: beginning_of_range..Time.current).
           group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
 
       # 指定された期間にデータがなければ、範囲を全期間に変えて検索し直す
-      if statuses.blank?
+      if ship_statuses.blank?
         @error = '指定された期間にデータが存在しなかったため、全期間のデータを表示します。'
         @range = :all
-        statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
+        ship_statuses = ShipStatus.where(admiral_id: current_admiral.id).group(:book_no, :remodel_level, :exported_at).order(exported_at: :asc)
       end
     end
 
     # 艦娘データがない場合
-    if statuses.blank?
+    if ship_statuses.blank?
       render :action => 'level_summary_blank'
       return
     end
 
-    # 図鑑 No. とマスタデータの対応関係
-    masters = {}
-    ShipMaster.all.each{|m| masters[m.book_no] = m }
+    # 実装済みの艦娘のマスタデータを全入手
+    ship_masters = ShipMaster.where.not(implemented_at: nil)
 
-    # 艦種の並び順は、ShipMaster で定義された順とする
-    # ただし、未入手の艦種は表示しない
-    owned_ship_types = statuses.map{|s| masters[s.book_no].ship_type_by_status(s) }.uniq
-    ship_types = ShipMaster::SUPPORTED_SHIP_TYPES.select{|t| owned_ship_types.include?(t) }
+    # マスタデータに登録されていない ShipMaster を参照する ShipStatus を、これ以降の処理から除外
+    book_noes = ship_masters.map{|sm| sm.book_no }
+    ship_statuses = ship_statuses.select{|ss| book_noes.include?(ss.book_no) }
+
+    # 入手済みの艦種
+    ship_types = ShipInfoController.get_owned_ship_types(ship_statuses, ship_masters)
 
     # キーは艦種で値は [時刻, 合計レベル または 平均レベル] の配列
-    levels, avg_levels = {}, {}
+    levels, avg_levels = ShipInfoController.compute_levels_per_ship_types(ship_types, ship_statuses, ship_masters)
     # キーは艦種で値は [時刻, 合計経験値 または 平均経験値] の配列
-    exps, avg_exps = {}, {}
-    # キーは艦種で値は [時刻, 星5の艦娘数] の配列
-    stars, kai_stars, kai2_stars, kai3_stars = {}, {}, {}, {}
+    exps, avg_exps = ShipInfoController.compute_exps_per_ship_types(ship_types, ship_statuses, ship_masters)
     # キーは艦種で値は [時刻, 艦娘数] の配列
-    nums = {}
-
-    ship_types.each do |ship_type|
-      # 時刻ごとのレベル・経験値
-      type_levels = {}
-      type_exps = {}
-
-      # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
-      base_ship_names = {}
-
-      statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
-        # ベースとなる艦娘名
-        base_ship_name = masters[s.book_no].base_ship_name
-
-        # その時間の、その艦娘のレベルを加算済みかどうかチェック
-        base_ship_names[s.exported_at] ||= []
-        next if base_ship_names[s.exported_at].include?(base_ship_name)
-        base_ship_names[s.exported_at] << base_ship_name
-
-        type_levels[s.exported_at] ||= 0
-        type_levels[s.exported_at] += s.level
-
-        type_exps[s.exported_at] ||= 0
-        type_exps[s.exported_at] += s.estimated_exp
-      end
-
-      # 合計レベルおよび経験値の計算
-      levels[ship_type] = type_levels.keys.map{|exported_at| [ exported_at.to_i * 1000, type_levels[exported_at] ] }
-      exps[ship_type] = type_exps.keys.map{|exported_at| [ exported_at.to_i * 1000, type_exps[exported_at] ] }
-
-      # 艦娘数の計算
-      nums[ship_type] = base_ship_names.keys.map do |exported_at|
-        if base_ship_names[exported_at].blank?
-          [ exported_at.to_i * 1000, 0 ]
-        else
-          [ exported_at.to_i * 1000, base_ship_names[exported_at].size ]
-        end
-      end
-
-      # 平均レベルおよび経験値の計算
-      avg_levels[ship_type] = type_levels.keys.map do |exported_at|
-        if base_ship_names[exported_at].blank?
-          [ exported_at.to_i * 1000, 0 ]
-        else
-          [ exported_at.to_i * 1000, (type_levels[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
-        end
-      end
-      avg_exps[ship_type] = type_exps.keys.map do |exported_at|
-        if base_ship_names[exported_at].blank?
-          [ exported_at.to_i * 1000, 0 ]
-        else
-          [ exported_at.to_i * 1000, (type_exps[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
-        end
-      end
-
-      # 星5の艦娘数
-      type_stars = {}
-      type_stars_kai = {}
-      type_stars_kai2 = {}
-      type_stars_kai3 = {}
-
-      statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
-        type_stars[s.exported_at] ||= 0
-        type_stars_kai[s.exported_at] ||= 0
-        type_stars_kai2[s.exported_at] ||= 0
-        type_stars_kai3[s.exported_at] ||= 0
-        if s.star_num == 5
-          case s.remodel_level
-            when 0
-              type_stars[s.exported_at] += 1
-            when 1
-              type_stars_kai[s.exported_at] += 1
-            when 2
-              type_stars_kai2[s.exported_at] += 1
-            else
-              # 改二より上のカードは、すべて「改三以上」として扱う
-              type_stars_kai3[s.exported_at] += 1
-          end
-        end
-      end
-
-      stars[ship_type] = type_stars.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars[exported_at] ] }
-      kai_stars[ship_type] = type_stars_kai.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai[exported_at] ] }
-      kai2_stars[ship_type] = type_stars_kai2.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai2[exported_at] ] }
-      kai3_stars[ship_type] = type_stars_kai3.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai3[exported_at] ] }
-    end
+    nums = ShipInfoController.compute_nums_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # キーは艦種で値は [時刻, 星5の艦娘数] の配列
+    stars, kai_stars, kai2_stars, kai3_stars = ShipInfoController.compute_stars_per_ship_types(ship_types, ship_statuses, ship_masters)
 
     # Highcharts のグラフ描画のための series データ作成
     @series_levels, @series_avg_levels, @series_exps, @series_avg_exps =
@@ -343,14 +251,10 @@ class ShipInfoController < ApplicationController
     set_meta_tags title: 'カード入手数・入手率'
 
     # 表示期間の指定（デフォルトは過去1ヶ月）
-    if params[:range] and [:month, :three_months, :half_year, :year, :all].include?(params[:range].to_sym)
-      @range = params[:range].to_sym
-    else
-      @range = :month
-    end
+    @range = ShipInfoController.get_range_symbol(params[:range])
 
     # 表示期間が「全期間」以外の場合は、その期間の開始時刻を調べる
-    beginning_of_range = get_beginning_of_range_by(@range)
+    beginning_of_range = ShipInfoController.get_beginning_of_range_by(@range)
 
     if beginning_of_range
       # 指定された期間にデータがなければ、範囲を全期間に変える
@@ -578,6 +482,212 @@ class ShipInfoController < ApplicationController
     end
   end
 
+  # 以下は、コントローラ内の共通処理
+  # テストのために private にはしない
+
+  # 与えられた range の文字列から、range として有効なシンボルを返します。
+  # デフォルトのシンボルは :month（過去1ヶ月）です。
+  def self.get_range_symbol(range)
+    if range and [:month, :three_months, :half_year, :year, :all].include?(range.to_sym)
+      range.to_sym
+    else
+      :month
+    end
+  end
+
+  # 範囲を表すシンボルをもとに、その範囲の開始時刻を返します。
+  def self.get_beginning_of_range_by(range, time = Time.current)
+    case range
+      when :month
+        1.month.ago(time)
+      when :three_months
+        3.months.ago(time)
+      when :half_year
+        6.months.ago(time)
+      when :year
+        1.year.ago(time)
+      else
+        # :all などの場合は nil を返す
+        nil
+    end
+  end
+
+  # 与えられた ShipStatus に含まれる艦種のリストを返します。
+  def self.get_owned_ship_types(ship_statuses, ship_masters)
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    owned_ship_types = ship_statuses.map{|s| masters[s.book_no].ship_type_by_status(s) }.uniq
+    ShipMaster::SUPPORTED_SHIP_TYPES.select{|t| owned_ship_types.include?(t) }
+  end
+
+  # 指定された艦種について、合計レベルと平均レベルを計算して返します。
+  def self.compute_levels_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # キーは艦種で値は [時刻, 合計レベル または 平均レベル] の配列
+    levels, avg_levels = {}, {}
+
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    ship_types.each do |ship_type|
+      # 時刻ごとのレベル
+      type_levels = {}
+
+      # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+      base_ship_names = {}
+
+      ship_statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
+        # ベースとなる艦娘名
+        base_ship_name = masters[s.book_no].base_ship_name
+
+        # その時間の、その艦娘のレベルを加算済みかどうかチェック
+        base_ship_names[s.exported_at] ||= []
+        next if base_ship_names[s.exported_at].include?(base_ship_name)
+        base_ship_names[s.exported_at] << base_ship_name
+
+        type_levels[s.exported_at] ||= 0
+        type_levels[s.exported_at] += s.level
+      end
+
+      # 合計レベルの計算
+      levels[ship_type] = type_levels.keys.map{|exported_at| [ exported_at.to_i * 1000, type_levels[exported_at] ] }
+
+      # 平均レベルの計算
+      avg_levels[ship_type] = type_levels.keys.map do |exported_at|
+        if base_ship_names[exported_at].blank?
+          [ exported_at.to_i * 1000, 0 ]
+        else
+          [ exported_at.to_i * 1000, (type_levels[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
+        end
+      end
+    end
+
+    [levels, avg_levels]
+  end
+
+  # 指定された艦種について、合計経験値と平均経験値を計算して返します。
+  def self.compute_exps_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # キーは艦種で値は [時刻, 合計経験値 または 平均経験値] の配列
+    exps, avg_exps = {}, {}
+
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    ship_types.each do |ship_type|
+      # 時刻ごとの経験値
+      type_exps = {}
+
+      # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+      base_ship_names = {}
+
+      ship_statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
+        # ベースとなる艦娘名
+        base_ship_name = masters[s.book_no].base_ship_name
+
+        # その時間の、その艦娘の経験値を加算済みかどうかチェック
+        base_ship_names[s.exported_at] ||= []
+        next if base_ship_names[s.exported_at].include?(base_ship_name)
+        base_ship_names[s.exported_at] << base_ship_name
+
+        type_exps[s.exported_at] ||= 0
+        type_exps[s.exported_at] += s.estimated_exp
+      end
+
+      # 合計経験値の計算
+      exps[ship_type] = type_exps.keys.map{|exported_at| [ exported_at.to_i * 1000, type_exps[exported_at] ] }
+
+      # 平均経験値の計算
+      avg_exps[ship_type] = type_exps.keys.map do |exported_at|
+        if base_ship_names[exported_at].blank?
+          [ exported_at.to_i * 1000, 0 ]
+        else
+          [ exported_at.to_i * 1000, (type_exps[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
+        end
+      end
+    end
+
+    [exps, avg_exps]
+  end
+
+  # 指定された艦種について、艦娘数を計算して返します。
+  def self.compute_nums_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # キーは艦種で値は [時刻, 艦娘数] の配列
+    nums = {}
+
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    ship_types.each do |ship_type|
+      # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+      base_ship_names = {}
+
+      ship_statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
+        # ベースとなる艦娘名
+        base_ship_name = masters[s.book_no].base_ship_name
+
+        # その時間の、その艦娘を確認済みかどうかチェック
+        base_ship_names[s.exported_at] ||= []
+        next if base_ship_names[s.exported_at].include?(base_ship_name)
+        base_ship_names[s.exported_at] << base_ship_name
+      end
+
+      # 艦娘数の計算
+      nums[ship_type] = base_ship_names.keys.map do |exported_at|
+        if base_ship_names[exported_at].blank?
+          [ exported_at.to_i * 1000, 0 ]
+        else
+          [ exported_at.to_i * 1000, base_ship_names[exported_at].size ]
+        end
+      end
+    end
+
+    nums
+  end
+
+  # 指定された艦種について、星5の艦娘数（ノーマル、改、改二、改三以上）を計算して返します。
+  def self.compute_stars_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # キーは艦種で値は [時刻, 星5の艦娘数] の配列
+    stars, kai_stars, kai2_stars, kai3_stars = {}, {}, {}, {}
+
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    ship_types.each do |ship_type|
+      # 星5の艦娘数
+      type_stars = {}
+      type_stars_kai = {}
+      type_stars_kai2 = {}
+      type_stars_kai3 = {}
+
+      ship_statuses.select{|s| masters[s.book_no].ship_type_by_status(s) == ship_type }.each do |s|
+        type_stars[s.exported_at] ||= 0
+        type_stars_kai[s.exported_at] ||= 0
+        type_stars_kai2[s.exported_at] ||= 0
+        type_stars_kai3[s.exported_at] ||= 0
+        if s.star_num == 5
+          case s.remodel_level
+            when 0
+              type_stars[s.exported_at] += 1
+            when 1
+              type_stars_kai[s.exported_at] += 1
+            when 2
+              type_stars_kai2[s.exported_at] += 1
+            else
+              # 改二より上のカードは、すべて「改三以上」として扱う
+              type_stars_kai3[s.exported_at] += 1
+          end
+        end
+      end
+
+      stars[ship_type] = type_stars.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars[exported_at] ] }
+      kai_stars[ship_type] = type_stars_kai.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai[exported_at] ] }
+      kai2_stars[ship_type] = type_stars_kai2.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai2[exported_at] ] }
+      kai3_stars[ship_type] = type_stars_kai3.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai3[exported_at] ] }
+    end
+
+    [stars, kai_stars, kai2_stars, kai3_stars]
+  end
+
   private
 
   # 艦種別に作られたデータから、Highcharts のグラフ描画のための series を作成します。
@@ -591,23 +701,6 @@ class ShipInfoController < ApplicationController
     end
 
     series
-  end
-
-  # 範囲を表すシンボルをもとに、その範囲の開始時刻を返します。
-  def get_beginning_of_range_by(range)
-    case range
-      when :month
-        1.month.ago
-      when :three_months
-        3.months.ago
-      when :half_year
-        6.months.ago
-      when :year
-        1.year.ago
-      else
-        # :all などの場合は nil を返す
-        nil
-    end
   end
 
   # 指定された時刻の時点での総カード枚数を、以下のような形式で返します。
