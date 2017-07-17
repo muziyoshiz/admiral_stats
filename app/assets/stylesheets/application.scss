@@ -76,6 +76,9 @@ tr.history td.kai3       { color: #31708F; background-color: #9ac5f7; }
 tr.history td.kai3-holo  { color: #8A6D3B; background-color: #fcef69; }
 tr.history td.kai3-chuha { color: #A94442; background-color: #f2b0a0; }
 
+// レベル・経験値・★5艦娘数（艦種別） の全艦隊の列
+table#table-summary tbody>tr.grand-total>td { border-top: 3px double #5CB85C; }
+
 // table-responsive の折り返しを許可するバージョン
 .table-responsive-wrappable {
   width: 100%;

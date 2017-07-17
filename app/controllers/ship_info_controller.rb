@@ -226,24 +226,52 @@ class ShipInfoController < ApplicationController
     nums = ShipInfoController.compute_nums_per_ship_types(ship_types, ship_statuses, ship_masters)
     # キーは艦種で値は [時刻, 星5の艦娘数] の配列
     stars, kai_stars, kai2_stars, kai3_stars = ShipInfoController.compute_stars_per_ship_types(ship_types, ship_statuses, ship_masters)
+    # [時刻, 全艦隊の合計レベル または 平均レベル] の配列
+    grand_levels, grand_avg_levels = ShipInfoController.compute_grand_levels(ship_statuses, ship_masters)
+    # [時刻, 全艦隊の合計経験値 または 平均経験値] の配列
+    grand_exps, grand_avg_exps = ShipInfoController.compute_grand_exps(ship_statuses, ship_masters)
+    # [時刻, 全艦隊の艦娘数] の配列
+    grand_nums = ShipInfoController.compute_grand_nums(ship_statuses, ship_masters)
+    # [時刻, 全艦隊の星5の艦娘数] の配列
+    grand_stars, grand_kai_stars, grand_kai2_stars, grand_kai3_stars = ShipInfoController.compute_grand_stars(ship_statuses)
 
     # Highcharts のグラフ描画のための series データ作成
-    @series_levels, @series_avg_levels, @series_exps, @series_avg_exps =
-        [levels, avg_levels, exps, avg_exps].map{|data| create_highcharts_series_from_data_per_ship_type(ship_types, data) }
+    @series_levels, @series_exps =
+        [levels, exps].map{|data| create_highcharts_series_from_data_per_ship_type(ship_types, data) }
     @series_stars, @series_kai_stars, @series_kai2_stars, @series_kai3_stars =
         [stars, kai_stars, kai2_stars, kai3_stars].map{|data| create_highcharts_series_from_data_per_ship_type(ship_types, data) }
+    # 平均値は、艦種別と、全艦隊のデータを、1個のグラフにまとめて表示する
+    @series_avg_levels = create_highcharts_series_from_ship_type_and_grand_data(ship_types, avg_levels, grand_avg_levels)
+    @series_avg_exps = create_highcharts_series_from_ship_type_and_grand_data(ship_types, avg_exps, grand_avg_exps)
+
+    @series_grand_levels = [ { 'name' => '全艦隊', 'data' => grand_levels } ]
+    @series_grand_exps = [ { 'name' => '全艦隊', 'data' => grand_exps } ]
+    @series_grand_stars = [
+        { 'name' => 'ノーマル', 'data' => grand_stars },
+        { 'name' => '改', 'data' => grand_kai_stars },
+        { 'name' => '改二', 'data' => grand_kai2_stars },
+        { 'name' => '改三以上', 'data' => grand_kai3_stars }
+    ]
 
     # 期間内の最初のデータ取得
     @first_levels, @first_avg_levels, @first_exps, @first_avg_exps, @first_nums =
         [levels, avg_levels, exps, avg_exps, nums].map{|v| first_st_values(v) }
     @first_stars, @first_kai_stars, @first_kai2_stars, @first_kai3_stars =
         [stars, kai_stars, kai2_stars, kai3_stars].map{|v| first_st_values(v) }
+    @first_grand_levels, @first_grand_avg_levels, @first_grand_exps, @first_grand_avg_exps, @first_grand_nums =
+        [grand_levels, grand_avg_levels, grand_exps, grand_avg_exps, grand_nums].map{|v| v.first[1] }
+    @first_grand_stars, @first_grand_kai_stars, @first_grand_kai2_stars, @first_grand_kai3_stars =
+        [grand_stars, grand_kai_stars, grand_kai2_stars, grand_kai3_stars].map{|v| v.first[1] }
 
     # 期間内の最後のデータ取得
     @last_levels, @last_avg_levels, @last_exps, @last_avg_exps, @last_nums =
         [levels, avg_levels, exps, avg_exps, nums].map{|v| last_st_values(v) }
     @last_stars, @last_kai_stars, @last_kai2_stars, @last_kai3_stars =
         [stars, kai_stars, kai2_stars, kai3_stars].map{|v| last_st_values(v) }
+    @last_grand_levels, @last_grand_avg_levels, @last_grand_exps, @last_grand_avg_exps, @last_grand_nums =
+        [grand_levels, grand_avg_levels, grand_exps, grand_avg_exps, grand_nums].map{|v| v.last[1] }
+    @last_grand_stars, @last_grand_kai_stars, @last_grand_kai2_stars, @last_grand_kai3_stars =
+        [grand_stars, grand_kai_stars, grand_kai2_stars, grand_kai3_stars].map{|v| v.last[1] }
   end
 
   # カード入手数・入手率の表示
@@ -550,10 +578,10 @@ class ShipInfoController < ApplicationController
       end
 
       # 合計レベルの計算
-      levels[ship_type] = type_levels.keys.map{|exported_at| [ exported_at.to_i * 1000, type_levels[exported_at] ] }
+      levels[ship_type] = type_levels.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_levels[exported_at] ] }
 
       # 平均レベルの計算
-      avg_levels[ship_type] = type_levels.keys.map do |exported_at|
+      avg_levels[ship_type] = type_levels.keys.sort.map do |exported_at|
         if base_ship_names[exported_at].blank?
           [ exported_at.to_i * 1000, 0 ]
         else
@@ -594,10 +622,10 @@ class ShipInfoController < ApplicationController
       end
 
       # 合計経験値の計算
-      exps[ship_type] = type_exps.keys.map{|exported_at| [ exported_at.to_i * 1000, type_exps[exported_at] ] }
+      exps[ship_type] = type_exps.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_exps[exported_at] ] }
 
       # 平均経験値の計算
-      avg_exps[ship_type] = type_exps.keys.map do |exported_at|
+      avg_exps[ship_type] = type_exps.keys.sort.map do |exported_at|
         if base_ship_names[exported_at].blank?
           [ exported_at.to_i * 1000, 0 ]
         else
@@ -632,7 +660,7 @@ class ShipInfoController < ApplicationController
       end
 
       # 艦娘数の計算
-      nums[ship_type] = base_ship_names.keys.map do |exported_at|
+      nums[ship_type] = base_ship_names.keys.sort.map do |exported_at|
         if base_ship_names[exported_at].blank?
           [ exported_at.to_i * 1000, 0 ]
         else
@@ -679,11 +707,154 @@ class ShipInfoController < ApplicationController
         end
       end
 
-      stars[ship_type] = type_stars.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars[exported_at] ] }
-      kai_stars[ship_type] = type_stars_kai.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai[exported_at] ] }
-      kai2_stars[ship_type] = type_stars_kai2.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai2[exported_at] ] }
-      kai3_stars[ship_type] = type_stars_kai3.keys.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai3[exported_at] ] }
+      stars[ship_type] = type_stars.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars[exported_at] ] }
+      kai_stars[ship_type] = type_stars_kai.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai[exported_at] ] }
+      kai2_stars[ship_type] = type_stars_kai2.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai2[exported_at] ] }
+      kai3_stars[ship_type] = type_stars_kai3.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai3[exported_at] ] }
     end
+
+    [stars, kai_stars, kai2_stars, kai3_stars]
+  end
+
+  # 全艦隊の合計レベルと平均レベルを計算して返します。
+  def self.compute_grand_levels(ship_statuses, ship_masters)
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    # 時刻ごとのレベル
+    time_levels = {}
+
+    # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+    base_ship_names = {}
+
+    ship_statuses.each do |s|
+      # ベースとなる艦娘名
+      base_ship_name = masters[s.book_no].base_ship_name
+
+      # その時間の、その艦娘のレベルを加算済みかどうかチェック
+      base_ship_names[s.exported_at] ||= []
+      next if base_ship_names[s.exported_at].include?(base_ship_name)
+      base_ship_names[s.exported_at] << base_ship_name
+
+      time_levels[s.exported_at] ||= 0
+      time_levels[s.exported_at] += s.level
+    end
+
+    # [時刻, 合計レベル] の配列
+    levels = time_levels.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, time_levels[exported_at] ] }
+
+    # [時刻, 平均レベル] の配列
+    avg_levels = time_levels.keys.sort.map do |exported_at|
+      if base_ship_names[exported_at].blank?
+        [ exported_at.to_i * 1000, 0 ]
+      else
+        [ exported_at.to_i * 1000, (time_levels[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
+      end
+    end
+
+    [levels, avg_levels]
+  end
+
+  # 全艦隊の合計経験値と平均経験値を計算して返します。
+  def self.compute_grand_exps(ship_statuses, ship_masters)
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    # 時刻ごとの経験値
+    time_exps = {}
+
+    # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+    base_ship_names = {}
+
+    ship_statuses.each do |s|
+      # ベースとなる艦娘名
+      base_ship_name = masters[s.book_no].base_ship_name
+
+      # その時間の、その艦娘の経験値を加算済みかどうかチェック
+      base_ship_names[s.exported_at] ||= []
+      next if base_ship_names[s.exported_at].include?(base_ship_name)
+      base_ship_names[s.exported_at] << base_ship_name
+
+      time_exps[s.exported_at] ||= 0
+      time_exps[s.exported_at] += s.estimated_exp
+    end
+
+    # [時刻, 合計経験値] の配列
+    exps = time_exps.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, time_exps[exported_at] ] }
+
+    # [時刻, 平均経験値] の配列
+    avg_exps = time_exps.keys.sort.map do |exported_at|
+      if base_ship_names[exported_at].blank?
+        [ exported_at.to_i * 1000, 0 ]
+      else
+        [ exported_at.to_i * 1000, (time_exps[exported_at].to_f / base_ship_names[exported_at].size).round(2) ]
+      end
+    end
+
+    [exps, avg_exps]
+  end
+
+  # 全艦隊の艦娘数を計算して返します。
+  def self.compute_grand_nums(ship_statuses, ship_masters)
+    # ShipMasters を検索用の配列に格納する
+    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+
+    # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
+    base_ship_names = {}
+
+    ship_statuses.each do |s|
+      # ベースとなる艦娘名
+      base_ship_name = masters[s.book_no].base_ship_name
+
+      # その時間の、その艦娘を確認済みかどうかチェック
+      base_ship_names[s.exported_at] ||= []
+      next if base_ship_names[s.exported_at].include?(base_ship_name)
+      base_ship_names[s.exported_at] << base_ship_name
+    end
+
+    # [時刻, 艦娘数] の配列
+    base_ship_names.keys.sort.map do |exported_at|
+      if base_ship_names[exported_at].blank?
+        [ exported_at.to_i * 1000, 0 ]
+      else
+        [ exported_at.to_i * 1000, base_ship_names[exported_at].size ]
+      end
+    end
+  end
+
+  # 全艦隊の、星5の艦娘数（ノーマル、改、改二、改三以上）を計算して返します。
+  def self.compute_grand_stars(ship_statuses)
+    # 時間ごとの星5の艦娘数
+    type_stars = {}
+    type_stars_kai = {}
+    type_stars_kai2 = {}
+    type_stars_kai3 = {}
+
+    ship_statuses.each do |s|
+      type_stars[s.exported_at] ||= 0
+      type_stars_kai[s.exported_at] ||= 0
+      type_stars_kai2[s.exported_at] ||= 0
+      type_stars_kai3[s.exported_at] ||= 0
+      if s.star_num == 5
+        case s.remodel_level
+          when 0
+            type_stars[s.exported_at] += 1
+          when 1
+            type_stars_kai[s.exported_at] += 1
+          when 2
+            type_stars_kai2[s.exported_at] += 1
+          else
+            # 改二より上のカードは、すべて「改三以上」として扱う
+            type_stars_kai3[s.exported_at] += 1
+        end
+      end
+    end
+
+    # [時刻, 星5の艦娘数] の配列
+    stars = type_stars.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars[exported_at] ] }
+    kai_stars = type_stars_kai.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai[exported_at] ] }
+    kai2_stars = type_stars_kai2.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai2[exported_at] ] }
+    kai3_stars = type_stars_kai3.keys.sort.map{|exported_at| [ exported_at.to_i * 1000, type_stars_kai3[exported_at] ] }
 
     [stars, kai_stars, kai2_stars, kai3_stars]
   end
@@ -699,6 +870,23 @@ class ShipInfoController < ApplicationController
           'data' => data_per_ship_type[ship_type],
       }
     end
+
+    series
+  end
+
+  # 艦種別に作られたデータと、全艦隊のデータから、Highcharts のグラフ描画のための series を作成します。
+  def create_highcharts_series_from_ship_type_and_grand_data(ship_types, data_per_ship_type, grand_data)
+    series = []
+    ship_types.each do |ship_type|
+      series << {
+          'name' => ship_type,
+          'data' => data_per_ship_type[ship_type],
+      }
+    end
+    series << {
+        'name' => '全艦隊',
+        'data' => grand_data
+    }
 
     series
   end

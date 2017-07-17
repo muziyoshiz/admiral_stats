@@ -12,6 +12,7 @@
       <div class="panel-body">
         <ul>
           <li>このページの経験値はレベルおよび経験値の獲得割合（%）から逆算したものであり、実際の経験値とは誤差があります。</li>
+          <li>改装すると艦種が変わる艦娘（千歳など）のレベル、経験値、艦娘数は、両方の艦種で集計しています。</li>
         </ul>
       </div>
     </div>
@@ -159,10 +160,71 @@
           <% end %>
         </tr>
       <% end %>
+      <tr class="grand-total">
+        <td class="text-left">全艦隊</td>
+        <td class="hidden"><%= ShipMaster::SUPPORTED_SHIP_TYPES.size %></td>
+        <td class="numeric">
+          <%= @last_grand_avg_levels.round(1) %>
+          <%== h_span_for_delta(@first_grand_avg_levels, @last_grand_avg_levels) %>
+        </td>
+        <td class="hidden"><%= @last_grand_avg_levels.round(1) %></td>
+        <td class="numeric hidden-sm hidden-xs">
+          <%= @last_grand_levels %>
+          <%== h_span_for_delta(@first_grand_levels, @last_grand_levels) %>
+        </td>
+        <td class="hidden"><%= @last_grand_levels %></td>
+        <td class="numeric hidden-xs">
+          <%= number_with_delimiter(@last_grand_avg_exps.round(0)) %>
+          <%== h_span_for_delta(@first_grand_avg_exps, @last_grand_avg_exps, 0) %>
+        </td>
+        <td class="hidden"><%= @last_grand_avg_exps.round(0) %></td>
+        <td class="numeric">
+          <%= number_with_delimiter(@last_grand_exps) %>
+          <%== h_span_for_delta(@first_grand_exps, @last_grand_exps) %>
+        </td>
+        <td class="hidden"><%= @last_grand_exps %></td>
+        <td class="numeric">
+          <%= @last_grand_nums %>
+          <%== h_span_for_delta(@first_grand_nums, @last_grand_nums) %>
+        </td>
+        <td class="hidden"><%= @last_grand_nums %></td>
+        <td class="numeric hidden-xs">
+          <%= @last_grand_stars %>
+          <%== h_span_for_delta(@first_grand_stars, @last_grand_stars) %>
+        </td>
+        <td class="hidden"><%= @last_grand_stars %></td>
+        <td class="numeric hidden-xs">
+          <%= @last_grand_kai_stars %>
+          <%== h_span_for_delta(@first_grand_kai_stars, @last_grand_kai_stars) %>
+        </td>
+        <td class="hidden"><%= @last_grand_kai_stars %></td>
+        <td class="numeric hidden-xs">
+          <%= @last_grand_kai2_stars %>
+          <%== h_span_for_delta(@first_grand_kai2_stars, @last_grand_kai2_stars) %>
+        </td>
+        <td class="hidden"><%= @last_grand_kai2_stars %></td>
+        <td class="numeric hidden-xs">
+          <%= @last_grand_kai3_stars %>
+          <%== h_span_for_delta(@first_grand_kai3_stars, @last_grand_kai3_stars) %>
+        </td>
+        <td class="hidden"><%= @last_grand_kai3_stars %></td>
+      </tr>
       </tbody>
     </table>
   </div>
 </div>
+
+<div id="chart-grand-levels" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-grand-exps" style="width:100%; height:400px;"></div>
+
+<hr>
+
+<div id="chart-grand-stars" style="width:100%; height:400px;"></div>
+
+<hr>
 
 <div id="chart-average-level" style="width:100%; height:400px;"></div>
 
@@ -204,9 +266,54 @@
   });
 
   $(function () {
+    $('#chart-grand-levels').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+      title: {
+        text: '合計レベル'
+      },
+      yAxis: {
+        title: {
+          text: 'レベル'
+        },
+        min: 0
+      },
+      series: <%== @series_grand_levels.to_json %>
+    }));
+  });
+
+  $(function () {
+    $('#chart-grand-exps').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+      title: {
+        text: '合計経験値'
+      },
+      yAxis: {
+        title: {
+          text: '経験値'
+        },
+        min: 0
+      },
+      series: <%== @series_grand_exps.to_json %>
+    }));
+  });
+
+  $(function () {
+    $('#chart-grand-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
+      title: {
+        text: '★5艦娘数'
+      },
+      yAxis: {
+        title: {
+          text: '艦娘数'
+        },
+        min: 0
+      },
+      series: <%== @series_grand_stars.to_json %>
+    }));
+  });
+
+  $(function () {
     $('#chart-average-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '平均レベル'
+        text: '平均レベル（艦種別）'
       },
       yAxis: {
         title: {
@@ -221,7 +328,7 @@
   $(function () {
     $('#chart-total-level').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '合計レベル'
+        text: '合計レベル（艦種別）'
       },
       yAxis: {
         title: {
@@ -236,7 +343,7 @@
   $(function () {
     $('#chart-average-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '平均経験値'
+        text: '平均経験値（艦種別）'
       },
       yAxis: {
         title: {
@@ -251,7 +358,7 @@
   $(function () {
     $('#chart-total-exp').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '合計経験値'
+        text: '合計経験値（艦種別）'
       },
       yAxis: {
         title: {
@@ -266,7 +373,7 @@
   $(function () {
     $('#chart-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '★5艦娘数（ノーマル）'
+        text: '★5艦娘数（艦種別・ノーマル）'
       },
       yAxis: {
         title: {
@@ -281,7 +388,7 @@
   $(function () {
     $('#chart-kai-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '★5艦娘数（改）'
+        text: '★5艦娘数（艦種別・改）'
       },
       yAxis: {
         title: {
@@ -296,7 +403,7 @@
   $(function () {
     $('#chart-kai2-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '★5艦娘数（改二）'
+        text: '★5艦娘数（艦種別・改二）'
       },
       yAxis: {
         title: {
@@ -311,7 +418,7 @@
   $(function () {
     $('#chart-kai3-stars').highcharts($.extend({}, ADMIRAL_STATS_HIGHCHARTS_DEFAULT, {
       title: {
-        text: '★5艦娘数（改三以上）'
+        text: '★5艦娘数（艦種別・改三以上）'
       },
       yAxis: {
         title: {
