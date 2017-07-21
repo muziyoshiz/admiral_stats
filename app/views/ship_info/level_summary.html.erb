@@ -434,6 +434,9 @@
     $('#table-summary').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       <!-- サマリに検索は不要なため、無効化 -->
       "searching": false,
+      <!-- サマリに末尾の件数表示は不要なため、無効化 -->
+      "info": false,
+
       "aoColumnDefs": [
         <!-- 最初の表示順に戻せるようにするための設定 -->
         { "iDataSort": 1, "aTargets": [ 0 ] },
