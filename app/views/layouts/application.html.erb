@@ -52,6 +52,7 @@
                 <ul class="dropdown-menu">
                   <li><%= link_to '艦娘一覧', controller: 'ship_list' %></li>
                   <li><%= link_to '装備スロット', controller: 'ship_list', action: 'slot' %></li>
+                  <li><%= link_to '改装設計図', controller: 'ship_list', action: 'blueprint' %></li>
                 </ul>
               </li>
               <li class="dropdown <%== 'active' if controller.controller_name == 'ship_info' %>">

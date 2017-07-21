@@ -113,4 +113,16 @@ class ShipListController < ApplicationController
     @statuses = ShipStatus.includes(:ship_slot_statuses).where(admiral_id: current_admiral.id, exported_at: last_exported_at).
         order(book_no: :asc, remodel_level: :asc)
   end
+
+  # 各艦娘の改装設計図の一覧表示です。
+  def blueprint
+    set_meta_tags title: '改装設計図一覧'
+
+    # blueprint_statuses の最終エクスポート時刻を取得
+    # blueprint_statuses がない場合は、返り値は nil
+    last_exported_at = BlueprintStatus.where(admiral_id: current_admiral.id).maximum('exported_at')
+
+    # ship_masters レコードも含めて一度に取得
+    @statuses = BlueprintStatus.includes(:ship_master).where(admiral_id: current_admiral.id, exported_at: last_exported_at)
+  end
 end
