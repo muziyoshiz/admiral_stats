@@ -209,7 +209,7 @@ class ShipInfoController < ApplicationController
     end
 
     # 実装済みの艦娘のマスタデータを全入手
-    ship_masters = ShipMaster.where.not(implemented_at: nil)
+    ship_masters = ShipMaster.where('implemented_at <= ?', Time.current)
 
     # マスタデータに登録されていない ShipMaster を参照する ShipStatus を、これ以降の処理から除外
     book_noes = ship_masters.map{|sm| sm.book_no }
@@ -303,13 +303,13 @@ class ShipInfoController < ApplicationController
     end
 
     # 実装済みの艦娘のマスタデータを全入手
-    ship_masters = ShipMaster.where.not(implemented_at: nil)
+    ship_masters = ShipMaster.where('implemented_at <= ?', Time.current)
 
     # マスタデータの更新データを全入手
-    updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
+    updated_ship_masters = UpdatedShipMaster.where('implemented_at <= ?', Time.current)
 
     # 特別カードのマスタデータを全入手
-    special_ship_masters = SpecialShipMaster.where.not(implemented_at: nil)
+    special_ship_masters = SpecialShipMaster.where('implemented_at <= ?', Time.current)
 
     # どの時刻にカードが何枚増えたかを調べる
     # gains[0..11][時刻] = その時刻に増えた枚数
@@ -543,7 +543,7 @@ class ShipInfoController < ApplicationController
   # 与えられた ShipStatus に含まれる艦種のリストを返します。
   def self.get_owned_ship_types(ship_statuses, ship_masters)
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     owned_ship_types = ship_statuses.map{|s| masters[s.book_no].ship_type_by_status(s) }.uniq
     ShipMaster::SUPPORTED_SHIP_TYPES.select{|t| owned_ship_types.include?(t) }
@@ -555,7 +555,7 @@ class ShipInfoController < ApplicationController
     levels, avg_levels = {}, {}
 
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     ship_types.each do |ship_type|
       # 時刻ごとのレベル
@@ -599,7 +599,7 @@ class ShipInfoController < ApplicationController
     exps, avg_exps = {}, {}
 
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     ship_types.each do |ship_type|
       # 時刻ごとの経験値
@@ -643,7 +643,7 @@ class ShipInfoController < ApplicationController
     nums = {}
 
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     ship_types.each do |ship_type|
       # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
@@ -678,7 +678,7 @@ class ShipInfoController < ApplicationController
     stars, kai_stars, kai2_stars, kai3_stars = {}, {}, {}, {}
 
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     ship_types.each do |ship_type|
       # 星5の艦娘数
@@ -719,7 +719,7 @@ class ShipInfoController < ApplicationController
   # 全艦隊の合計レベルと平均レベルを計算して返します。
   def self.compute_grand_levels(ship_statuses, ship_masters)
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     # 時刻ごとのレベル
     time_levels = {}
@@ -758,7 +758,7 @@ class ShipInfoController < ApplicationController
   # 全艦隊の合計経験値と平均経験値を計算して返します。
   def self.compute_grand_exps(ship_statuses, ship_masters)
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     # 時刻ごとの経験値
     time_exps = {}
@@ -797,7 +797,7 @@ class ShipInfoController < ApplicationController
   # 全艦隊の艦娘数を計算して返します。
   def self.compute_grand_nums(ship_statuses, ship_masters)
     # ShipMasters を検索用の配列に格納する
-    masters = Hash[ship_masters.map{|sm| [sm.id, sm] }]
+    masters = ship_masters.map{|sm| [sm.id, sm] }.to_h
 
     # 時刻ごとの加算済み艦娘名のリスト（同じ艦娘のレベルを2回加算しないためのチェックに使う）
     base_ship_names = {}
@@ -917,13 +917,13 @@ class ShipInfoController < ApplicationController
     # TODO released_nums を一度生成したら Redis に一定時間キャッシュする処理を追加
 
     # 実装済みの艦娘のマスタデータを全入手
-    ship_masters = ShipMaster.where.not(implemented_at: nil)
+    ship_masters = ShipMaster.where('implemented_at <= ?', Time.current)
 
     # マスタデータの更新データを全入手
-    updated_ship_masters = UpdatedShipMaster.where.not(implemented_at: nil)
+    updated_ship_masters = UpdatedShipMaster.where('implemented_at <= ?', Time.current)
 
     # 特別カードのマスタデータを全入手
-    special_ship_masters = SpecialShipMaster.where.not(implemented_at: nil)
+    special_ship_masters = SpecialShipMaster.where('implemented_at <= ?', Time.current)
 
     # 艦娘追加またはマスタデータの更新が行われたタイムスタンプの抽出
     timestamps = (ship_masters.map{|m| m.implemented_at } +

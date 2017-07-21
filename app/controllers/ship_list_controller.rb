@@ -103,8 +103,7 @@ class ShipListController < ApplicationController
     set_meta_tags title: '艦娘一覧（装備スロット）'
 
     # 実装済みの艦娘のみ取得
-    @ships = {}
-    ShipMaster.where('implemented_at <= ?', Time.now).each{|ship| @ships[ship.book_no] = ship }
+    @ships = ShipMaster.where('implemented_at <= ?', Time.current).map{|sm| [sm.id, sm] }.to_h
 
     # ship_statuses の最終エクスポート時刻を取得
     # ship_statuses がない場合は、返り値は nil
