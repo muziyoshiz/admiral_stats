@@ -25,10 +25,15 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
-      2017年7月17日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に全艦隊の合計経験値・レベル・艦娘数の表示を追加しました。
+      2017年7月22日更新：改装設計図一覧のインポート機能と、<%= link_to_if_logged_in '「改装設計図」ページ', controller: 'ship_list', action: 'blueprint' %> を追加しました。
+      自動アップロードに失敗する場合は、以下の対策をお試しください。
+      <ul>
+        <li>PowerShell 版、Ruby 版：<%= link_to 'ダウンロードページ', 'https://github.com/muziyoshiz/admiral_stats_exporter/releases', target: '_blank' %> から最新版へのアップデート</li>
+        <li>ブックマークレット版：ブラウザのキャッシュの削除</li>
+      </ul>
     </li>
     <li>
-      2017年7月16日更新：すべてのページで千歳航/航改、千代田航/航改の表示に対応しました。今後のコンバート艦娘の登場を見据えて、改二より上はすべて「改三以上」という枠で集計します。
+      2017年7月17日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に全艦隊の合計経験値・レベル・艦娘数の表示を追加しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
