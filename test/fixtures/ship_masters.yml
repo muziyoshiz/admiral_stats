@@ -30,3 +30,22 @@ suzuya_kai:
   remodel_level: 1
   # 2016-09-15：4隻追加（最上、三隈、鈴谷、熊野）
   implemented_at: <%= Time.parse('2016-09-15T07:00:00+09:00') %>
+
+kisaragi:
+  book_no: 32
+  ship_class: '睦月型'
+  ship_class_index: 2
+  ship_type: '駆逐艦'
+  ship_name: '如月'
+  variation_num: 6
+  # 2016-05-26：5隻追加（雪風、睦月、如月、古鷹、加古）
+  implemented_at: <%= Time.parse('2016-05-26T07:00:00+09:00') %>
+
+motizuki:
+  book_no: 38
+  ship_class: '睦月型'
+  ship_class_index: 11
+  ship_type: '駆逐艦'
+  ship_name: '望月'
+  variation_num: 6
+  implemented_at: <%= Time.parse('2016-04-26T07:00:00+09:00') %>

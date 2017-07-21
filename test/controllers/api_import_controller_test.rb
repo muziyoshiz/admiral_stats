@@ -30,7 +30,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Personal_basicInfo',
             'TcBook_info',
             'CharacterList_info',
-            'Event_info'
+            'Event_info',
+            'BlueprintList_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -61,7 +62,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Personal_basicInfo',
             'TcBook_info',
             'CharacterList_info',
-            'Event_info'
+            'Event_info',
+            'BlueprintList_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -91,7 +93,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Personal_basicInfo',
             'TcBook_info',
             'CharacterList_info',
-            'Event_info'
+            'Event_info',
+            'BlueprintList_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
@@ -118,7 +121,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Personal_basicInfo',
             'TcBook_info',
             'CharacterList_info',
-            'Event_info'
+            'Event_info',
+            'BlueprintList_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
@@ -679,6 +683,106 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 201, l.status_code
     assert_nil l.user_agent
     assert_equal 'イベント進捗情報のインポートに成功しました。', l.response
+    assert_not_nil l.created_at
+  end
+
+  test '改装設計図一覧のインポート' do
+    # 朝潮 (book_no = 85)、9月末1枚
+    # 如月 (book_no = 32)、9月末2枚、10月末1枚
+    # 望月 (book_no = 38)、9月末1枚、10月末2枚
+    json = <<-'JSON'
+[
+  {"shipClassId":20,"shipClassIndex":1,"shipSortNo":1800,"shipType":"駆逐艦","shipName":"朝潮","statusImg":"i/i_69ex6r4uutp3_n.png","blueprintTotalNum":1,"existsWarningForExpiration":false,"expirationDateList":[{"expirationDate":1505141999000,"blueprintNum":1,"expireThisMonth":false}]},
+  {"shipClassId":14,"shipClassIndex":2,"shipSortNo":1800,"shipType":"駆逐艦","shipName":"如月","statusImg":"i/i_q47stxacmqww_n.png","blueprintTotalNum":2,"existsWarningForExpiration":false,"expirationDateList":[{"expirationDate":1505141999000,"blueprintNum":2,"expireThisMonth":false},{"expirationDate":1507733999000,"blueprintNum":1,"expireThisMonth":false}]},
+  {"shipClassId":14,"shipClassIndex":11,"shipSortNo":1800,"shipType":"駆逐艦","shipName":"望月","statusImg":"i/i_66r1z2tptm2x_n.png","blueprintTotalNum":2,"existsWarningForExpiration":false,"expirationDateList":[{"expirationDate":1505141999000,"blueprintNum":1,"expireThisMonth":false},{"expirationDate":1507733999000,"blueprintNum":2,"expireThisMonth":false}]}
+]
+    JSON
+
+    # 登録前にはレコードが無いことを確認
+    exported_at = Time.parse('2017-06-01 16:00:00 +09:00')
+
+    assert_equal false, BlueprintStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
+
+    post api_import_url('BlueprintList_info', '20170601_160000'),
+         params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+
+    assert_response 201
+
+    assert_equal JSON.generate(
+        {
+            data: {
+                message: '改装設計図一覧のインポートに成功しました。'
+            }
+        }), @response.body
+
+    # 登録後にはレコードがあることを確認
+    records = BlueprintStatus.where(admiral_id: 1, exported_at: exported_at).order(:book_no)
+    assert_equal true, records.exists?
+    assert_equal 5, records.size
+
+    # 9月末で有効期限切れ
+    september = Time.parse('2017-09-11 23:59:59 +09:00')
+    records = BlueprintStatus.where(admiral_id: 1, expiration_date: september, exported_at: exported_at).order(:book_no)
+    assert_equal true, records.exists?
+    assert_equal 3, records.size
+
+    # レコードの内容を確認
+    r = records[0]
+    assert_equal 1,           r.admiral_id
+    assert_equal 32,          r.book_no
+    assert_equal september,   r.expiration_date
+    assert_equal 2,           r.blueprint_num
+    assert_equal exported_at, r.exported_at
+
+    r = records[1]
+    assert_equal 1,           r.admiral_id
+    assert_equal 38,          r.book_no
+    assert_equal september,   r.expiration_date
+    assert_equal 1,           r.blueprint_num
+    assert_equal exported_at, r.exported_at
+
+    r = records[2]
+    assert_equal 1,           r.admiral_id
+    assert_equal 85,          r.book_no
+    assert_equal september,   r.expiration_date
+    assert_equal 1,           r.blueprint_num
+    assert_equal exported_at, r.exported_at
+
+    # 10月末で有効期限切れ
+    october = Time.parse('2017-10-11 23:59:59 +09:00')
+    records = BlueprintStatus.where(admiral_id: 1, expiration_date: october, exported_at: exported_at).order(:book_no)
+    assert_equal true, records.exists?
+    assert_equal 2, records.size
+
+    # レコードの内容を確認
+    r = records[0]
+    assert_equal 1,           r.admiral_id
+    assert_equal 32,          r.book_no
+    assert_equal october,     r.expiration_date
+    assert_equal 1,           r.blueprint_num
+    assert_equal exported_at, r.exported_at
+
+    r = records[1]
+    assert_equal 1,           r.admiral_id
+    assert_equal 38,          r.book_no
+    assert_equal october,     r.expiration_date
+    assert_equal 2,           r.blueprint_num
+    assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
+    assert_equal 'http://www.example.com/api/v1/import/BlueprintList_info/20170601_160000', l.request_uri
+    assert_equal 201, l.status_code
+    assert_nil l.user_agent
+    assert_equal '改装設計図一覧のインポートに成功しました。', l.response
     assert_not_nil l.created_at
   end
 end

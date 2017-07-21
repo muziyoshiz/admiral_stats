@@ -20,6 +20,11 @@ module Import
   # 1年分で 4 * 30 * 3 * 20 = 7200 とする。
   MAX_EVENT_PROGRESS_STATUSES_COUNT = 7200
 
+  # blueprint_statuses テーブルの、1 提督あたりのレコード数上限
+  # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
+  # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 350 = 2,555,000 とする。
+  MAX_BLUEPRINT_STATUSES_COUNT = 2555000
+
   private
 
   # yyyymmdd_hhmmss 形式の時刻を、Time オブジェクト（JST）に変換します。
@@ -262,5 +267,52 @@ module Import
       logger.error(e)
       return :error, "イベント進捗情報のインポートに失敗しました。（原因：#{e.message}）"
     end
+  end
+
+  # 改装設計図一覧の JSON データを元に、blueprint_statuses レコードの追加
+  def save_blueprint_statuses(admiral_id, exported_at, json, api_version)
+    if BlueprintStatus.where(admiral_id: admiral_id, exported_at: exported_at).exists?
+      return :ok, '同じ時刻の改装設計図一覧がインポート済みのため、無視されました。'
+    end
+
+    count = BlueprintStatus.where(admiral_id: admiral_id).count
+    if count >= MAX_BLUEPRINT_STATUSES_COUNT
+      logger.error("Max blueprint_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
+      return :error, '改装設計図一覧のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
+    end
+
+    begin
+      BlueprintStatus.transaction do
+        AdmiralStatsParser.parse_blueprint_list_info(json, api_version).each do |info|
+          # 改装設計図一覧には、艦娘の図鑑 No. が含まれない
+          # そのため、ship_master から図鑑 No. を検索する必要がある
+          ship_master = ShipMaster.find_by_ship_name(info.ship_name)
+          unless ship_master
+            raise "Admiral Stats に艦娘 '#{info.ship_name}' が未登録です。プレイデータの誤登録を防ぐために、インポートを中断しました。"
+          end
+
+          info.expiration_date_list.each do |ed|
+            # 有効期限（ミリ秒単位の UNIX タイムスタンプ）を、Time オブジェクト（JST）に変換
+            expiration_date = Time.zone.at(ed.expiration_date / 1000)
+
+            # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
+            # また、INSERT されないにも関わらずインデックスのみが作られた。
+            BlueprintStatus.create!(
+                admiral_id: admiral_id,
+                book_no: ship_master.book_no,
+                expiration_date: expiration_date,
+                blueprint_num: ed.blueprint_num,
+                exported_at: exported_at,
+            )
+          end
+        end
+      end
+
+    rescue => e
+      logger.error(e)
+      return :error, "改装設計図一覧のインポートに失敗しました。（原因：#{e.message}）"
+    end
+
+    return :created, '改装設計図一覧のインポートに成功しました。'
   end
 end

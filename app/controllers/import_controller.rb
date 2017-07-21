@@ -61,7 +61,7 @@ class ImportController < ApplicationController
       json = file.read
 
       case params[:file_type]
-        when 'basic_info', 'ship_book', 'ship_list', 'event_info'
+        when 'basic_info', 'ship_book', 'ship_list', 'event_info', 'blueprint_list'
           file_type = params[:file_type].to_sym
         else
           # file_type が未知（'auto' 含む）の場合は、ファイル名からファイル種別の自動判別を行う
@@ -72,8 +72,10 @@ class ImportController < ApplicationController
               file_type = :ship_book
             when /^CharacterList_info_/
               file_type = :ship_list
-            when /^Event_info/
+            when /^Event_info_/
               file_type = :event_info
+            when /^BlueprintList_info_/
+              file_type = :blueprint_list
             else
               @messages << "ファイル種別を自動判別できなかったため、無視されました。（ファイル名：#{file_name}）"
               next
@@ -81,15 +83,17 @@ class ImportController < ApplicationController
       end
 
       res, msg = case file_type
-        when :basic_info
-          save_admiral_statuses(current_admiral.id, exported_at, json, api_version)
-        when :ship_book
-          save_ship_cards(current_admiral.id, exported_at, json, api_version)
-        when :ship_list
-          save_ship_statuses(current_admiral.id, exported_at, json, api_version)
-        when :event_info
-          save_event_progress_statuses(current_admiral.id, exported_at, json, api_version)
-      end
+                   when :basic_info
+                     save_admiral_statuses(current_admiral.id, exported_at, json, api_version)
+                   when :ship_book
+                     save_ship_cards(current_admiral.id, exported_at, json, api_version)
+                   when :ship_list
+                     save_ship_statuses(current_admiral.id, exported_at, json, api_version)
+                   when :event_info
+                     save_event_progress_statuses(current_admiral.id, exported_at, json, api_version)
+                   when :blueprint_list
+                     save_blueprint_statuses(current_admiral.id, exported_at, json, api_version)
+                 end
 
       case res
         when :ok, :created

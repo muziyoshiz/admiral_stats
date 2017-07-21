@@ -11,7 +11,8 @@ class ApiImportController < ApplicationController
       'Personal_basicInfo',
       'TcBook_info',
       'CharacterList_info',
-      'Event_info'
+      'Event_info',
+      'BlueprintList_info'
   ]
 
   # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）を返します。
@@ -44,6 +45,8 @@ class ApiImportController < ApplicationController
         file_type = :ship_list
       when 'Event_info'
         file_type = :event_info
+      when 'BlueprintList_info'
+        file_type = :blueprint_list
       else
         msg = "Admiral Stats がインポートできないファイル種別のため、無視されました。（ファイル種別：#{params[:file_type]}）"
         record_api_request_log(:ok, msg)
@@ -66,15 +69,17 @@ class ApiImportController < ApplicationController
     json = request.body.read
 
     res, msg = case file_type
-      when :basic_info
-        save_admiral_statuses(jwt_current_admiral.id, exported_at, json, api_version)
-      when :ship_book
-        save_ship_cards(jwt_current_admiral.id, exported_at, json, api_version)
-      when :ship_list
-        save_ship_statuses(jwt_current_admiral.id, exported_at, json, api_version)
-      when :event_info
-        save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
-    end
+                 when :basic_info
+                   save_admiral_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+                 when :ship_book
+                   save_ship_cards(jwt_current_admiral.id, exported_at, json, api_version)
+                 when :ship_list
+                   save_ship_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+                 when :event_info
+                   save_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+                 when :blueprint_list
+                   save_blueprint_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+               end
 
     record_api_request_log(res, msg)
 
