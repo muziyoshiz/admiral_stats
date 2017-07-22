@@ -102,16 +102,13 @@ class ShipListController < ApplicationController
   def slot
     set_meta_tags title: '艦娘一覧（装備スロット）'
 
-    # 実装済みの艦娘のみ取得
-    @ships = ShipMaster.where('implemented_at <= ?', Time.current).map{|sm| [sm.id, sm] }.to_h
-
     # ship_statuses の最終エクスポート時刻を取得
     # ship_statuses がない場合は、返り値は nil
     last_exported_at = ShipStatus.where(admiral_id: current_admiral.id).maximum('exported_at')
 
-    # ship_slot_statuses レコードも含めて一度に取得
-    @statuses = ShipStatus.includes(:ship_slot_statuses).where(admiral_id: current_admiral.id, exported_at: last_exported_at).
-        order(book_no: :asc, remodel_level: :asc)
+    # ship_master, ship_slot_statuses レコードも含めて一度に取得
+    @statuses = ShipStatus.includes(:ship_master, :ship_slot_statuses).where(admiral_id: current_admiral.id, exported_at: last_exported_at)
+    @statuses = @statuses.reject{|st| st.ship_master.nil? }
   end
 
   # 各艦娘の改装設計図の一覧表示です。
@@ -124,5 +121,6 @@ class ShipListController < ApplicationController
 
     # ship_masters レコードも含めて一度に取得
     @statuses = BlueprintStatus.includes(:ship_master).where(admiral_id: current_admiral.id, exported_at: last_exported_at)
+    @statuses = @statuses.reject{|st| st.ship_master.nil? }
   end
 end

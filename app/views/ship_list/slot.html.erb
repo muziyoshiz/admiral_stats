@@ -85,14 +85,12 @@
       <tbody>
       <% @statuses.each do |status| %>
           <%
-            ship = @ships[status.book_no]
-            next unless ship
-            upper_level_exists = upper_level_exists_for?(status, @ships, @statuses)
+            upper_level_exists = upper_level_exists_for?(status, @statuses)
           %>
           <tr <%== 'class="unused-normal"' if upper_level_exists %>>
-            <td class="numeric"><%= ship.book_no %></td>
-            <td class="text-left hidden-xs"><%= ship.ship_type_by_status(status) %></td>
-            <td class="text-left"><%= ship.ship_name %></td>
+            <td class="numeric"><%= status.ship_master.book_no %></td>
+            <td class="text-left hidden-xs"><%= status.ship_master.ship_type_by_status(status) %></td>
+            <td class="text-left"><%= status.ship_master.ship_name %></td>
             <td class="text-left">
               <%
                 remodel_lv = case status.remodel_level
