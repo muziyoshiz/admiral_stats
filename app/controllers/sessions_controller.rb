@@ -29,6 +29,13 @@ class SessionsController < ApplicationController
     auth[:info][:nickname] = params[:nickname]
 
     admiral = Admiral.find_or_create_from_auth(auth)
+
+    # admirals テーブルのレコードの作成・取得に失敗した場合
+    unless admiral
+      redirect_to root_path
+      return
+    end
+
     session[:admiral_id] = admiral.id
     redirect_to root_path
   end
