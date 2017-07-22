@@ -43,7 +43,6 @@
         <thead>
         <tr>
           <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">有効期限</th>
-          <th class="hidden">有効期限（ソートおよび検索用）</th>
           <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">枚数</th>
         </tr>
         </thead>
@@ -51,12 +50,15 @@
         <% @statuses.map{|s| s.expiration_date }.uniq.sort.each do |expiration_date| %>
             <tr>
               <td class="text-left"><%= expiration_date.to_s(:month) %>末</td>
-              <td class="hidden"><%= expiration_date.to_i %></td>
               <td class="numeric">
                 <%= @statuses.select{|s| s.expiration_date == expiration_date }.map{|s| s.blueprint_num }.sum %>
               </td>
             </tr>
         <% end %>
+        <tr class="grand-total">
+          <td class="text-left">合計</td>
+          <td class="numeric"><%= @statuses.map{|s| s.blueprint_num }.sum %></td>
+        </tr>
         </tbody>
       </table>
     </div>
@@ -113,14 +115,10 @@
     $('#table-blueprint-summary').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       <!-- サマリに検索は不要なため、無効化 -->
       "searching": false,
+      <!-- サマリに並び替えは不要なため、無効化 -->
+      "ordering": false,
       <!-- サマリに末尾の件数表示は不要なため、無効化 -->
       "info": false,
-
-      "sorting": [ 1, "asc" ],
-      "aoColumnDefs": [
-        <!-- expiration_date で数値通りにソートするための設定 -->
-        { "iDataSort": 1, "aTargets": [ 0 ] },
-      ],
     }));
 
     $('#table-blueprint').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
