@@ -37,7 +37,7 @@ class PublicShipListController < ApplicationController
     end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
 
     # ship_cards および ship_statuses の両方が空の場合は true
     @is_blank = true
@@ -88,10 +88,22 @@ class PublicShipListController < ApplicationController
       @statuses[status.book_no][:level] = status.level
 
       # 星の数
-      # 星の数はノーマルと改で別管理なので、remodel_level で区別する
-      # remodel_level = 2 の場合、ノーマルの列に表示する
-      @statuses[status.book_no][:star_num] ||= []
-      @statuses[status.book_no][:star_num][(status.remodel_level % 2)] = status.star_num
+      # 星の数は remodel_level ごとに別管理
+      ship = @ships.select{|s| s.book_no == status.book_no }.first
+      if ship
+        @statuses[ship.book_no][:star_num] ||= []
+        if ship.variation_num == 3 && ship.remodel_level == 1
+          # 表示名が「＊＊改」のカードの場合、2列目に表示
+          @statuses[status.book_no][:star_num][1] = status.star_num
+        elsif ship.variation_num == 6 && ship.remodel_level < status.remodel_level
+          # 改二以上のカードで、remodel_level が ShipMaster の remodel_level より高い場合、2列目に表示
+          # 千歳航改、千代田航改はこのパターンに該当する
+          @statuses[status.book_no][:star_num][1] = status.star_num
+        else
+          # 上記以外の場合は1列目に表示
+          @statuses[status.book_no][:star_num][0] = status.star_num
+        end
+      end
 
       # 改装設計図の枚数（NULL の場合は 0 と見なす）
       @statuses[status.book_no][:blueprint_total_num] = status.blueprint_total_num

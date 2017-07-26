@@ -31,7 +31,7 @@ class GlobalController < ApplicationController
     end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
 
     # 各カードについて、カードあり（取得済み）、カードあり（未取得）、カードなしのいずれかのフラグを格納するハッシュ
     # 未ログインの場合は、カードあり（未取得）、カードなしのいずれかを格納する
@@ -141,7 +141,7 @@ class GlobalController < ApplicationController
     end
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
 
     # 各カードについて、カードあり（取得済み）、カードあり（未取得）、カードなしのいずれかのフラグを格納するハッシュ
     # 未ログインの場合は、カードあり（未取得）、カードなしのいずれかを格納する

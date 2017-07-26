@@ -216,7 +216,7 @@ class AdmiralInfoController < ApplicationController
     @ships = ShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order('book_no')
 
     # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.ship_name =~ /改$/ }.map{|s| s.book_no }
+    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
 
     # 取得済みのカードを調べた結果
     @cards = {}
