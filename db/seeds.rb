@@ -1483,7 +1483,8 @@ ship_masters = [
         ship_name: '時雨改二',
         variation_num: 3,
         remodel_level: 2,
-        
+        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
+        implemented_at: '2017-08-17T07:00:00+09:00',
     },
     {
         book_no: 146,
@@ -2040,7 +2041,8 @@ ship_masters = [
         ship_type: '駆逐艦',
         ship_name: '春雨',
         variation_num: 6,
-        
+        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
+        implemented_at: '2017-08-17T07:00:00+09:00',
     },
     {
         book_no: 206,
@@ -2765,6 +2767,26 @@ updated_ship_masters = [
         variation_num: 6,
         # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
         implemented_at: '2017-02-07T07:00:00+09:00',
+    },
+    {
+        book_no: 137,
+        ship_class: '阿賀野型',
+        ship_class_index: 1,
+        ship_type: '軽巡洋艦',
+        ship_name: '阿賀野',
+        variation_num: 6,
+        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
+        implemented_at: '2017-08-17T07:00:00+09:00',
+    },
+    {
+        book_no: 138,
+        ship_class: '阿賀野型',
+        ship_class_index: 2,
+        ship_type: '軽巡洋艦',
+        ship_name: '能代',
+        variation_num: 6,
+        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
+        implemented_at: '2017-08-17T07:00:00+09:00',
     },
 ]
 
