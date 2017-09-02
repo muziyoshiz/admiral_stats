@@ -24,7 +24,7 @@ vagrant plugin install vagrant-hostsupdater
 
 ```
 git clone https://github.com/muziyoshiz/admiral_stats.git
-cd mastodon
+cd admiral_stats
 vagrant up --provider virtualbox
 ```
 
