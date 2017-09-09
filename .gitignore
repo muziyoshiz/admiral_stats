@@ -48,6 +48,7 @@ bower.json
 
 # Vagrant の自動生成するファイル
 .vagrant
+vagrant/playbook.retry
 
 # プリコンパイルの結果を git リポジトリから除外
 /public/assets

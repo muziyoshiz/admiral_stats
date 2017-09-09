@@ -1,26 +1,32 @@
 ---
 - name: Admiral Stats に必要な gem のインストール
-  command: /bin/bash -l -c "bundle install"
+  command: /bin/bash -l -c "bundle install --path vendor/bundle"
   args:
     chdir: /vagrant
+  become_user: vagrant
 
 - name: 開発用データベースの作成
   command: mysql -uroot -e'CREATE DATABASE admiral_stats_development CHARACTER SET utf8;'
+  become_user: vagrant
 
 - name: 開発用テーブルの作成
-  command: /bin/bash -l -c "rails db:migrate"
+  command: /bin/bash -l -c "bundle exec rails db:migrate"
   args:
     chdir: /vagrant
+  become_user: vagrant
 
 - name: 開発用テーブルへの初期データ登録
-  command: /bin/bash -l -c "rails console < db/seeds.rb"
+  command: /bin/bash -l -c "bundle exec rails console < db/seeds.rb"
   args:
     chdir: /vagrant
+  become_user: vagrant
 
 - name: テスト用データベースの作成
   command: mysql -uroot -e'CREATE DATABASE admiral_stats_test CHARACTER SET utf8;'
+  become_user: vagrant
 
 - name: テスト用テーブルの作成
-  command: /bin/bash -l -c "RAILS_ENV=test rails db:migrate"
+  command: /bin/bash -l -c "RAILS_ENV=test bundle exec rails db:migrate"
   args:
     chdir: /vagrant
+  become_user: vagrant

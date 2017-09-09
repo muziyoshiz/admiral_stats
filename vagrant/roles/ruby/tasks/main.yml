@@ -33,6 +33,3 @@
 
 - name: Bundler のインストール
   command: /bin/bash -l -c "gem install bundler"
-
-- name: Rails のインストール
-  command: /bin/bash -l -c "gem install rails"

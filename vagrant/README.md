@@ -18,6 +18,8 @@ Vagrant を使って、Admiral Stats の開発環境を簡単に作る方法の�
 vagrant plugin install vagrant-hostsupdater
 ```
 
+Mac の場合は https://github.com/laggyluke/vagrant-passwordless-sudo の設定でパスワード入力を省略できます。
+
 ## 手順
 
 ホスト OS 上で以下のコマンドを実行すると、VM のセットアップが最後まで自動実行されます。
@@ -41,7 +43,7 @@ vagrant up --provider virtualbox
 以下のコマンドで、Admiral Stats が起動します。
 
 ```
-vagrant ssh -c "cd /vagrant && rails s -b 0.0.0.0"
+vagrant ssh -c "cd /vagrant && bundle exec rails s -b 0.0.0.0"
 ```
 
 セットアップに成功していれば、以下の URL で Admiral Stats を表示できます。
