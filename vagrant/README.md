@@ -51,6 +51,14 @@ vagrant ssh -c "cd /vagrant && bundle exec rails s -b 0.0.0.0"
 - http://192.168.33.10:3000/
 - http://admiral-stats.dev:3000/
 
+## テストの実行
+
+```
+vagrant ssh
+cd /vagrant
+bundle exec rails test
+```
+
 ### 開発環境でのログイン方法
 
 Admiral Stats は Twitter 経由でのログインしか提供していません。
