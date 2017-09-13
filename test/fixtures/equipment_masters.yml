@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+12cm_tansouhou:
+  book_no: 1
+  equipment_type: 小口径主砲
+  equipment_name: 12cm単装砲
+  star_num: 1
+  # リリースと同時に実装
+  implemented_at: <%= Time.parse('2016-04-26T07:00:00+09:00') %>

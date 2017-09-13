@@ -16,15 +16,20 @@ Rails.application.routes.draw do
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
   get 'admiral_info/event(/:event_no(/:period))', to: 'admiral_info#event'
 
-  # 艦娘一覧
+  # 艦娘情報
+  ## 表が主体のページ
   get 'ship_list', to: 'ship_list#index'
   get 'ship_list/slot', to: 'ship_list#slot'
   get 'ship_list/blueprint', to: 'ship_list#blueprint'
-
-  # 艦娘情報
+  ## グラフが主体のページ
   match 'ship_info/level', to: 'ship_info#level', via: [ :get, :post ]
   match 'ship_info/level_summary', to: 'ship_info#level_summary', via: [ :get, :post ]
   match 'ship_info/card', to: 'ship_info#card', via: [ :get, :post ]
+
+  # 装備情報
+  ## 表が主体のページ
+  get 'equipment_list', to: 'equipment_list#index'
+  ## グラフが主体のページ
 
   # 全提督との比較
   get 'global/ship_card_ownership', to: 'global#ship_card_ownership', as: :global_ship_card_ownership

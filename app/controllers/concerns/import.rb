@@ -25,6 +25,15 @@ module Import
   # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 350 = 2,555,000 とする。
   MAX_BLUEPRINT_STATUSES_COUNT = 2555000
 
+  # equipment_card_timestamps テーブルの、1 提督あたりのレコード数上限
+  # admiral_statuses テーブルと同じ理由で、7300 とする。
+  MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT = 7300
+
+  # equipment_statuses テーブルの、1 提督あたりのレコード数上限
+  # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
+  # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 260 = 1,898,000 とする。
+  MAX_EQUIPMENT_STATUSES_COUNT = 1898000
+
   private
 
   # yyyymmdd_hhmmss 形式の時刻を、Time オブジェクト（JST）に変換します。
@@ -314,5 +323,102 @@ module Import
     end
 
     return :created, '改装設計図一覧のインポートに成功しました。'
+  end
+
+  # 装備図鑑の JSON データを元に、equipment_cards レコードの追加または更新
+  def save_equipment_cards(admiral_id, exported_at, json, api_version)
+    # タイムスタンプが登録済みかどうか確認
+    if EquipmentCardTimestamp.where(admiral_id: admiral_id, exported_at: exported_at).exists?
+      return :ok, '同じ時刻の装備図鑑がインポート済みのため、無視されました。'
+    end
+
+    count = EquipmentCardTimestamp.where(admiral_id: admiral_id).count
+    if count >= MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT
+      logger.error("Max equipment_card_timestamps count exceeded (admiral_id: #{admiral_id}, count: #{count})")
+      return :error, '装備図鑑のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
+    end
+
+    begin
+      # アップロードが同時並行で行われても first_exported_at の値が正しく設定されるように、
+      # 分離レベルを :serializable に設定する。
+      # これ以外の分離レベルでは、first_exported_at を、現在テーブルに格納されている値より
+      # 大きな値に更新してしまうことが起こりうる。
+      EquipmentCard.transaction(isolation: :serializable) do
+        # その提督のカード情報を、最初にすべて取得
+        equipment_cards = EquipmentCard.where(admiral_id: admiral_id)
+
+        AdmiralStatsParser.parse_equip_book_info(json, api_version).each do |info|
+          # 未取得の装備に関するデータは登録しない
+          # 未取得の場合は equipKind, equipName, equipImg が空になる
+          next if info.equip_name.blank?
+
+          card = equipment_cards.select{|c| c.book_no == info.book_no }.first
+          if card
+            # レコードがすでにあり、エクスポート時刻がデータベース上の値より古ければ、更新
+            if card.first_exported_at > exported_at
+              card.first_exported_at = exported_at
+              card.save!
+            end
+          else
+            # レコードがなければ新規作成
+            EquipmentCard.create!(
+                admiral_id: admiral_id,
+                book_no: info.book_no,
+                first_exported_at: exported_at,
+            )
+          end
+        end
+
+        # すべての処理に成功したら、タイムスタンプを登録
+        EquipmentCardTimestamp.create!( admiral_id: admiral_id, exported_at: exported_at )
+      end
+    rescue => e
+      logger.error(e)
+      return :error, "装備図鑑のインポートに失敗しました。（原因：#{e.message}）"
+    end
+
+    return :created, '装備図鑑のインポートに成功しました。'
+  end
+
+  # 装備一覧の JSON データを元に、equipment_statuses レコードの追加
+  def save_equipment_statuses(admiral_id, exported_at, json, api_version)
+    if EquipmentStatus.where(admiral_id: admiral_id, exported_at: exported_at).exists?
+      return :ok, '同じ時刻の装備一覧がインポート済みのため、無視されました。'
+    end
+
+    count = EquipmentStatus.where(admiral_id: admiral_id).count
+    if count >= MAX_EQUIPMENT_STATUSES_COUNT
+      logger.error("Max equipment_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
+      return :error, '装備一覧のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
+    end
+
+    begin
+      EquipmentStatus.transaction do
+        # マスターデータに含まれる equipment_id のリストを取得
+        equipment_ids = EquipmentMaster.select(:equipment_id).reject{|e| e.equipment_id.nil? }.map(&:equipment_id)
+
+        AdmiralStatsParser.parse_equip_list_info(json, api_version).each do |info|
+          # 装備の equipment_id がマスターデータに含まれない場合は、ログにその装備の詳細を出力する
+          unless equipment_ids.include?(info.equipment_id)
+            logger.warn("Unknown equipment: equipment_id=#{info.equipment_id}, name=#{info.name}, type=#{info.type}")
+          end
+
+          # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
+          # また、INSERT されないにも関わらずインデックスのみが作られた。
+          EquipmentStatus.create!(
+              admiral_id: admiral_id,
+              equipment_id: info.equipment_id,
+              num: info.num,
+              exported_at: exported_at,
+          )
+        end
+      end
+
+    rescue => e
+      logger.error(e)
+      return :error, "装備一覧のインポートに失敗しました。（原因：#{e.message}）"
+    end
+
+    return :created, '装備一覧のインポートに成功しました。'
   end
 end

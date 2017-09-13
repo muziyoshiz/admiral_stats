@@ -31,7 +31,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'TcBook_info',
             'CharacterList_info',
             'Event_info',
-            'BlueprintList_info'
+            'BlueprintList_info',
+            'EquipBook_info',
+            'EquipList_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -63,7 +65,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'TcBook_info',
             'CharacterList_info',
             'Event_info',
-            'BlueprintList_info'
+            'BlueprintList_info',
+            'EquipBook_info',
+            'EquipList_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -94,7 +98,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'TcBook_info',
             'CharacterList_info',
             'Event_info',
-            'BlueprintList_info'
+            'BlueprintList_info',
+            'EquipBook_info',
+            'EquipList_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
@@ -122,7 +128,9 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'TcBook_info',
             'CharacterList_info',
             'Event_info',
-            'BlueprintList_info'
+            'BlueprintList_info',
+            'EquipBook_info',
+            'EquipList_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
@@ -783,6 +791,313 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
     assert_equal 201, l.status_code
     assert_nil l.user_agent
     assert_equal '改装設計図一覧のインポートに成功しました。', l.response
+    assert_not_nil l.created_at
+  end
+
+  test '装備図鑑のインポート' do
+    # 艦娘図鑑のインポートは分離レベルを指定しているため、
+    # self.use_transactional_tests = true (default)
+    # に指定された状態では、MySQL では実行できない。実行すると、以下のエラーが発生する。
+    # "cannot set transaction isolation in a nested transaction"
+  end
+
+#   test '装備図鑑のインポート' do
+#     # EquipBook_info
+#     json1 = <<-JSON
+# [
+# {"bookNo":1,"equipKind":"小口径主砲","equipName":"12cm単装砲","equipImg":"e/equip_1_3315nm5166d.png"},
+# {"bookNo":2,"equipKind":"小口径主砲","equipName":"12.7cm連装砲","equipImg":"e/equip_2_fon8wsqc5sn.png"}
+# ]
+#     JSON
+#
+#     json2 = <<-JSON
+# [
+# {"bookNo":1,"equipKind":"小口径主砲","equipName":"12cm単装砲","equipImg":"e/equip_1_3315nm5166d.png"}
+# ]
+#     JSON
+#
+#     json3 = <<-JSON
+# [
+# {"bookNo":1,"equipKind":"小口径主砲","equipName":"12cm単装砲","equipImg":"e/equip_1_3315nm5166d.png"},
+# {"bookNo":2,"equipKind":"小口径主砲","equipName":"12.7cm連装砲","equipImg":"e/equip_2_fon8wsqc5sn.png"},
+# {"bookNo":3,"equipKind":"小口径主砲","equipName":"10cm連装高角砲","equipImg":"e/equip_3_bzr4rgggxec.png"},
+# {"bookNo":4,"equipKind":"中口径主砲","equipName":"14cm単装砲","equipImg":"e/equip_4_8tzid3z8li7.png"}
+# ]
+#     JSON
+#
+#     # 登録前にはレコードが無いことを確認
+#     first_exported_at1 = Time.parse('2017-09-10 17:29:53 +09:00')
+#     assert_equal false, EquipmentCard.where(admiral_id: 1, first_exported_at: first_exported_at1).exists?
+#     assert_equal false, EquipmentCardTimestamp.where(admiral_id: 1, exported_at: first_exported_at1).exists?
+#     assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
+#
+#     post api_import_url('EquipBook_info', '20170910_172953'),
+#          params: json1, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+#
+#     assert_response 201
+#
+#     assert_equal JSON.generate(
+#         {
+#             data: {
+#                 message: '装備図鑑のインポートに成功しました。'
+#             }
+#         }), @response.body
+#
+#     # 登録後にはレコードがあることを確認
+#     assert_equal true, EquipmentCardTimestamp.where(admiral_id: 1, exported_at: first_exported_at1).exists?
+#     records = EquipmentCard.where(admiral_id: 1)
+#     assert_equal true, records.exists?
+#
+#     assert_equal 2, records.size
+#
+#     # 12cm単装砲
+#     r = records[0]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 1,  r.book_no
+#     assert_equal first_exported_at1, r.first_exported_at
+#
+#     # 12.7cm連装砲
+#     r = records[1]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 2,  r.book_no
+#     assert_equal first_exported_at1, r.first_exported_at
+#
+#     # ログがあることを確認
+#     logs = ApiRequestLog.where(admiral_id: 1)
+#     assert_equal true, logs.exists?
+#     assert_equal 1, logs.size
+#     l = logs[0]
+#
+#     # ログの内容を確認
+#     assert_equal 1, l.admiral_id
+#     assert_equal 'POST', l.request_method
+#     assert_equal 'http://www.example.com/api/v1/import/EquipBook_info/20170910_172953', l.request_uri
+#     assert_equal 201, l.status_code
+#     assert_nil l.user_agent
+#     assert_equal '装備図鑑のインポートに成功しました。', l.response
+#     assert_not_nil l.created_at
+#
+#     # 過去のデータを登録して、first_exported_at が更新されることを確認
+#
+#     first_exported_at2 = Time.parse('2017-09-09 17:29:53 +09:00')
+#     assert_equal false, EquipmentCard.where(admiral_id: 1, first_exported_at: first_exported_at2).exists?
+#
+#     post api_import_url('EquipBook_info', '20170909_172953'),
+#          params: json2, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+#
+#     assert_response 201
+#
+#     assert_equal JSON.generate(
+#         {
+#             data: {
+#                 message: '装備図鑑のインポートに成功しました。'
+#             }
+#         }), @response.body
+#
+#     # 登録後にはレコードがあることを確認
+#     assert_equal true, EquipmentCardTimestamp.where(admiral_id: 1, exported_at: first_exported_at2).exists?
+#     records = EquipmentCard.where(admiral_id: 1)
+#     assert_equal true, records.exists?
+#
+#     assert_equal 2, records.size
+#
+#     # 12cm単装砲
+#     r = records[0]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 1,  r.book_no
+#     assert_equal first_exported_at2, r.first_exported_at
+#
+#     # 12.7cm連装砲
+#     r = records[1]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 2,  r.book_no
+#     assert_equal first_exported_at1, r.first_exported_at
+#
+#     # ログがあることを確認
+#     logs = ApiRequestLog.where(admiral_id: 1).order(:created_at)
+#     assert_equal true, logs.exists?
+#     assert_equal 2, logs.size
+#     l = logs[1]
+#
+#     # ログの内容を確認
+#     assert_equal 1, l.admiral_id
+#     assert_equal 'POST', l.request_method
+#     assert_equal 'http://www.example.com/api/v1/import/EquipBook_info/20170909_172953', l.request_uri
+#     assert_equal 201, l.status_code
+#     assert_nil l.user_agent
+#     assert_equal '装備図鑑のインポートに成功しました。', l.response
+#     assert_not_nil l.created_at
+#
+#     # 未来のデータを登録して、新しい装備が追加されることを確認
+#
+#     first_exported_at3 = Time.parse('2017-09-11 17:29:53 +09:00')
+#     assert_equal false, EquipmentCard.where(admiral_id: 1, first_exported_at: first_exported_at3).exists?
+#
+#     post api_import_url('EquipBook_info', '20170911_172953'),
+#          params: json3, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+#
+#     assert_response 201
+#
+#     assert_equal JSON.generate(
+#         {
+#             data: {
+#                 message: '装備図鑑のインポートに成功しました。'
+#             }
+#         }), @response.body
+#
+#     # 登録後にはレコードがあることを確認
+#     assert_equal true, EquipmentCardTimestamp.where(admiral_id: 1, exported_at: first_exported_at3).exists?
+#     records = EquipmentCard.where(admiral_id: 1)
+#     assert_equal true, records.exists?
+#
+#     assert_equal 4, records.size
+#
+#     # 12cm単装砲
+#     r = records[0]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 1,  r.book_no
+#     assert_equal first_exported_at2, r.first_exported_at
+#
+#     # 12.7cm連装砲
+#     r = records[1]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 2,  r.book_no
+#     assert_equal first_exported_at1, r.first_exported_at
+#
+#     # 10cm連装高角砲
+#     r = records[2]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 3,  r.book_no
+#     assert_equal first_exported_at3, r.first_exported_at
+#
+#     # 14cm単装砲
+#     r = records[3]
+#     assert_equal 1,  r.admiral_id
+#     assert_equal 4,  r.book_no
+#     assert_equal first_exported_at3, r.first_exported_at
+#
+#     # ログがあることを確認
+#     logs = ApiRequestLog.where(admiral_id: 1).order(:created_at)
+#     assert_equal true, logs.exists?
+#     assert_equal 3, logs.size
+#     l = logs[2]
+#
+#     # ログの内容を確認
+#     assert_equal 1, l.admiral_id
+#     assert_equal 'POST', l.request_method
+#     assert_equal 'http://www.example.com/api/v1/import/EquipBook_info/20170911_172953', l.request_uri
+#     assert_equal 201, l.status_code
+#     assert_nil l.user_agent
+#     assert_equal '装備図鑑のインポートに成功しました。', l.response
+#     assert_not_nil l.created_at
+#
+#     # 登録済みのデータを再登録して、拒否されることを確認
+#     post api_import_url('EquipBook_info', '20170911_172953'),
+#          params: json3, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+#
+#     assert_response 200
+#
+#     assert_equal JSON.generate(
+#         {
+#             data: {
+#                 message: '同じ時刻の装備図鑑がインポート済みのため、無視されました。'
+#             }
+#         }), @response.body
+#
+#     # ログがあることを確認
+#     logs = ApiRequestLog.where(admiral_id: 1).order(:created_at)
+#     assert_equal true, logs.exists?
+#     assert_equal 4, logs.size
+#     l = logs[3]
+#
+#     # ログの内容を確認
+#     assert_equal 1, l.admiral_id
+#     assert_equal 'POST', l.request_method
+#     assert_equal 'http://www.example.com/api/v1/import/EquipBook_info/20170911_172953', l.request_uri
+#     assert_equal 200, l.status_code
+#     assert_nil l.user_agent
+#     assert_equal '同じ時刻の装備図鑑がインポート済みのため、無視されました。', l.response
+#     assert_not_nil l.created_at
+#   end
+
+  test '装備一覧のインポート' do
+    # EquipList_info
+    json = <<-JSON
+{
+  "maxSlotNum":500,
+  "equipList":[
+    {"type":1,"equipmentId":1,"name":"12cm単装砲","num":1,"img":"equip_icon_1_1984kzwm2f7s.png"},
+    {"type":1,"equipmentId":2,"name":"12.7cm連装砲","num":3,"img":"equip_icon_1_1984kzwm2f7s.png"},
+    {"type":1,"equipmentId":3,"name":"10cm連装高角砲","num":36,"img":"equip_icon_26_rv74l134q7an.png"},
+    {"type":1,"equipmentId":4,"name":"14cm単装砲","num":3,"img":"equip_icon_2_n8b0sex6xclf.png"}
+  ]
+}
+    JSON
+
+    # 登録前にはレコードが無いことを確認
+    exported_at = Time.parse('2017-09-10 17:29:53 +09:00')
+    assert_equal false, EquipmentStatus.where(admiral_id: 1, exported_at: exported_at).exists?
+    assert_equal false, ApiRequestLog.where(admiral_id: 1).exists?
+
+    post api_import_url('EquipList_info', '20170910_172953'),
+         params: json, headers: { 'Authorization' => "Bearer #{TOKEN}", 'Content-Type' => 'application/json' }
+
+    assert_response 201
+
+    assert_equal JSON.generate(
+        {
+            data: {
+                message: '装備一覧のインポートに成功しました。'
+            }
+        }), @response.body
+
+    # 登録後にはレコードがあることを確認
+    records = EquipmentStatus.where(admiral_id: 1, exported_at: exported_at)
+    assert_equal true, records.exists?
+
+    assert_equal 4, records.size
+
+    # 12cm単装砲
+    r = records[0]
+    assert_equal 1,  r.admiral_id
+    assert_equal 1,  r.equipment_id
+    assert_equal 1,  r.num
+    assert_equal exported_at, r.exported_at
+
+    # 12.7cm連装砲
+    r = records[1]
+    assert_equal 1,  r.admiral_id
+    assert_equal 2,  r.equipment_id
+    assert_equal 3,  r.num
+    assert_equal exported_at, r.exported_at
+
+    # 10cm連装高角砲
+    r = records[2]
+    assert_equal 1,  r.admiral_id
+    assert_equal 3,  r.equipment_id
+    assert_equal 36, r.num
+    assert_equal exported_at, r.exported_at
+
+    # 14cm単装砲
+    r = records[3]
+    assert_equal 1,  r.admiral_id
+    assert_equal 4,  r.equipment_id
+    assert_equal 3,  r.num
+    assert_equal exported_at, r.exported_at
+
+    # ログがあることを確認
+    logs = ApiRequestLog.where(admiral_id: 1)
+    assert_equal true, logs.exists?
+    assert_equal 1, logs.size
+    l = logs[0]
+
+    # ログの内容を確認
+    assert_equal 1, l.admiral_id
+    assert_equal 'POST', l.request_method
+    assert_equal 'http://www.example.com/api/v1/import/EquipList_info/20170910_172953', l.request_uri
+    assert_equal 201, l.status_code
+    assert_nil l.user_agent
+    assert_equal '装備一覧のインポートに成功しました。', l.response
     assert_not_nil l.created_at
   end
 end

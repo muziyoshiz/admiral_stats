@@ -47,20 +47,22 @@
                   <li><%= link_to 'イベントの進捗', controller: 'admiral_info', action: 'event' %></li>
                 </ul>
               </li>
-              <li class="dropdown <%== 'active' if controller_name == 'ship_list' %>">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘一覧 <span class="caret"></span></a>
+              <li class="dropdown <%== 'active' if ['ship_list', 'ship_info'].include?(controller_name) %>">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘情報 <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                   <li><%= link_to '艦娘一覧', controller: 'ship_list' %></li>
                   <li><%= link_to '装備スロット', controller: 'ship_list', action: 'slot' %></li>
                   <li><%= link_to '改装設計図', controller: 'ship_list', action: 'blueprint' %></li>
-                </ul>
-              </li>
-              <li class="dropdown <%== 'active' if controller_name == 'ship_info' %>">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">艦娘情報 <span class="caret"></span></a>
-                <ul class="dropdown-menu">
+                  <li role="separator" class="divider"></li>
                   <li><%= link_to 'レベル・経験値（艦娘別）', controller: 'ship_info', action: 'level' %></li>
                   <li><%= link_to 'レベル・経験値・★5艦娘数（艦種別）', controller: 'ship_info', action: 'level_summary' %></li>
                   <li><%= link_to 'カード入手数・入手率', controller: 'ship_info', action: 'card' %></li>
+                </ul>
+              </li>
+              <li class="dropdown <%== 'active' if controller_name == 'equipment_list' %>">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">装備情報 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><%= link_to '装備一覧', controller: 'equipment_list' %></li>
                 </ul>
               </li>
             <% end %>

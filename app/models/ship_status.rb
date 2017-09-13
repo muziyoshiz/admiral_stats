@@ -1,5 +1,6 @@
 class ShipStatus < ApplicationRecord
-  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no
+  # 艦娘のマスタデータの登録が遅れても、インポートだけはできるように、optional: true を設定
+  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no, optional: true
   has_many :ship_slot_statuses, -> { order(slot_index: :asc) }
 
   # 提督 ID
@@ -15,7 +16,6 @@ class ShipStatus < ApplicationRecord
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 1,
-                less_than_or_equal_to: 350,
             }
 
   # 解像度合いを表す数値
