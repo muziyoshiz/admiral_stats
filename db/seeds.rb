@@ -1236,8 +1236,9 @@ ship_masters = [
         ship_type: '軽空母',
         ship_name: '千歳航改二',
         variation_num: 3,
-        remodel_level: 2,
-        
+        remodel_level: 5,
+        # 2017-09-21：4隻追加（香取、千歳航改二、千代田航改二、矢矧改）
+        implemented_at: '2017-09-21T07:00:00+09:00',
     },
     {
         book_no: 122,
@@ -1246,8 +1247,9 @@ ship_masters = [
         ship_type: '軽空母',
         ship_name: '千代田航改二',
         variation_num: 3,
-        remodel_level: 2,
-        
+        remodel_level: 5,
+        # 2017-09-21：4隻追加（香取、千歳航改二、千代田航改二、矢矧改）
+        implemented_at: '2017-09-21T07:00:00+09:00',
     },
     {
         book_no: 123,
@@ -1572,7 +1574,8 @@ ship_masters = [
         ship_type: '練習巡洋艦',
         ship_name: '香取',
         variation_num: 6,
-        
+        # 2017-09-21：4隻追加（香取、千歳航改二、千代田航改二、矢矧改）
+        implemented_at: '2017-09-21T07:00:00+09:00',
     },
     {
         book_no: 155,
@@ -2788,6 +2791,16 @@ updated_ship_masters = [
         # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
         implemented_at: '2017-08-17T07:00:00+09:00',
     },
+    {
+        book_no: 139,
+        ship_class: '阿賀野型',
+        ship_class_index: 3,
+        ship_type: '軽巡洋艦',
+        ship_name: '矢矧',
+        variation_num: 6,
+        # 2017-09-21：4隻追加（香取、千歳航改二、千代田航改二、矢矧改）
+        implemented_at: '2017-09-21T07:00:00+09:00',
+    }
 ]
 
 updated_ship_masters.each do |ship_master|
