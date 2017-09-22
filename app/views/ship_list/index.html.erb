@@ -42,6 +42,7 @@
   <a class="select-s08 btn btn-default">水母</a>
   <a class="select-s09 btn btn-default">軽空母</a>
   <a class="select-s10 btn btn-default">正規空母</a>
+  <a class="select-others btn btn-default">その他</a>
 </div>
 
 <div class="container">
@@ -324,6 +325,7 @@
     $('a.select-s08').on( 'click', function (e) { selectShipType(e, '^水上機母艦$'); } );
     $('a.select-s09').on( 'click', function (e) { selectShipType(e, '^軽空母$'); } );
     $('a.select-s10').on( 'click', function (e) { selectShipType(e, '^正規空母$'); } );
+    $('a.select-others').on( 'click', function (e) { selectShipType(e, '^(練習巡洋艦|揚陸艦|工作艦|補給艦)$'); } );
 
     var keyword = getUrlParameter('keyword');
     if (keyword) {
