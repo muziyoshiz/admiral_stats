@@ -23,11 +23,12 @@ class ShipCardOwnershipBatch
       ShipCardOwnership.transaction do
         ship_cards.each do |card|
           ShipCardOwnership.create!(
-              :book_no => card.book_no,
-              :card_index => card.card_index,
-              :no_of_owners => card.no_of_owners,
-              :no_of_active_users => no_of_active_users,
-              :reported_at => reported_at,
+              book_no: card.book_no,
+              card_index: card.card_index,
+              no_of_owners: card.no_of_owners,
+              no_of_active_users: no_of_active_users,
+              def_of_active_users: ShipCardOwnership::DEF_ALL_ADMIRALS,
+              reported_at: reported_at,
           )
         end
       end
@@ -72,12 +73,12 @@ class ShipCardOwnershipBatch
         EventShipCardOwnership.transaction do
           ship_cards.each do |card|
             EventShipCardOwnership.create!(
-                :event_no => event.event_no,
-                :book_no => card.book_no,
-                :card_index => card.card_index,
-                :no_of_owners => card.no_of_owners,
-                :no_of_active_users => no_of_active_users,
-                :reported_at => reported_at,
+                event_no: event.event_no,
+                book_no: card.book_no,
+                card_index: card.card_index,
+                no_of_owners: card.no_of_owners,
+                no_of_active_users: no_of_active_users,
+                reported_at: reported_at,
             )
           end
         end

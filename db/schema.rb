@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170721072240) do
+ActiveRecord::Schema.define(version: 20170921160816) do
 
   create_table "admiral_publications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "admiral_id", null: false
@@ -125,8 +125,9 @@ ActiveRecord::Schema.define(version: 20170721072240) do
     t.integer "card_index", null: false
     t.integer "no_of_owners", null: false
     t.integer "no_of_active_users", null: false
+    t.integer "def_of_active_users", default: 0, null: false
     t.datetime "reported_at", null: false
-    t.index ["book_no", "card_index", "reported_at"], name: "index_ship_card_ownerships", unique: true
+    t.index ["book_no", "card_index", "def_of_active_users", "reported_at"], name: "index_ship_card_ownerships", unique: true
   end
 
   create_table "ship_card_timestamps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
