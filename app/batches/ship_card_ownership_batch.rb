@@ -6,12 +6,11 @@ class ShipCardOwnershipBatch
     # レポートの生成時刻を記録
     reported_at = Time.current
 
-    Rails.logger.info("Ship Card Ownership Batch started")
+    Rails.logger.info('Ship Card Ownership Batch started')
 
     # 全提督を対象とした集計
     begin
-      # バッチ実行時のアクティブユーザ数を数える
-      # 1回以上、艦娘図鑑ファイルをアップロードしているユーザを、アクティブユーザと見なす
+      # 1回以上、艦娘図鑑ファイルをアップロードしている提督数
       # SELECT count(distinct admiral_id) FROM ship_card_timestamps;
       no_of_active_users = ShipCardTimestamp.select(:admiral_id).distinct.count
 
@@ -33,9 +32,57 @@ class ShipCardOwnershipBatch
         end
       end
 
-      Rails.logger.info("Ship Card Ownership Batch finished successfully")
+      Rails.logger.info('Ship Card Ownership Batch (for all admirals) finished successfully')
     rescue => e
-      Rails.logger.error("Ship Card Ownership Batch failed")
+      Rails.logger.error('Ship Card Ownership Batch (for all admirals) failed')
+      Rails.logger.error(e)
+
+      Rails.logger.flush
+      return
+    end
+
+    # アクティブ提督を対象とした集計
+    begin
+      defs = {
+          ShipCardOwnership::DEF_ACTIVE_IN_30_DAYS => reported_at - 30.days,
+          ShipCardOwnership::DEF_ACTIVE_IN_60_DAYS => reported_at - 60.days
+      }
+
+      count_sql = <<-EOS
+SELECT sc.book_no, sc.card_index, COUNT(*) AS no_of_owners
+FROM ship_cards sc
+LEFT JOIN
+(SELECT DISTINCT admiral_id FROM ship_card_timestamps WHERE exported_at >= ?) sct
+ON sc.admiral_id = sct.admiral_id
+WHERE sct.admiral_id IS NOT NULL
+GROUP BY sc.book_no, sc.card_index
+      EOS
+
+      defs.each do |def_of_active_users, begin_time|
+        # 期間内に1回以上、艦娘図鑑ファイルをアップロードしているユーザを、アクティブ提督と見なす
+        no_of_active_users = ShipCardTimestamp.where('exported_at >= ?', begin_time).select(:admiral_id).distinct.count
+
+        # アクティブ提督に対象を絞り、バッチ実行時の各カードの枚数を数える
+        ship_cards = ShipCard.find_by_sql([count_sql, begin_time])
+
+        # 計測結果を ship_card_ownerships テーブルに格納する
+        ShipCardOwnership.transaction do
+          ship_cards.each do |card|
+            ShipCardOwnership.create!(
+                book_no: card.book_no,
+                card_index: card.card_index,
+                no_of_owners: card.no_of_owners,
+                no_of_active_users: no_of_active_users,
+                def_of_active_users: def_of_active_users,
+                reported_at: reported_at,
+            )
+          end
+        end
+
+        Rails.logger.info('Ship Card Ownership Batch (for active admirals) finished successfully')
+      end
+    rescue => e
+      Rails.logger.error('Ship Card Ownership Batch (for active admirals) failed')
       Rails.logger.error(e)
 
       Rails.logger.flush

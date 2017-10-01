@@ -47,5 +47,5 @@ class ShipCardOwnership < ApplicationRecord
   # 計測時刻
   validates :reported_at,
             presence: true,
-            uniqueness: { scope: [ :book_no, :card_index ] }
+            uniqueness: { scope: [ :book_no, :card_index, :def_of_active_users ] }
 end
