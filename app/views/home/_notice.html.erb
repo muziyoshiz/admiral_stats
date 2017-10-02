@@ -25,11 +25,11 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
-      2017年9月22日更新(2)：<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> にあるエクスポータ（ブックマークレット、PowerShell、Ruby）に、演習情報のエクスポート機能を追加しました。
-      Admiral Stats 本体が演習情報をサポートするかは未定です。
+      2017年10月3日更新(2)：<%= link_to '「艦娘カード入手率」ページ', controller: 'global', action: 'ship_card_ownership' %>に、集計対象となった提督数の表示を追加しました。
     </li>
     <li>
-      2017年9月22日更新(1)：練習巡洋艦を検索できるようにするため、艦娘一覧の検索条件に「その他」を追加しました。
+      2017年10月3日更新(1)：<%= link_to '「艦娘カード入手率」ページ', controller: 'global', action: 'ship_card_ownership' %>に、「過去○○日以内にアップロードした提督」における入手率の表示を追加しました。
+      また、デフォルト表示を「過去60日以内のアクティブ提督」に変更しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
