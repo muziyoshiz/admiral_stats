@@ -15,11 +15,11 @@
             <%=
               case @def_of_active_users
                 when ShipCardOwnership::DEF_ALL_ADMIRALS
-                  'プレイデータをアップロードしたことがある提督全体に対する、各艦娘カードを入手済みの提督の割合です。'
+                  "プレイデータをアップロードしたことがある提督全体（#{@no_of_active_users}名）に対する、各艦娘カードを入手済みの提督の割合です。"
                 when ShipCardOwnership::DEF_ACTIVE_IN_30_DAYS
-                  '過去30日以内にプレイデータをアップロードした提督に対する、各艦娘カードを入手済みの提督の割合です。'
+                  "過去30日以内にプレイデータをアップロードした提督（#{@no_of_active_users}名）に対する、各艦娘カードを入手済みの提督の割合です。"
                 when ShipCardOwnership::DEF_ACTIVE_IN_60_DAYS
-                  '過去60日以内にプレイデータをアップロードした提督に対する、各艦娘カードを入手済みの提督の割合です。'
+                  "過去60日以内にプレイデータをアップロードした提督（#{@no_of_active_users}名）に対する、各艦娘カードを入手済みの提督の割合です。"
               end
             %>
           </li>

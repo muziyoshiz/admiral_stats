@@ -76,10 +76,13 @@ class GlobalController < ApplicationController
     # @rates[book_no][card_index] に、カードの取得率を格納
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @rates = {}
+    @no_of_active_users = 0
     @cards.keys.each{|book_no| @rates[book_no] = [] }
     ShipCardOwnership.where(def_of_active_users: @def_of_active_users, reported_at: @last_reported_at).each do |own|
       # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
       next unless @rates.keys.include?(own.book_no)
+
+      @no_of_active_users = own.no_of_active_users if @no_of_active_users == 0
 
       rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       if kai_book_numbers.include?(own.book_no)
@@ -186,8 +189,10 @@ class GlobalController < ApplicationController
     # @rates[book_no][card_index] に、カードの取得率を格納
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @rates = {}
+    @no_of_active_users = 0
     @cards.keys.each{|book_no| @rates[book_no] = [] }
     EventShipCardOwnership.where(event_no: @event.event_no, reported_at: @last_reported_at).each do |own|
+      @no_of_active_users = own.no_of_active_users if @no_of_active_users == 0
       rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       if kai_book_numbers.include?(own.book_no)
         @rates[own.book_no][own.card_index + 3] = rate
