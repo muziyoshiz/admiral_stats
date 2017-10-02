@@ -36,7 +36,9 @@
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><%= link_to '提督全体', controller: 'global', action: 'ship_card_ownership' %></li>
+      <% ShipCardOwnership::DEFS_OF_ACTIVE_USERS.each do |d| %>
+          <li><%= link_to def_of_active_users_to_s(d), controller: 'global', action: 'ship_card_ownership', def_of_active_users: d %></li>
+      <% end %>
       <% @events.each do |e| %>
           <li><%= link_to "「#{e.event_name}」参加提督", controller: 'global', action: 'event_ship_card_ownership', event_no: e.event_no %></li>
       <% end %>

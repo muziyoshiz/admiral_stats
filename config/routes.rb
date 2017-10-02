@@ -27,7 +27,8 @@ Rails.application.routes.draw do
   match 'ship_info/card', to: 'ship_info#card', via: [ :get, :post ]
 
   # 全提督との比較
-  get 'global/ship_card_ownership', to: 'global#ship_card_ownership'
+  get 'global/ship_card_ownership', to: 'global#ship_card_ownership', as: :global_ship_card_ownership
+  get 'global/ship_card_ownership/active/:def_of_active_users', to: 'global#ship_card_ownership'
   get 'global/ship_card_ownership/event/:event_no', to: 'global#event_ship_card_ownership'
   get 'global/event(/:event_no(/:period))', to: 'global#event'
 

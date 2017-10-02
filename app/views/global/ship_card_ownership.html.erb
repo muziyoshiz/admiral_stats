@@ -11,7 +11,18 @@
       </div>
       <div class="panel-body">
         <ul>
-          <li>Admiral Stats にプレイデータをアップロードした提督全体に対する、各艦娘カードを入手済みの提督の割合です。</li>
+          <li>
+            <%=
+              case @def_of_active_users
+                when ShipCardOwnership::DEF_ALL_ADMIRALS
+                  'プレイデータをアップロードしたことがある提督全体に対する、各艦娘カードを入手済みの提督の割合です。'
+                when ShipCardOwnership::DEF_ACTIVE_IN_30_DAYS
+                  '過去30日以内にプレイデータをアップロードした提督に対する、各艦娘カードを入手済みの提督の割合です。'
+                when ShipCardOwnership::DEF_ACTIVE_IN_60_DAYS
+                  '過去60日以内にプレイデータをアップロードした提督に対する、各艦娘カードを入手済みの提督の割合です。'
+              end
+            %>
+          </li>
           <li>自分で建造・ドロップしたカードだけでなく、買ったり借りたりして読み込んだカードも「入手」に含みます。これは、公式プレイヤーズサイトの仕様による制限です。</li>
           <li>集計結果は毎日 3:00 頃に自動更新されます。</li>
           <% if logged_in? %>
@@ -32,11 +43,13 @@
 <div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      提督全体
+      <%= def_of_active_users_to_s(@def_of_active_users) %>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><%= link_to '提督全体', controller: 'global', action: 'ship_card_ownership' %></li>
+      <% ShipCardOwnership::DEFS_OF_ACTIVE_USERS.each do |d| %>
+          <li><%= link_to def_of_active_users_to_s(d), controller: 'global', action: 'ship_card_ownership', def_of_active_users: d %></li>
+      <% end %>
       <% @events.each do |e| %>
           <li><%= link_to "「#{e.event_name}」参加提督", controller: 'global', action: 'event_ship_card_ownership', event_no: e.event_no %></li>
       <% end %>

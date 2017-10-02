@@ -98,4 +98,18 @@ module GlobalHelper
 
     res.to_json
   end
+
+  # アクティブ提督の定義を表す数値から、その文字列表現を返します。
+  def def_of_active_users_to_s(def_of_active_users)
+    case def_of_active_users
+      when ShipCardOwnership::DEF_ALL_ADMIRALS
+        '提督全体'
+      when ShipCardOwnership::DEF_ACTIVE_IN_30_DAYS
+        'アクティブ提督（過去30日）'
+      when ShipCardOwnership::DEF_ACTIVE_IN_60_DAYS
+        'アクティブ提督（過去60日）'
+      else
+        '?'
+    end
+  end
 end

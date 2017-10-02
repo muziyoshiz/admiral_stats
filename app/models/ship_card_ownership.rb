@@ -40,9 +40,11 @@ class ShipCardOwnership < ApplicationRecord
   DEF_ACTIVE_IN_30_DAYS = 1
   # 2: 艦娘図鑑ファイルを、過去60日に1回以上インポートした提督
   DEF_ACTIVE_IN_60_DAYS = 2
+  # 選択可能な定義すべて
+  DEFS_OF_ACTIVE_USERS = [ DEF_ALL_ADMIRALS, DEF_ACTIVE_IN_30_DAYS, DEF_ACTIVE_IN_60_DAYS ]
   validates :def_of_active_users,
             presence: true,
-            inclusion: { in: [ DEF_ALL_ADMIRALS, DEF_ACTIVE_IN_30_DAYS, DEF_ACTIVE_IN_60_DAYS ] }
+            inclusion: { in: DEFS_OF_ACTIVE_USERS }
 
   # 計測時刻
   validates :reported_at,

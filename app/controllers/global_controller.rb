@@ -66,11 +66,18 @@ class GlobalController < ApplicationController
     # 最新の集計結果のタイムスタンプを取得
     @last_reported_at = ShipCardOwnership.maximum(:reported_at)
 
+    # アクティブ提督の定義を選択
+    # 有効な定義が指定されていない場合は、デフォルトで「アクティブ提督（60日以内）」を選択
+    @def_of_active_users = params[:def_of_active_users] && params[:def_of_active_users].to_i
+    unless ShipCardOwnership::DEFS_OF_ACTIVE_USERS.include?(@def_of_active_users)
+      @def_of_active_users = ShipCardOwnership::DEF_ACTIVE_IN_60_DAYS
+    end
+
     # @rates[book_no][card_index] に、カードの取得率を格納
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @rates = {}
     @cards.keys.each{|book_no| @rates[book_no] = [] }
-    ShipCardOwnership.where(def_of_active_users: ShipCardOwnership::DEF_ALL_ADMIRALS, reported_at: @last_reported_at).each do |own|
+    ShipCardOwnership.where(def_of_active_users: @def_of_active_users, reported_at: @last_reported_at).each do |own|
       # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
       next unless @rates.keys.include?(own.book_no)
 

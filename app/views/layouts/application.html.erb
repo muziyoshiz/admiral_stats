@@ -67,7 +67,7 @@
             <li class="dropdown <%== 'active' if controller_name == 'global' %>">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">全提督との比較 <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><%= link_to '艦娘カード入手率', controller: 'global', action: 'ship_card_ownership' %></li>
+                <li><%= link_to '艦娘カード入手率', global_ship_card_ownership_url %></li>
                 <li><%= link_to 'イベント攻略率', controller: 'global', action: 'event' %></li>
               </ul>
             </li>
