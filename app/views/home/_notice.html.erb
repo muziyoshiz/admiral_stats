@@ -25,6 +25,9 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2017年10月9日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に練習巡洋艦の表示を追加しました。
+    </li>
+    <li>
       2017年10月3日更新(2)：<%= link_to '「艦娘カード入手率」ページ', controller: 'global', action: 'ship_card_ownership' %>に、集計対象となった提督数の表示を追加しました。
     </li>
     <li>
