@@ -5,6 +5,7 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+require 'csv'
 
 ship_masters = [
     {
@@ -3159,4 +3160,23 @@ event_stage_masters = [
 
 event_stage_masters.each do |master|
   EventStageMaster.where(event_no: master[:event_no], level: master[:level], period: master[:period], stage_no: master[:stage_no]).first_or_initialize.update(master)
+end
+
+CSV.read('db/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
+    book_no = data['Book No.']
+    equipment_id = (data['Equipment ID'].blank? ? nil : data['Equipment ID'])
+    star_num = data['Rarity'].count('☆')
+    equipment_name = data['Equipment name']
+    equipment_type = data['Equipment type']
+    implemented_at = data['Implemented at']
+
+    equipment_master = {
+        book_no: book_no,
+        equipment_id: equipment_id,
+        equipment_type: equipment_type,
+        equipment_name: equipment_name,
+        star_num: star_num,
+        implemented_at: implemented_at
+    }
+    EquipmentMaster.where(book_no: book_no).first_or_initialize.update(equipment_master)
 end

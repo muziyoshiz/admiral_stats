@@ -1,0 +1,22 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 1
+  admiral_id: 1
+  equipment_id: 1
+  num: 1
+  exported_at: <%= Time.parse('2017-09-13T07:00:00+09:00') %>
+
+two:
+  id: 2
+  admiral_id: 1
+  equipment_id: 1
+  num: 2
+  exported_at: <%= Time.parse('2017-09-13T08:00:00+09:00') %>
+
+10hundred:
+  id: 1000
+  admiral_id: 1
+  equipment_id: 1000
+  num: 1
+  exported_at: <%= Time.parse('2017-09-13T07:00:00+09:00') %>

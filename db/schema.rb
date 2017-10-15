@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170921160816) do
+ActiveRecord::Schema.define(version: 20171015110004) do
 
   create_table "admiral_publications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "admiral_id", null: false
@@ -73,6 +73,35 @@ ActiveRecord::Schema.define(version: 20170921160816) do
     t.integer "blueprint_num", null: false
     t.datetime "exported_at", null: false
     t.index ["admiral_id", "book_no", "expiration_date", "exported_at"], name: "index_blueprint_statuses", unique: true
+  end
+
+  create_table "equipment_card_timestamps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "admiral_id", null: false
+    t.datetime "exported_at", null: false
+    t.index ["admiral_id", "exported_at"], name: "index_equipment_card_timestamps_on_admiral_id_and_exported_at", unique: true
+  end
+
+  create_table "equipment_cards", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "admiral_id", null: false
+    t.integer "book_no", null: false
+    t.datetime "first_exported_at", null: false
+    t.index ["admiral_id", "book_no"], name: "index_equipment_cards_on_admiral_id_and_book_no", unique: true
+  end
+
+  create_table "equipment_masters", primary_key: "book_no", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "equipment_id"
+    t.string "equipment_type", limit: 32, null: false
+    t.string "equipment_name", limit: 32, null: false
+    t.integer "star_num", null: false
+    t.datetime "implemented_at"
+  end
+
+  create_table "equipment_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "admiral_id", null: false
+    t.integer "equipment_id", null: false
+    t.integer "num", null: false
+    t.datetime "exported_at", null: false
+    t.index ["admiral_id", "equipment_id", "exported_at"], name: "index_equipment_statuses", unique: true
   end
 
   create_table "event_masters", primary_key: "event_no", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

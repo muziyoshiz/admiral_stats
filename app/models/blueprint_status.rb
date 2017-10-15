@@ -1,5 +1,6 @@
 class BlueprintStatus < ApplicationRecord
-  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no
+  # 艦娘のマスタデータの登録が遅れても、インポートだけはできるように、optional: true を設定
+  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no, optional: true
 
   # 提督 ID
   validates :admiral_id,
@@ -14,7 +15,6 @@ class BlueprintStatus < ApplicationRecord
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 1,
-                less_than_or_equal_to: 350,
             }
 
   # 有効期限が切れる月（有効期限が切れる月の 11日 23:59:59 の時刻が格納される）

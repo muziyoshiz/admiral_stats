@@ -25,14 +25,21 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2017年10月15日更新(2)：<%= link_to_if_logged_in '「装備一覧」ページ', controller: 'equipment_list', action: 'index' %> を追加しました。装備保有数のグラフ表示は、後日追加する予定です。
+    </li>
+    <li>
+      2017年10月15日更新(1)：「装備図鑑」と「装備一覧」のインポートに対応しました。エクスポータの対応状況は次の通りです。
+      <ul>
+        <li>
+          ブックマークレット版：基本的には、特に何もする必要はありません。もし装備一覧が更新されない場合は、ブラウザのキャッシュを一度削除してください。
+        </li>
+        <li>
+          PowerShell 版、Ruby 版：特に何もする必要はありません。かなり古いバージョンから、装備図鑑と装備一覧に対応しています。
+        </li>
+      </ul>
+    </li>
+    <li>
       2017年10月9日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に練習巡洋艦の表示を追加しました。
-    </li>
-    <li>
-      2017年10月3日更新(2)：<%= link_to '「艦娘カード入手率」ページ', controller: 'global', action: 'ship_card_ownership' %>に、集計対象となった提督数の表示を追加しました。
-    </li>
-    <li>
-      2017年10月3日更新(1)：<%= link_to '「艦娘カード入手率」ページ', controller: 'global', action: 'ship_card_ownership' %>に、「過去○○日以内にアップロードした提督」における入手率の表示を追加しました。
-      また、デフォルト表示を「過去60日以内のアクティブ提督」に変更しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
