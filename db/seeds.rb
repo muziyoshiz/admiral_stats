@@ -7,7 +7,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'csv'
 
-CSV.read('db/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+CSV.read('db/seeds/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
   record = {
       book_no: row['Book No.'],
       ship_class: row['Ship class'],
@@ -21,7 +21,7 @@ CSV.read('db/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each
   ShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-CSV.read('db/updated_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+CSV.read('db/seeds/updated_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
   record = {
       book_no: row['Book No.'],
       ship_class: row['Ship class'],
@@ -35,7 +35,7 @@ CSV.read('db/updated_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-
   UpdatedShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-CSV.read('db/special_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+CSV.read('db/seeds/special_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
   record = {
       book_no: row['Book No.'],
       card_index: row['Card index'],
@@ -46,7 +46,7 @@ CSV.read('db/special_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-
   SpecialShipMaster.where(book_no: record[:book_no], card_index: record[:card_index]).first_or_initialize.update(record)
 end
 
-CSV.read('db/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
+CSV.read('db/seeds/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
   record = {
       book_no: data['Book No.'],
       equipment_id: (data['Equipment ID'].blank? ? nil : data['Equipment ID']),
