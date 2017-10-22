@@ -41,7 +41,7 @@
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">装備名</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">種別</th>
         <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">保有数</th>
-        <th class="hidden">所持数（ソート用）</th>
+        <th class="hidden">保有数（ソート用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -51,8 +51,8 @@
         <th class="hidden">レア（ソート用）</th>
         <th class="text-left">装備名</th>
         <th class="text-left">種別</th>
-        <th class="text-left">所持数</th>
-        <th class="hidden">所持数（ソート用）</th>
+        <th class="text-left">保有数</th>
+        <th class="hidden">保有数（ソート用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -65,7 +65,13 @@
               <% end %>
             </td>
             <td class="hidden"><%= equip.star_num %></td>
-            <td class="text-left"><%= equip.equipment_name %></td>
+            <td class="text-left">
+              <% if @owned_book_noes.include?(equip.book_no) %>
+                  <%= link_to equip.equipment_name, controller: 'equipment_list', action: 'show', book_no: equip.book_no %>
+              <% else %>
+                  <%= equip.equipment_name %>
+              <% end %>
+            </td>
             <td class="text-left"><%= equip.equipment_type %></td>
             <% if @owned_book_noes.include?(equip.book_no) %>
                 <% if equip.equipment_id %>
@@ -88,12 +94,12 @@
 </div>
 
 <script type="application/javascript">
-  $(document).ready(function() {
+  $(function() {
     $('#table-equipment-book').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "aoColumnDefs": [
         <!-- レアの列を、星の数でソートするための設定 -->
         { "iDataSort": 2, "aTargets": [ 1 ] },
-        <!-- 所持数を、「未取得」も含めてソートするための設定 -->
+        <!-- 保有数を、「未取得」も含めてソートするための設定 -->
         { "iDataSort": 6, "aTargets": [ 5 ] },
       ],
     }));

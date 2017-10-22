@@ -27,9 +27,8 @@ Rails.application.routes.draw do
   match 'ship_info/card', to: 'ship_info#card', via: [ :get, :post ]
 
   # 装備情報
-  ## 表が主体のページ
   get 'equipment_list', to: 'equipment_list#index'
-  ## グラフが主体のページ
+  match 'equipment_list/:book_no', to: 'equipment_list#show', via: [ :get, :post ]
 
   # 全提督との比較
   get 'global/ship_card_ownership', to: 'global#ship_card_ownership', as: :global_ship_card_ownership
