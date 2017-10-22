@@ -7,100 +7,55 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'csv'
 
-CSV.read('db/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
-  ship_master = {
-      book_no: data['Book No.'],
-      ship_class: data['Ship class'],
-      ship_class_index: data['Ship class index'],
-      ship_type: data['Ship type'],
-      ship_name: data['Ship name'],
-      variation_num: data['Variation num'],
-      remodel_level: (data['Remodel level'].blank? ? 0 : data['Remodel level']),
-      implemented_at: (data['Implemented at'].blank? ? nil : data['Implemented at']),
+CSV.read('db/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+  record = {
+      book_no: row['Book No.'],
+      ship_class: row['Ship class'],
+      ship_class_index: row['Ship class index'],
+      ship_type: row['Ship type'],
+      ship_name: row['Ship name'],
+      variation_num: row['Variation num'],
+      remodel_level: (row['Remodel level'].blank? ? 0 : row['Remodel level']),
+      implemented_at: (row['Implemented at'].blank? ? nil : row['Implemented at']),
   }
-  ShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
+  ShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-updated_ship_masters = [
-    {
-        book_no: 94,
-        ship_class: '祥鳳型',
-        ship_class_index: 1,
-        ship_type: '軽空母',
-        ship_name: '祥鳳',
-        variation_num: 6,
-        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
-        implemented_at: '2017-02-07T07:00:00+09:00',
-    },
-    {
-        book_no: 106,
-        ship_class: '翔鶴型',
-        ship_class_index: 1,
-        ship_type: '正規空母',
-        ship_name: '翔鶴',
-        variation_num: 6,
-        # 2017-02-07：翔鶴、瑞鶴、瑞鳳、祥鳳の「改」追加
-        implemented_at: '2017-02-07T07:00:00+09:00',
-    },
-    {
-        book_no: 137,
-        ship_class: '阿賀野型',
-        ship_class_index: 1,
-        ship_type: '軽巡洋艦',
-        ship_name: '阿賀野',
-        variation_num: 6,
-        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
-        implemented_at: '2017-08-17T07:00:00+09:00',
-    },
-    {
-        book_no: 138,
-        ship_class: '阿賀野型',
-        ship_class_index: 2,
-        ship_type: '軽巡洋艦',
-        ship_name: '能代',
-        variation_num: 6,
-        # 2017-08-17：4隻追加（春雨、時雨改二、阿賀野改、能代改）
-        implemented_at: '2017-08-17T07:00:00+09:00',
-    },
-    {
-        book_no: 139,
-        ship_class: '阿賀野型',
-        ship_class_index: 3,
-        ship_type: '軽巡洋艦',
-        ship_name: '矢矧',
-        variation_num: 6,
-        # 2017-09-21：4隻追加（香取、千歳航改二、千代田航改二、矢矧改）
-        implemented_at: '2017-09-21T07:00:00+09:00',
-    }
-]
-
-updated_ship_masters.each do |ship_master|
-  UpdatedShipMaster.where(book_no: ship_master[:book_no]).first_or_initialize.update(ship_master)
+CSV.read('db/updated_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+  record = {
+      book_no: row['Book No.'],
+      ship_class: row['Ship class'],
+      ship_class_index: row['Ship class index'],
+      ship_type: row['Ship type'],
+      ship_name: row['Ship name'],
+      variation_num: row['Variation num'],
+      remodel_level: (row['Remodel level'].blank? ? 0 : row['Remodel level']),
+      implemented_at: (row['Implemented at'].blank? ? nil : row['Implemented at']),
+  }
+  UpdatedShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-special_ship_masters = [
-    {
-        # 日向改
-        book_no: 103,
-        card_index: 3,
-        remodel_level: 1,
-        rarity: 1,
-        # 第2回イベントの前段作戦開始日
-        implemented_at: '2017-04-26T07:00:00+09:00',
-    },
-    {
-        # 伊勢改
-        book_no: 102,
-        card_index: 3,
-        remodel_level: 1,
-        rarity: 1,
-        # 第2回イベントの前段作戦開始日
-        implemented_at: '2017-05-11T07:00:00+09:00',
-    }
-]
+CSV.read('db/special_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+  record = {
+      book_no: row['Book No.'],
+      card_index: row['Card index'],
+      remodel_level: (row['Remodel level'].blank? ? 0 : row['Remodel level']),
+      rarity: (row['Rarity'].blank? ? 0 : row['Rarity']),
+      implemented_at: (row['Implemented at'].blank? ? nil : row['Implemented at']),
+  }
+  SpecialShipMaster.where(book_no: record[:book_no], card_index: record[:card_index]).first_or_initialize.update(record)
+end
 
-special_ship_masters.each do |ship_master|
-    SpecialShipMaster.where(book_no: ship_master[:book_no], card_index: ship_master[:card_index]).first_or_initialize.update(ship_master)
+CSV.read('db/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
+  record = {
+      book_no: data['Book No.'],
+      equipment_id: (data['Equipment ID'].blank? ? nil : data['Equipment ID']),
+      equipment_type: data['Equipment type'],
+      equipment_name: data['Equipment name'],
+      star_num: data['Rarity'].count('☆'),
+      implemented_at: data['Implemented at'],
+  }
+  EquipmentMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
 event_masters = [
@@ -430,16 +385,4 @@ event_stage_masters = [
 
 event_stage_masters.each do |master|
   EventStageMaster.where(event_no: master[:event_no], level: master[:level], period: master[:period], stage_no: master[:stage_no]).first_or_initialize.update(master)
-end
-
-CSV.read('db/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
-  equipment_master = {
-      book_no: data['Book No.'],
-      equipment_id: (data['Equipment ID'].blank? ? nil : data['Equipment ID']),
-      equipment_type: data['Equipment type'],
-      equipment_name: data['Equipment name'],
-      star_num: data['Rarity'].count('☆'),
-      implemented_at: data['Implemented at'],
-  }
-  EquipmentMaster.where(book_no: equipment_master[:book_no]).first_or_initialize.update(equipment_master)
 end
