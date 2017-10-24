@@ -49,6 +49,7 @@ end
 CSV.read('db/seeds/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
   record = {
       book_no: data['Book No.'],
+      # Equipment ID は、production.log を "Unknown equipment:" で検索して、そのログに含まれるものを設定する
       equipment_id: (data['Equipment ID'].blank? ? nil : data['Equipment ID']),
       equipment_type: data['Equipment type'],
       equipment_name: data['Equipment name'],
