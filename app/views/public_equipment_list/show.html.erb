@@ -30,6 +30,26 @@
   </div>
 </div>
 
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-success">
+      <div class="panel-body">
+        <% if @publication.opens_ship_list %>
+            <%= link_to_unless_current "#{@publication.name}提督の艦娘一覧", controller: 'public_ship_list', action: 'index', url_name: params[:url_name] %>
+        <% else %>
+            <%= @publication.name %>提督の艦娘一覧(非公開)
+        <% end %>
+        /
+        <% if @publication.opens_equipment_list %>
+            <%= link_to_unless_current "#{@publication.name}提督の装備一覧", controller: 'public_equipment_list', action: 'index', url_name: params[:url_name] %>
+        <% else %>
+            <%= @publication.name %>提督の装備一覧(非公開)
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container range-selector">
   <div class="dropdown">
     <%= form_tag({ action: :show }, { id: 'rangeForm' }) do %>
