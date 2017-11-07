@@ -56,6 +56,8 @@ Rails.application.routes.draw do
     # 公開情報の種類が2種類以上になったら、リダイレクト処理を変更する
     get '/', to: redirect('/@%{url_name}/ship_list')
     get '/ship_list', to: 'public_ship_list#index'
+    get '/equipment_list', to: 'public_equipment_list#index'
+    match '/equipment_list/:book_no', to: 'public_equipment_list#show', via: [ :get, :post ]
   end
   # 古い URL を、互換性維持のために残す
   get 'admirals/:url_name/ship_list', to: redirect('/@%{url_name}'), constraints: { format: :html }

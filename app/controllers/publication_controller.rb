@@ -15,20 +15,10 @@ class PublicationController < ApplicationController
         @publication = AdmiralPublication.where('admiral_id = ?', current_admiral.id).first
 
         if @publication
-          @publication.update!(
-              name: params[:publication][:name],
-              url_name: params[:publication][:url_name],
-              opens_twitter_nickname: params[:publication][:opens_twitter_nickname],
-              opens_ship_list: params[:publication][:opens_ship_list]
-          )
+          @publication.update!(publication_params)
         else
-          @publication = AdmiralPublication.new(
-              admiral_id: current_admiral.id,
-              name: params[:publication][:name],
-              url_name: params[:publication][:url_name],
-              opens_twitter_nickname: params[:publication][:opens_twitter_nickname],
-              opens_ship_list: params[:publication][:opens_ship_list]
-          )
+          @publication = AdmiralPublication.new(publication_params)
+          @publication.admiral_id = current_admiral.id
           @publication.save!
         end
 
@@ -40,5 +30,11 @@ class PublicationController < ApplicationController
     end
 
     render action: 'index'
+  end
+
+  private
+
+  def publication_params
+    params.require(:publication).permit(:name, :url_name, :opens_twitter_nickname, :opens_ship_list, :opens_equipment_list)
   end
 end

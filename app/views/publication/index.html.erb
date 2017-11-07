@@ -46,6 +46,22 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
+          <label>
+            <%= check_box :publication, :opens_equipment_list %> 装備一覧の公開
+          </label>
+          <% if @publication.url_name %>
+              <span class="help-block" style="margin-bottom: 0px;">
+                <% url = url_for(controller: 'public_equipment_list', action: 'index', url_name: @publication.url_name, only_path: false) %>
+                <%= link_to url, url, id: 'equipment_list_url' %>
+                <button class="clipboard-btn btn btn-default btn-sm" data-clipboard-target="#equipment_list_url" type="button">
+                  クリップボードにコピー <span class="glyphicon glyphicon-copy"></span>
+                </button>
+              </span>
+          <% end %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
           <%= submit_tag '変更を保存', id: 'settings_save', class: 'btn btn-primary', disabled: 'disabled' %>
         </div>
       </div>
@@ -74,6 +90,7 @@
     // チェックボックスの変化は change ですぐに検出できる
     $('#publication_opens_twitter_nickname').on('change', function () { $('#settings_save').removeAttr('disabled') });
     $('#publication_opens_ship_list').on('change', function () { $('#settings_save').removeAttr('disabled') });
+    $('#publication_opens_equipment_list').on('change', function () { $('#settings_save').removeAttr('disabled') });
   });
 </script>
 

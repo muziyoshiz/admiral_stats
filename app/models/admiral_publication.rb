@@ -33,4 +33,8 @@ class AdmiralPublication < ApplicationRecord
   # 艦娘一覧を公開するかどうか
   validates :opens_ship_list,
             inclusion: { in: [true, false] }
+
+  # 装備一覧を公開するかどうか
+  validates :opens_equipment_list,
+            inclusion: { in: [true, false] }
 end
