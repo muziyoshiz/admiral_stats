@@ -25,21 +25,16 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
-      2017年10月22日更新：各装備の保有数のグラフ、装備中の艦娘の一覧を追加しました。<%= link_to_if_logged_in '「装備一覧」ページ', controller: 'equipment_list', action: 'index' %> から移動できます。
-    </li>
-    <li>
-      2017年10月15日更新(2)：<%= link_to_if_logged_in '「装備一覧」ページ', controller: 'equipment_list', action: 'index' %> を追加しました。装備保有数のグラフ表示は、後日追加する予定です。
-    </li>
-    <li>
-      2017年10月15日更新(1)：「装備図鑑」と「装備一覧」のインポートに対応しました。エクスポータの対応状況は次の通りです。
+      2017年11月8日更新：自分のプレイデータ（装備一覧）を公開する機能を追加しました。
       <ul>
-        <li>
-          ブックマークレット版：基本的には、特に何もする必要はありません。もし装備一覧が更新されない場合は、ブラウザのキャッシュを一度削除してください。
-        </li>
-        <li>
-          PowerShell 版、Ruby 版：特に何もする必要はありません。かなり古いバージョンから、装備図鑑と装備一覧に対応しています。
-        </li>
+        <li>サンプル(1)：<%= link_to 'ムジ提督の装備一覧', 'https://www.admiral-stats.com/@muziyoshiz/equipment_list' %><br></li>
+        <li>サンプル(2)：<%= link_to 'ムジ提督の三式弾の保有数グラフ', 'https://www.admiral-stats.com/@muziyoshiz/equipment_list/35?range=all' %><br></li>
+        <li><%= link_to_if_logged_in '「情報公開の設定」ページ', controller: 'publication', action: 'index' %> で設定を ON にすると、公開用 URL が割り当てられます。</li>
+        <li>公開したくない場合は、デフォルト設定（OFF）のままにしておけば公開されないのでご安心ください。</li>
       </ul>
+    </li>
+    <li>
+      2017年10月22日更新：各装備の保有数のグラフ、装備中の艦娘の一覧を追加しました。<%= link_to_if_logged_in '「装備一覧」ページ', controller: 'equipment_list', action: 'index' %> から移動できます。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
