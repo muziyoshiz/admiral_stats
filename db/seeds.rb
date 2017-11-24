@@ -7,7 +7,19 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 require 'csv'
 
-CSV.read('db/seeds/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+# マスターデータの編集は、必ず Shift-JIS 形式のファイル（*_master.csv）に対して行わなければならない。
+# development 環境にマスターデータを登録する際に、UTF-8 形式のファイル（*_master.utf8.csv）が生成される。
+# 本番環境では新しいファイルを生成せず、この生成済みのファイルを使う。
+if ENV['RAILS_ENV'] == 'development'
+  Dir.glob('db/seeds/*_masters.csv') do |sjis_csv|
+    utf8_csv = sjis_csv.sub(/_masters\.csv$/, '_masters.utf8.csv')
+    # gsub is required for replace ^M with LF
+    File.write(utf8_csv, File.read(sjis_csv, encoding: 'Shift_JIS:UTF-8').gsub("\r", "\n"))
+    puts "#{sjis_csv} -> #{utf8_csv}"
+  end
+end
+
+CSV.read('db/seeds/ship_masters.utf8.csv', headers: true).each do |row|
   record = {
       book_no: row['Book No.'],
       ship_class: row['Ship class'],
@@ -21,7 +33,7 @@ CSV.read('db/seeds/ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8'
   ShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-CSV.read('db/seeds/updated_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+CSV.read('db/seeds/updated_ship_masters.utf8.csv', headers: true).each do |row|
   record = {
       book_no: row['Book No.'],
       ship_class: row['Ship class'],
@@ -35,7 +47,7 @@ CSV.read('db/seeds/updated_ship_masters.csv', headers: true, encoding: 'Shift_JI
   UpdatedShipMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-CSV.read('db/seeds/special_ship_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |row|
+CSV.read('db/seeds/special_ship_masters.utf8.csv', headers: true).each do |row|
   record = {
       book_no: row['Book No.'],
       card_index: row['Card index'],
@@ -46,7 +58,7 @@ CSV.read('db/seeds/special_ship_masters.csv', headers: true, encoding: 'Shift_JI
   SpecialShipMaster.where(book_no: record[:book_no], card_index: record[:card_index]).first_or_initialize.update(record)
 end
 
-CSV.read('db/seeds/equipment_masters.csv', headers: true, encoding: 'Shift_JIS:UTF-8').each do |data|
+CSV.read('db/seeds/equipment_masters.utf8.csv', headers: true).each do |data|
   record = {
       book_no: data['Book No.'],
       # Equipment ID は、production.log を "Unknown equipment:" で検索して、そのログに含まれるものを設定する
