@@ -13,8 +13,9 @@ require 'csv'
 if ENV['RAILS_ENV'] == 'development'
   Dir.glob('db/seeds/*_masters.csv') do |sjis_csv|
     utf8_csv = sjis_csv.sub(/_masters\.csv$/, '_masters.utf8.csv')
-    # gsub is required for replace ^M with LF
-    File.write(utf8_csv, File.read(sjis_csv, encoding: 'Shift_JIS:UTF-8').gsub("\r", "\n"))
+    # Excel で作った CSV ファイルを読み込むと、何故か、改行文字が CRLF になる場合と、CR のみになる場合がある
+    # そのため、いずれの場合も改行文字が LF になるように変換する
+    File.write(utf8_csv, File.read(sjis_csv, encoding: 'Shift_JIS:UTF-8').gsub("\r\n", "\n").gsub("\r", "\n"))
     puts "#{sjis_csv} -> #{utf8_csv}"
   end
 end
@@ -71,331 +72,28 @@ CSV.read('db/seeds/equipment_masters.utf8.csv', headers: true).each do |data|
   EquipmentMaster.where(book_no: record[:book_no]).first_or_initialize.update(record)
 end
 
-event_masters = [
-    {
-        event_no: 1,
-        area_id: 1000,
-        event_name: '敵艦隊前線泊地殴り込み',
-        no_of_periods: 1,
-        started_at: '2016-10-27T07:00:00+09:00',
-        ended_at: '2016-11-25T23:59:59+09:00',
-    },
-    {
-        event_no: 2,
-        area_id: 1001,
-        event_name: '南方海域強襲偵察！',
-        no_of_periods: 2,
-        period1_started_at: '2017-05-11T07:00:00+09:00',
-        started_at: '2017-04-26T07:00:00+09:00',
-        ended_at: '2017-05-31T23:59:59+09:00',
-    },
-]
-
-event_masters.each do |event_master|
-  EventMaster.where(event_no: event_master[:event_no]).first_or_initialize.update(event_master)
+CSV.read('db/seeds/event_masters.utf8.csv', headers: true).each do |data|
+  record = {
+      event_no: data['Event No.'],
+      area_id: data['Area ID'],
+      event_name: data['Event name'],
+      no_of_periods: data['No. of periods'],
+      period1_started_at: (data['Period1 started at'].blank? ? nil : data['Period1 started at']),
+      started_at: data['Started at'],
+      ended_at: data['Ended at'],
+  }
+  EventMaster.where(event_no: record[:event_no]).first_or_initialize.update(record)
 end
 
-event_stage_masters = [
-    {
-        event_no: 1,
-        level: 'HEI',
-        stage_no: 1,
-        display_stage_no: 1,
-        stage_mission_name: '前哨戦',
-        ene_military_gauge_val: 1000,
-    },
-    {
-        event_no: 1,
-        level: 'HEI',
-        stage_no: 2,
-        display_stage_no: 2,
-        stage_mission_name: '警戒線突破',
-        ene_military_gauge_val: 1000,
-    },
-    {
-        event_no: 1,
-        level: 'HEI',
-        stage_no: 3,
-        display_stage_no: 3,
-        stage_mission_name: '湾内突入！',
-        ene_military_gauge_val: 1200,
-    },
-    {
-        event_no: 1,
-        level: 'HEI',
-        stage_no: 4,
-        display_stage_no: 4,
-        stage_mission_name: '敵泊地強襲！',
-        ene_military_gauge_val: 2000,
-    },
-    {
-        event_no: 1,
-        level: 'HEI',
-        stage_no: 5,
-        display_stage_no: 0,
-        stage_mission_name: '掃討戦',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 1,
-        level: 'OTU',
-        stage_no: 1,
-        display_stage_no: 1,
-        stage_mission_name: '前哨戦',
-        ene_military_gauge_val: 1500,
-    },
-    {
-        event_no: 1,
-        level: 'OTU',
-        stage_no: 2,
-        display_stage_no: 2,
-        stage_mission_name: '警戒線突破',
-        ene_military_gauge_val: 1500,
-    },
-    {
-        event_no: 1,
-        level: 'OTU',
-        stage_no: 3,
-        display_stage_no: 3,
-        stage_mission_name: '湾内突入！',
-        ene_military_gauge_val: 1800,
-    },
-    {
-        event_no: 1,
-        level: 'OTU',
-        stage_no: 4,
-        display_stage_no: 4,
-        stage_mission_name: '敵泊地強襲！',
-        ene_military_gauge_val: 2500,
-    },
-    {
-        event_no: 1,
-        level: 'OTU',
-        stage_no: 5,
-        display_stage_no: 0,
-        stage_mission_name: '掃討戦',
-        ene_military_gauge_val: 0,
-    },
-
-    # 第2回イベント
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 0,
-        stage_no: 1,
-        display_stage_no: 1,
-        stage_mission_name: '南方海域へ進出せよ！',
-        ene_military_gauge_val: 2000,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 0,
-        stage_no: 2,
-        display_stage_no: 2,
-        stage_mission_name: '警戒線を突破せよ！',
-        ene_military_gauge_val: 2700,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 0,
-        stage_no: 3,
-        display_stage_no: 3,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 2800,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 0,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 1,
-        stage_no: 1,
-        display_stage_no: 4,
-        stage_mission_name: '敵情偵察を開始せよ！',
-        ene_military_gauge_val: 2600,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 1,
-        stage_no: 2,
-        display_stage_no: 5,
-        stage_mission_name: '敵集結地を強襲せよ！',
-        ene_military_gauge_val: 3400,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 1,
-        stage_no: 3,
-        display_stage_no: 6,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 3600,
-    },
-    {
-        event_no: 2,
-        level: 'HEI',
-        period: 1,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 0,
-        stage_no: 1,
-        display_stage_no: 1,
-        stage_mission_name: '南方海域へ進出せよ！',
-        ene_military_gauge_val: 1800,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 0,
-        stage_no: 2,
-        display_stage_no: 2,
-        stage_mission_name: '警戒線を突破せよ！',
-        ene_military_gauge_val: 2500,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 0,
-        stage_no: 3,
-        display_stage_no: 3,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 2600,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 0,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 1,
-        stage_no: 1,
-        display_stage_no: 4,
-        stage_mission_name: '敵情偵察を開始せよ！',
-        ene_military_gauge_val: 2500,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 1,
-        stage_no: 2,
-        display_stage_no: 5,
-        stage_mission_name: '敵集結地を強襲せよ！',
-        ene_military_gauge_val: 3500,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 1,
-        stage_no: 3,
-        display_stage_no: 6,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 3600,
-    },
-    {
-        event_no: 2,
-        level: 'OTU',
-        period: 1,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 0,
-        stage_no: 1,
-        display_stage_no: 1,
-        stage_mission_name: '南方海域へ進出せよ！',
-        ene_military_gauge_val: 2000,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 0,
-        stage_no: 2,
-        display_stage_no: 2,
-        stage_mission_name: '警戒線を突破せよ！',
-        ene_military_gauge_val: 2700,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 0,
-        stage_no: 3,
-        display_stage_no: 3,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 2800,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 0,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵洋上戦力を排除せよ！',
-        ene_military_gauge_val: 0,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 1,
-        stage_no: 1,
-        display_stage_no: 4,
-        stage_mission_name: '敵情偵察を開始せよ！',
-        ene_military_gauge_val: 2700,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 1,
-        stage_no: 2,
-        display_stage_no: 5,
-        stage_mission_name: '敵集結地を強襲せよ！',
-        ene_military_gauge_val: 3700,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 1,
-        stage_no: 3,
-        display_stage_no: 6,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 3800,
-    },
-    {
-        event_no: 2,
-        level: 'KOU',
-        period: 1,
-        stage_no: 4,
-        display_stage_no: 0,
-        stage_mission_name: '敵大型超弩級戦艦を叩け！',
-        ene_military_gauge_val: 0,
-    },
-]
-
-event_stage_masters.each do |master|
-  EventStageMaster.where(event_no: master[:event_no], level: master[:level], period: master[:period], stage_no: master[:stage_no]).first_or_initialize.update(master)
+CSV.read('db/seeds/event_stage_masters.utf8.csv', headers: true).each do |data|
+  record = {
+      event_no: data['Event No.'],
+      level: data['Level'],
+      period: (data['Period'].blank? ? 0 : data['Period']),
+      stage_no: data['Stage No.'],
+      display_stage_no: data['Display stage No.'],
+      stage_mission_name: data['Stage mission name'],
+      ene_military_gauge_val: data['Ene military gauge val'],
+  }
+  EventStageMaster.where(event_no: record[:event_no], level: record[:level], period: record[:period], stage_no: record[:stage_no]).first_or_initialize.update(record)
 end
