@@ -21,7 +21,7 @@ class SpecialShipMaster < ApplicationRecord
             uniqueness: { scope: [ :book_no ] }
 
   # 追加されたカードの改造レベルを表す数値
-  # 0 ならノーマル、1 から改
+  # 0 ならノーマル、1 なら改
   validates :remodel_level,
             presence: true,
             numericality: {
