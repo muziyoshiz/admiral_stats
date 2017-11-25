@@ -8,7 +8,7 @@
 
 ### 艦娘情報
 
-ship_masters.csv
+[ship_masters.csv](ship_masters.csv)
 
 - Book No.
     - 艦娘図鑑の図鑑 No.
@@ -32,7 +32,7 @@ ship_masters.csv
 - Memo
     - マスターデータ管理のためのメモ（データベースには登録されない）
 
-updated_ship_masters.csv
+[updated_ship_masters.csv](updated_ship_masters.csv)
 
 - Book No.
     - あとから改が実装される艦娘の図鑑 No.
@@ -54,7 +54,7 @@ updated_ship_masters.csv
 - Memo
     - マスターデータ管理のためのメモ（データベースには登録されない）
 
-special_ship_masters.csv
+[special_ship_masters.csv](special_ship_masters.csv)
 
 - Book No.
     - 特別デザインのカードが実装された艦娘の図鑑 No.
@@ -75,7 +75,7 @@ special_ship_masters.csv
 
 ### 装備情報
 
-equipment_masters.csv
+[equipment_masters.csv](equipment_masters.csv)
 
 - Book No.
     - 装備図鑑の図鑑 No.
@@ -99,7 +99,7 @@ equipment_masters.csv
 
 ### イベント情報
 
-event_masters.csv
+[event_masters.csv](event_masters.csv)
 
 - Event No.
     - イベント No. （例：第壱回なら 1）
@@ -121,7 +121,7 @@ event_masters.csv
 - Memo
     - マスターデータ管理のためのメモ（データベースには登録されない）
 
-event_stage_masters.csv
+[event_stage_masters.csv](event_stage_masters.csv)
 
 - Event No.
     - イベント No. （例：第壱回なら 1）
