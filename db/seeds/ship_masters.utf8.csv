@@ -173,12 +173,12 @@ Book No.,Ship class,Ship class index,Ship type,Ship name,Variation num,Remodel l
 173,Bismarck級,1,戦艦,Bismarck zwei,3,2,,
 174,Z1型,1,駆逐艦,Z1,6,,,
 175,Z1型,3,駆逐艦,Z3,6,,,
-176,Admiral Hipper級,3,重巡洋艦,Prinz Eugen,3,,,
+176,Admiral Hipper級,3,重巡洋艦,Prinz Eugen,3,,2017-11-30T07:00:00+09:00,2017-11-30：2隻追加（天津風、Prinz Eugen）
 177,Admiral Hipper級,3,重巡洋艦,Prinz Eugen改,3,1,,
 178,Bismarck級,1,戦艦,Bismarck drei,3,3,,
 179,Z1型,1,駆逐艦,Z1 zwei,3,2,,
 180,Z1型,3,駆逐艦,Z3 zwei,3,2,,
-181,陽炎型,9,駆逐艦,天津風,6,,,
+181,陽炎型,9,駆逐艦,天津風,3,,2017-11-30T07:00:00+09:00,2017-11-30：2隻追加（天津風、Prinz Eugen）
 182,明石型,1,工作艦,明石,3,,,
 183,大淀型,1,軽巡洋艦,大淀,6,,,
 184,大鯨型,1,潜水母艦,大鯨,3,,,
