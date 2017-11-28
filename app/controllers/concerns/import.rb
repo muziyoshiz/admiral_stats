@@ -225,8 +225,8 @@ module Import
       area_id = event_info_list.map{|info| info.area_id }.max
       event = EventMaster.where(area_id: area_id).first
       unless event
-        logger.error("Unregistered area_id (admiral_id: #{admiral_id}, area_id: #{area_id})")
-        return :error, 'Admiral Stats にこのイベントの情報が未登録です。プレイデータの誤登録を防ぐために、インポートを中断しました。'
+        logger.warn("Unregistered area_id (admiral_id: #{admiral_id}, area_id: #{area_id})")
+        return :ok, 'Admiral Stats にこのイベントの情報が未登録のため、無視されました。'
       end
 
       # period が nil の場合は、デフォルト値の 0 を設定する（第1回イベントのデータ形式への対応）
