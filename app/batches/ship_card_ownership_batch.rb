@@ -93,9 +93,8 @@ GROUP BY sc.book_no, sc.card_index
     begin
       # 集計対象の限定海域があるかどうかを調べる（通常は、0〜1件しか該当しないはず）
       # 開始日の3日後から集計開始し、終了日の2日後明朝まで集計処理を実行する
-      # 10/27(木) 7:00 〜 11/25(金) 23:59 なら、10/30(日) 3:00 に最初の集計、11/27(日) 3:00 に最後の集計
-      t = Time.current - 2.days
-      events = EventMaster.where('started_at <= ? AND ? < ended_at', t, t)
+      # 10/27(木) 7:00 〜 11/25(金) 23:59 なら、10/28(金) 3:00 に最初の集計、11/27(日) 3:00 に最後の集計
+      events = EventMaster.where('started_at <= ? AND ? < ended_at', Time.current, Time.current - 2.days)
 
       events.each do |event|
         Rails.logger.info("Ship Card Ownership (Event No. #{event.event_no}) Batch started")
