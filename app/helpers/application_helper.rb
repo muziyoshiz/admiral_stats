@@ -40,12 +40,16 @@ module ApplicationHelper
                      '改'
                    when 2
                      '改二'
+                   else
+                     ''
                  end
     latter_half = case special_ship.rarity
                     when 1
                       'ホロ'
                     when 2
                       '中破'
+                    else
+                      ''
                   end
 
     first_half + latter_half
