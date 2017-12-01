@@ -11,7 +11,7 @@
       </div>
       <div class="panel-body">
         <ul>
-          <li>イベント開催中にプレイデータをアップロードした提督全体に対する、各難易度攻略済みの提督の割合です。</li>
+          <li>イベント開催中にプレイデータをアップロードした提督（<%= @total_num %>名）に対する、各難易度攻略済みの提督の割合です。</li>
           <% if logged_in? %>
               <li>あなたの攻略状況は <%= link_to '「イベントの進捗」ページ', controller: 'admiral_info', action: 'event', event_no: @event.event_no %> で確認できます。</li>
           <% else %>
