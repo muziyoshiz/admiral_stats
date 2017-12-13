@@ -6,6 +6,15 @@
   <h3>2017年</h3>
   <ul>
     <li>
+      2017年11月8日更新：自分のプレイデータ（装備一覧）を公開する機能を追加しました。
+      <ul>
+        <li>サンプル(1)：<%= link_to 'ムジ提督の装備一覧', 'https://www.admiral-stats.com/@muziyoshiz/equipment_list' %><br></li>
+        <li>サンプル(2)：<%= link_to 'ムジ提督の三式弾の保有数グラフ', 'https://www.admiral-stats.com/@muziyoshiz/equipment_list/35?range=all' %><br></li>
+        <li><%= link_to_if_logged_in '「情報公開の設定」ページ', controller: 'publication', action: 'index' %> で設定を ON にすると、公開用 URL が割り当てられます。</li>
+        <li>公開したくない場合は、デフォルト設定（OFF）のままにしておけば公開されないのでご安心ください。</li>
+      </ul>
+    </li>
+    <li>
       2017年10月22日更新：各装備の保有数のグラフ、装備中の艦娘の一覧を追加しました。<%= link_to_if_logged_in '「装備一覧」ページ', controller: 'equipment_list', action: 'index' %> から移動できます。
     </li>
     <li>
