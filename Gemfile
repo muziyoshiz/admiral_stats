@@ -94,3 +94,6 @@ gem 'clipboard-rails', '~> 1.6.1'
 
 # jquery.qrcode.js
 gem 'jquery-qrcode-rails'
+
+# For security update
+gem 'nokogiri', '~> 1.8.1'
