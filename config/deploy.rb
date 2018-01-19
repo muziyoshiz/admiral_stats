@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.8.2'
+lock '3.10.1'
 
 set :application, 'admiral_stats'
 set :repo_url, 'git@github.com:muziyoshiz/admiral_stats.git'
