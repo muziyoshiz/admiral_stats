@@ -25,13 +25,7 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第2回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2017/06/30/004530', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
-      2017年12月22日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に装甲空母の表示を追加しました。
-    </li>
-    <li>
-      2017年12月14日更新：第3回イベント「索敵機、発艦始め！」後段作戦のプレイデータに対応しました。艦娘一覧での装甲空母の検索に対応しました。
-    </li>
-    <li>
-      2017年11月30日更新：第3回イベント「索敵機、発艦始め！」前段作戦のプレイデータに対応しました。
+      2018年2月2日更新：艦娘一覧での潜水艦・潜水空母の検索に対応しました。また、<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> に潜水艦・潜水空母の表示を追加しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
