@@ -44,7 +44,7 @@
 
 <hr>
 
-<h3>レベル 99 到達予想日</h3>
+<h3>レベル上限到達予想日</h3>
 
 <p>
   <%= range_to_s(@range) %> のデータに基づく予想日です。この期間内に経験値が増えていない艦娘については予想できません。
@@ -52,8 +52,8 @@
 
 <div class="container" style="margin-top: 10px;">
   <a class="toggle-ship-level btn btn-default">
-    <span class="toggle-text" style="display: none;">レベル99を表示</span>
-    <span class="toggle-text">レベル30を表示</span>
+    <span class="toggle-text" style="display: none;">レベル99〜150を表示</span>
+    <span class="toggle-text">レベル30〜70を表示</span>
   </a>
 </div>
 
@@ -77,6 +77,10 @@
         <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 99</th>
         <th class="hidden">レベル 99 到達日（ソート用）</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 135</th>
+        <th class="hidden">レベル 135 到達日（ソート用）</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 150</th>
+        <th class="hidden">レベル 150 到達日（ソート用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -96,6 +100,10 @@
         <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left">レベル 99</th>
         <th class="hidden">レベル 99 到達日（ソート用）</th>
+        <th class="text-left">レベル 135</th>
+        <th class="hidden">レベル 135 到達日（ソート用）</th>
+        <th class="text-left">レベル 150</th>
+        <th class="hidden">レベル 150 到達日（ソート用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -155,6 +163,24 @@
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
             <td class="hidden"><%= forecast[:lv99_at] %></td>
+            <% if forecast[:lv135_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv135_soon] %>">
+                  <%= forecast[:lv135_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv135_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <td class="hidden"><%= forecast[:lv135_at] %></td>
+            <% if forecast[:lv150_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv150_soon] %>">
+                  <%= forecast[:lv150_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv150_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <td class="hidden"><%= forecast[:lv150_at] %></td>
           </tr>
       <% end %>
       </tbody>
@@ -211,21 +237,19 @@
         { "iDataSort": 8, "aTargets": [ 7 ] },
         { "iDataSort": 10, "aTargets": [ 9 ] },
         { "iDataSort": 12, "aTargets": [ 11 ] },
-        <!-- デフォルト状態でレベル30の列を隠すための設定 -->
-        { "bVisible": false, "aTargets": [ 5 ] },
+        <!-- デフォルト状態でレベル 30, 50, 70 の列を隠すための設定 -->
+        { "bVisible": false, "aTargets": [ 5, 7, 9 ] },
       ],
     }));
 
     // カラム表示のトグル切り替え
-    //  5 列目：レベル30
-    //  7 列目：レベル50
     $('a.toggle-ship-level').on( 'click', function (e) {
       e.preventDefault();
 
       // ボタン表示の切り替え
       $(".toggle-text").toggle();
 
-      var colNums = [ 5, 13 ]
+      var colNums = [ 5, 7, 9, 13, 15, 17 ]
       $.each(colNums, function(index, colNum) {
         var column = table.column(colNum);
         column.visible( ! column.visible() );

@@ -157,6 +157,18 @@ class ShipInfoController < ApplicationController
         forecast[:lv99_at] = s_begin.exported_at + (1000000 - s_begin.estimated_exp) / exp_per_sec
         forecast[:lv99_rest] = 1000000 - s_end.estimated_exp
       end
+
+      # Lv 135 到達予想時間（Lv 135 の経験値は 2,210,000。Lv1〜150 の折り返し地点）
+      if s_end.level < 135
+        forecast[:lv135_at] = s_begin.exported_at + (2210000 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv135_rest] = 2210000 - s_end.estimated_exp
+      end
+
+      # Lv 150 到達予想時間（Lv 150 の経験値は 4,360,000）
+      if s_end.level < 150
+        forecast[:lv150_at] = s_begin.exported_at + (4360000 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv150_rest] = 4360000 - s_end.estimated_exp
+      end
     end
 
     # 到達予想日が最も近い艦娘をハイライト
@@ -171,6 +183,10 @@ class ShipInfoController < ApplicationController
     soon[1][:lv90_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv99_at] }.min_by{|b, f| f[:lv99_at] }
     soon[1][:lv99_soon] = true if soon
+    soon = @forecasts.select{|b, f| f[:lv135_at] }.min_by{|b, f| f[:lv135_at] }
+    soon[1][:lv135_soon] = true if soon
+    soon = @forecasts.select{|b, f| f[:lv150_at] }.min_by{|b, f| f[:lv150_at] }
+    soon[1][:lv150_soon] = true if soon
   end
 
   # 艦種別のレベル・経験値表示
