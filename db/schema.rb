@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171107222712) do
+ActiveRecord::Schema.define(version: 20180227141417) do
 
   create_table "admiral_publications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "admiral_id", null: false
@@ -150,6 +150,11 @@ ActiveRecord::Schema.define(version: 20171107222712) do
     t.index ["event_no", "level", "period", "stage_no"], name: "index_event_stage_masters", unique: true
   end
 
+  create_table "level_exps", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "level", null: false
+    t.integer "exp", null: false
+  end
+
   create_table "ship_card_ownerships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "book_no", null: false
     t.integer "card_index", null: false
@@ -201,6 +206,7 @@ ActiveRecord::Schema.define(version: 20171107222712) do
     t.integer "star_num"
     t.integer "exp_percent"
     t.integer "blueprint_total_num"
+    t.boolean "married", default: false, null: false
     t.datetime "exported_at", null: false
     t.index ["admiral_id", "book_no", "remodel_level", "exported_at"], name: "index_ship_statuses", unique: true
   end

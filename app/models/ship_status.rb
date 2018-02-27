@@ -69,6 +69,10 @@ class ShipStatus < ApplicationRecord
                 allow_nil: true,
             }
 
+  # ケッコンカッコカリ済みかどうか
+  validates :married,
+            inclusion: { in: [true, false] }
+
   # SEGA の「提督情報」からエクスポートされた日時
   validates :exported_at,
             presence: true,

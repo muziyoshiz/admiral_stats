@@ -163,6 +163,10 @@ module Import
     begin
       ShipStatus.transaction do
         AdmiralStatsParser.parse_character_list_info(json, api_version).each do |info|
+          # 混乱を避けるため、boolean 型のカラムには NULL を許可せず、デフォルト値 false とする
+          # info.married ||= false
+          married = info.married || false
+
           # first_and_create! も試したが、その場合は INSERT が行われなかった。エラーも発生しなかった。
           # また、INSERT されないにも関わらずインデックスのみが作られた。
           status = ShipStatus.create!(
@@ -173,6 +177,7 @@ module Import
               star_num: info.star_num,
               exp_percent: info.exp_percent,
               blueprint_total_num: info.blueprint_total_num,
+              married: married,
               exported_at: exported_at,
           )
 
