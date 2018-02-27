@@ -39,8 +39,10 @@ td.numeric { text-align: right; }
 td.acquired { text-align: center; background-color: #5CB85C; color: #FFFFFF; }
 td.none     { text-align: center; background-color: #CCCCCC; color: #000000; }
 td.star     { text-align: center; }
+td.married  { text-align: center; }
 td.not-implemented              { background-color: #CCCCCC; color: #000000; }
 i.star      { color: #FFBF00; }
+i.married   { color: #ffb9b7; }
 span.not-equipped { color: #BBBBBB; font-size: 0.8em; }
 // 通常は使われないはずのノーマル艦に付与するクラス
 // 何か装備しているのは変なので、装備を強調表示する

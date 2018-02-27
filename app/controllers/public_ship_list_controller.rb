@@ -87,21 +87,25 @@ class PublicShipListController < ApplicationController
       @statuses[status.book_no] ||= {}
       @statuses[status.book_no][:level] = status.level
 
-      # 星の数
-      # 星の数は remodel_level ごとに別管理
+      # 星の数および婚姻状態は remodel_level ごとに別管理
       ship = @ships.select{|s| s.book_no == status.book_no }.first
       if ship
         @statuses[ship.book_no][:star_num] ||= []
+        @statuses[ship.book_no][:married] ||= []
+
         if ship.variation_num == 3 && ship.remodel_level == 1
           # 表示名が「＊＊改」のカードの場合、2列目に表示
           @statuses[status.book_no][:star_num][1] = status.star_num
+          @statuses[status.book_no][:married][1] = status.married
         elsif ship.variation_num == 6 && ship.remodel_level < status.remodel_level
           # 改二以上のカードで、remodel_level が ShipMaster の remodel_level より高い場合、2列目に表示
           # 千歳航改、千代田航改はこのパターンに該当する
           @statuses[status.book_no][:star_num][1] = status.star_num
+          @statuses[status.book_no][:married][1] = status.married
         else
           # 上記以外の場合は1列目に表示
           @statuses[status.book_no][:star_num][0] = status.star_num
+          @statuses[status.book_no][:married][0] = status.married
         end
       end
 
