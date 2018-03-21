@@ -143,7 +143,8 @@
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レア度</th>
-            <th class="text-left col-xl-5 col-lg-5 col-md-5 col-ms-5 col-xs-1">限定カード</th>
+            <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1">実装日</th>
+            <th class="text-left col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-1">限定カード</th>
             <th class="hidden">フラグ（検索用）</th>
           </tr>
           </thead>
@@ -156,6 +157,7 @@
             <th class="text-left hidden-xs">艦種</th>
             <th class="text-left">艦名</th>
             <th class="text-left">レア度</th>
+            <th class="text-left">実装日</th>
             <th class="text-left">限定カード</th>
             <th class="hidden">フラグ（検索用）</th>
           </tr>
@@ -174,14 +176,15 @@
                 <td class="text-left hidden-xs"><%= ship.ship_type %></td>
                 <td class="text-left"><%= ship.ship_name %></td>
                 <td class="text-left"><%= special_ship_rarity_to_s(sship) %></td>
-                <% if @special_rates[ship.book_no].nil? %>
+                <td class="text-left"><%= sship.implemented_at.to_s(:date) %></td>
+                <% if @special_rates[sship].nil? %>
                     <td class="none"><i class="glyphicon glyphicon-minus"></i></td>
                 <% else %>
-                    <td class="<%= css_class_by_rate(@special_rates[ship.book_no]) %>">
-                      <% if @special_cards[ship.book_no] == :acquired %>
+                    <td class="<%= css_class_by_rate(@special_rates[sship]) %>">
+                      <% if @special_cards[sship] == :acquired %>
                           <i class="glyphicon glyphicon-star star"></i>
                       <% end %>
-                      <%= parcentage_by_rate(@special_rates[ship.book_no]) %>
+                      <%= parcentage_by_rate(@special_rates[sship]) %>
                     </td>
                 <% end %>
                 <th class="hidden">
@@ -224,10 +227,10 @@
 
       if (selectsNew) {
         table.column(12).search('新艦娘').draw();
-        spTable.column(8).search('新艦娘').draw();
+        spTable.column(9).search('新艦娘').draw();
       } else {
         table.column(12).search('').draw();
-        spTable.column(8).search('').draw();
+        spTable.column(9).search('').draw();
       }
     }
 
@@ -249,7 +252,7 @@
     if (getUrlParameter('new') === 'true') {
       $('a.select-new').addClass('btn-primary');
       table.column(12).search('新艦娘').draw();
-      spTable.column(8).search('新艦娘').draw();
+      spTable.column(9).search('新艦娘').draw();
     } else {
       $('a.select-all').addClass('btn-primary');
     }

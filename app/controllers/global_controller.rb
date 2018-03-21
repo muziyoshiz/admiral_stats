@@ -92,16 +92,15 @@ class GlobalController < ApplicationController
       end
     end
 
-    # NOTICE 以下は、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
     # 特別カードの情報
-    @special_ships = SpecialShipMaster.all.order(:book_no)
+    @special_ships = SpecialShipMaster.where('implemented_at <= ?', Time.current).order(:book_no, :implemented_at)
 
     # ログイン中の場合は、所持カードのフラグを立てる
     @special_cards = {}
     if logged_in?
       @special_ships.each do |sship|
         exists = ShipCard.exists?(admiral_id: current_admiral.id, book_no: sship.book_no, card_index: sship.card_index)
-        @special_cards[sship.book_no] = exists ? :acquired : :not_acquired
+        @special_cards[sship] = exists ? :acquired : :not_acquired
       end
     end
 
@@ -110,7 +109,7 @@ class GlobalController < ApplicationController
     @special_ships.each do |sship|
       ShipCardOwnership.where(reported_at: @last_reported_at, book_no: sship.book_no, card_index: sship.card_index).each do |own|
         rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
-        @special_rates[sship.book_no] = rate
+        @special_rates[sship] = rate
       end
     end
   end
@@ -201,16 +200,15 @@ class GlobalController < ApplicationController
       end
     end
 
-    # NOTICE 以下は、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
     # この期間限定海域の期間に実装されていた特別カードの情報
-    @special_ships = SpecialShipMaster.where('implemented_at < ?', @event.ended_at).order(:book_no)
+    @special_ships = SpecialShipMaster.where('implemented_at < ?', @event.ended_at).order(:book_no, :implemented_at)
 
     # ログイン中の場合は、所持カードのフラグを立てる
     @special_cards = {}
     if logged_in?
       @special_ships.each do |sship|
         exists = ShipCard.exists?(admiral_id: current_admiral.id, book_no: sship.book_no, card_index: sship.card_index)
-        @special_cards[sship.book_no] = exists ? :acquired : :not_acquired
+        @special_cards[sship] = exists ? :acquired : :not_acquired
       end
     end
 
@@ -219,7 +217,7 @@ class GlobalController < ApplicationController
     @special_ships.each do |sship|
       EventShipCardOwnership.where(event_no: @event.event_no, reported_at: @last_reported_at, book_no: sship.book_no, card_index: sship.card_index).each do |own|
         rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
-        @special_rates[sship.book_no] = rate
+        @special_rates[sship] = rate
       end
     end
   end

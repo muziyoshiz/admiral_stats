@@ -117,16 +117,16 @@ class PublicShipListController < ApplicationController
       @is_blank = false
     end
 
-    # NOTICE 以下は、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
     # 特別カードの情報
-    @special_ships = SpecialShipMaster.all.order(:book_no)
+    @special_ships = SpecialShipMaster.where('implemented_at <= ?', Time.current).order(:book_no, :implemented_at)
 
     # 特別カードの入手状況を調べる
     # 取得済みは :acquired、未取得は :not_acquired
+    # 同一艦娘の特別カードが2枚以上存在しても動作するように、@special_cards のキーに SpecialShipMaster を設定
     @special_cards = {}
     @special_ships.each do |sship|
       exists = ShipCard.exists?(admiral_id: @publication.admiral_id, book_no: sship.book_no, card_index: sship.card_index)
-      @special_cards[sship.book_no] = exists ? :acquired : :not_acquired
+      @special_cards[sship] = exists ? :acquired : :not_acquired
     end
   end
 end

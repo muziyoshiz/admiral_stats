@@ -216,7 +216,7 @@
   </div>
 </div>
 
-<% unless @special_cards.blank? %>
+<% unless @special_ships.blank? %>
     <hr>
 
     <div class="container">
@@ -230,7 +230,6 @@
             <th class="hidden">艦番号（ソート用）</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
-
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レア度</th>
             <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1">実装日</th>
             <th class="text-left col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-1">限定カード</th>
@@ -250,7 +249,7 @@
           </tr>
           </tfoot>
           <tbody>
-          <% @special_cards.keys.each do |sship| %>
+          <% @special_ships.each do |sship| %>
               <%
                 ship = sship.ship_master
                 next unless ship
