@@ -11,12 +11,12 @@ class SpecialShipMaster < ApplicationRecord
             }
 
   # 追加されたカードの図鑑内でのインデックス（0〜）
+  # オリジナルイラストカードが今後も追加される可能性があるため、上限なしに設定する
   validates :card_index,
             presence: true,
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 0,
-                less_than_or_equal_to: 5,
             },
             uniqueness: { scope: [ :book_no ] }
 
