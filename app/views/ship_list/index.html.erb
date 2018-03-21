@@ -216,7 +216,7 @@
   </div>
 </div>
 
-<% unless @special_ships.blank? %>
+<% unless @special_cards.blank? %>
     <hr>
 
     <div class="container">
@@ -230,8 +230,10 @@
             <th class="hidden">艦番号（ソート用）</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 hidden-xs">艦種</th>
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">艦名</th>
+
             <th class="text-left col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">レア度</th>
-            <th class="text-left col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-1">限定カード</th>
+            <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-1">実装日</th>
+            <th class="text-left col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-1">限定カード</th>
           </tr>
           </thead>
           <tfoot>
@@ -243,11 +245,12 @@
             <th class="text-left hidden-xs">艦種</th>
             <th class="text-left">艦名</th>
             <th class="text-left">レア度</th>
+            <th class="text-left">実装日</th>
             <th class="text-left">限定カード</th>
           </tr>
           </tfoot>
           <tbody>
-          <% @special_ships.each do |sship| %>
+          <% @special_cards.keys.each do |sship| %>
               <%
                 ship = sship.ship_master
                 next unless ship
@@ -260,7 +263,8 @@
                 <td class="text-left hidden-xs"><%= ship.ship_type %></td>
                 <td class="text-left"><%= ship.ship_name %></td>
                 <td class="text-left"><%= special_ship_rarity_to_s(sship) %></td>
-                <% if @special_cards[ship.book_no] == :acquired %>
+                <td class="text-left"><%= sship.implemented_at.to_s(:date) %></td>
+                <% if @special_cards[sship] == :acquired %>
                     <td class="acquired"><i class="glyphicon glyphicon-ok"></i></td>
                 <% else %>
                     <td></td>

@@ -247,7 +247,7 @@ class AdmiralInfoController < ApplicationController
       end
     end
 
-    # NOTICE 以下は、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
+    # NOTICE 以下は、1回のイベントで、同一艦娘の特別カードは2枚以上存在しない前提の実装である。2枚以上実装されたら要修正
     # この期間限定海域で実装された特別カード
     @special_ships = SpecialShipMaster.where('implemented_at >= ? AND implemented_at < ?', @event.started_at, @event.ended_at).order(:book_no)
 
