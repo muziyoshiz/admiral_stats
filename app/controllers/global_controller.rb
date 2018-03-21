@@ -174,10 +174,16 @@ class GlobalController < ApplicationController
         # イベント期間中に実装されていなかった艦娘は除外する
         next unless @cards.keys.include?(card.book_no)
 
-        if kai_book_numbers.include?(card.book_no)
-          @cards[card.book_no][card.card_index + 3] = :acquired
-        else
-          @cards[card.book_no][card.card_index] = :acquired
+        card_index =
+            if kai_book_numbers.include?(card.book_no)
+              card.card_index + 3
+            else
+              card.card_index
+            end
+
+        # そのイベント時に実装済みだった場合のみ、:acquired に設定
+        if @cards[card.book_no][card_index] == :not_acquired
+          @cards[card.book_no][card_index] = :acquired
         end
       end
     end
