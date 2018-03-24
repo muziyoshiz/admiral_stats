@@ -7,13 +7,13 @@ class ShipCardOwnership < ApplicationRecord
                 greater_than_or_equal_to: 1,
             }
 
-  # 図鑑内のカードのインデックス（0〜5）
+  # 図鑑内のカードのインデックス（0〜6）
   validates :card_index,
             presence: true,
             numericality: {
                 only_integer: true,
                 greater_than_or_equal_to: 0,
-                less_than_or_equal_to: 5,
+                less_than_or_equal_to: 6,
             }
 
   # 計測時点での所有者数
