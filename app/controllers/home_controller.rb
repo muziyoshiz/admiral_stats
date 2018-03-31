@@ -53,7 +53,8 @@ class HomeController < ApplicationController
 
     special_ship_masters = {}
     SpecialShipMaster.all.each do |master|
-      special_ship_masters[master.book_no] = master
+      special_ship_masters[master.book_no] ||= {}
+      special_ship_masters[master.book_no][master.card_index] = master
     end
 
     # 活動記録を格納する配列
@@ -167,17 +168,37 @@ class HomeController < ApplicationController
       end
 
       # 通常の艦娘カードのマスタデータに含まれない場合は、限定カードから探す
-      # TODO 今後ほかの限定カードが追加されたら、データの傾向がわかるので、この分岐の書き方を見直す
+      # TODO 今後、限定カードのレアリティが増えたら、分岐を書き足す（コードが無駄に長くなるので、全パターンは書かない）
       unless desc
-        sp_master = special_ship_masters[card.book_no]
+        sp_master = special_ship_masters[card.book_no][card.card_index]
         if sp_master
+          card_index = sp_master.remodel_level * 3 + sp_master.rarity
+          counters[card_index] += 1
+
           case sp_master.remodel_level
-            when 1
+            when 0
               case sp_master.rarity
                 when 1
-                  counters[4] += 1
-                  desc = "#{master.ship_name}（ホロ・限定カード） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。"
+                  desc = "#{master.ship_name}（ホロ・限定カード） が着任しました。通算 #{counters[card_index]} 隻目のホロです。"
+                  clazz = 'holo'
+              end
+            when 1
+              # 辞書の艦娘名に「改」を付ける必要があるかどうかを判定
+              kai = '改' if sp_master.card_index == 6
+
+              case sp_master.rarity
+                when 1
+                  desc = "#{master.ship_name}#{kai}（ホロ・限定カード） が着任しました。通算 #{counters[card_index]} 隻目の改（ホロ）です。"
                   clazz = 'kai-holo'
+              end
+            when 2
+              case sp_master.rarity
+                when 0
+                  desc = "#{master.ship_name}（限定カード） が着任しました。通算 #{counters[card_index]} 隻目の改二です。"
+                  clazz = 'kai2'
+                when 1
+                  desc = "#{master.ship_name}（ホロ・限定カード） が着任しました。通算 #{counters[card_index]} 隻目の改二（ホロ）です。"
+                  clazz = 'kai2-holo'
               end
           end
         end
