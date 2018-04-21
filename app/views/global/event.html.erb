@@ -21,6 +21,20 @@
                 <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。
               </li>
           <% end %>
+          <% if @period == 2 %>
+              <li>
+                <strong class="text-danger">【制限事項】</strong>
+                <ul>
+                  <li>
+                    SEGA 公式の提督情報ページの仕様により、最終戦クリア直後は、プレイデータを正しく取得できません。
+                  </li>
+                  <li>
+                    例えば、1周目の最終戦クリア直後は、1周目のゲージが全回復したようなプレイデータになってしまいます。<br>
+                    ここから EO に1回以上出撃すると、正しいプレイデータに戻り、周回数が2に増えます。
+                  </li>
+                </ul>
+              </li>
+          <% end %>
         </ul>
       </div>
     </div>
@@ -52,7 +66,7 @@
 <hr>
 
 <div class="row">
-  <% @event.levels.each do |level| %>
+  <% @event.levels_in_period(@period).each do |level| %>
       <div class="col-md-6">
         <div id="chart-cleared-loop-counts-<%= level.downcase %>" style="width:100%; height:400px;"></div>
       </div>
@@ -97,7 +111,7 @@
           }
         }
       },
-      series: [{ data: <%== data_chart_cleared_rate(@total_num, @cleared_nums, @event.levels) %> }]
+      series: [{ data: <%== data_chart_cleared_rate(@total_num, @cleared_nums, @event.levels_in_period(@period)) %> }]
     });
   });
 
@@ -144,11 +158,11 @@
           borderWidth: 0
         }
       },
-      series: <%== series_chart_cleared_loop_counts(@total_num, @cleared_loop_counts, @event.levels) %>
+      series: <%== series_chart_cleared_loop_counts(@total_num, @cleared_loop_counts, @event.levels_in_period(@period)) %>
     });
   });
 
-  <% @event.levels.each do |level| %>
+  <% @event.levels_in_period(@period).each do |level| %>
   $(function () {
     $('#chart-cleared-loop-counts-<%= level.downcase %>').highcharts({
       exporting: {

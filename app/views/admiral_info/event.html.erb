@@ -3,6 +3,29 @@
   （開催期間：<%= @started_at.to_s(:datetime) %> 〜 <%= @event.ended_at.to_s(:datetime) %>）
 </div>
 
+<% if @period == 2 %>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          <h3 class="panel-title">制限事項</h3>
+        </div>
+        <div class="panel-body">
+          <ul>
+            <li>
+              SEGA 公式の提督情報ページの仕様により、最終戦クリア直後は、プレイデータを正しく取得できません。
+            </li>
+            <li>
+              例えば、1周目の最終戦クリア直後は、1周目のゲージが全回復したようなプレイデータになってしまいます。<br>
+              ここから EO に1回以上出撃すると、正しいプレイデータに戻り、周回数が2に増えます。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="container range-selector">
   <div class="dropdown">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -30,7 +53,7 @@
       </tr>
       </thead>
       <tbody>
-      <% @event.levels.each do |level| %>
+      <% @event.levels_in_period(@period).each do |level| %>
           <%
             statuses = @statuses.select{|s| s.level == level and s.period == @period }
             stages = @event.stages.select{|s| s.level == level and s.period == @period }
@@ -133,14 +156,14 @@
 
 <div class="container">
   <ul class="nav nav-pills" style="margin-bottom: 18px;">
-    <% @event.levels.each_with_index do |level, idx| %>
+    <% @event.levels_in_period(@period).each_with_index do |level, idx| %>
         <li <%== 'class="active"' if idx == 0 %>><a href="#history-<%= level.downcase %>" data-toggle="tab">進捗履歴（<%= difficulty_level_to_text(level) %>）</a></li>
     <% end %>
   </ul>
 </div>
 
 <div class="tab-content">
-  <% @event.levels.each_with_index do |level, idx| %>
+  <% @event.levels_in_period(@period).each_with_index do |level, idx| %>
       <div class="tab-pane<%== ' in active' if idx == 0 %>" id="history-<%= level.downcase %>">
         <%
           statuses = @statuses.select{|s| s.level == level and s.period == @period }
@@ -181,7 +204,7 @@
 
 <script type="application/javascript">
   $(document).ready(function() {
-    <% @event.levels.each do |level| %>
+    <% @event.levels_in_period(@period).each do |level| %>
     $('#table-history-<%= level.downcase %>').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
       "paging": true,
       "sorting": [ 0, "desc" ],

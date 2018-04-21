@@ -244,7 +244,7 @@ module Import
 
       EventProgressStatus.transaction do
         event.periods.each do |period|
-          event.levels.each do |level|
+          event.levels_in_period(period).each do |level|
             summary = AdmiralStatsParser.summarize_event_info(event_info_list, level, period, api_version)
 
             # 上記の summary と同じ意味で、かつ exported_at が上記の summary よりも古いイベント進捗履歴が

@@ -15,11 +15,14 @@ class EventStageMaster < ApplicationRecord
             format: { with: /\A(HEI|OTU|KOU)\z/ }
 
   # 作戦
-  # 前段作戦の場合は 0, 後段作戦の場合は 1
+  # 前段作戦: 0
+  # 後段作戦: 1
+  # Extra Operation (EO): 2
   # 前段作戦/後段作戦に分かれていない場合は 0 のみ
+  # 前段作戦/後段作戦に分かれていて、EO がない場合は 0, 1 のみ
   validates :period,
             presence: true,
-            inclusion: { in: [ 0, 1 ] }
+            inclusion: { in: [ 0, 1, 2 ] }
 
   # ステージ No. （例：E-1 なら 1。後段作戦が E-4 から始まる場合、E-4 なら 1）
   validates :stage_no,
