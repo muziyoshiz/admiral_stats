@@ -265,13 +265,20 @@ class GlobalController < ApplicationController
     # 作戦の開始日を取得（後段作戦の場合は、後段作戦の開始日）
     # 前提1：後段作戦が開始しても、前段作戦をプレイできる
     # 前提2：前段作戦と後段作戦の終了日は同じである
-    @started_at = (@period == 1 ? @event.period1_started_at : @event.started_at)
+    @started_at = case @period
+                    when 0
+                      @event.started_at
+                    when 1
+                      @event.period1_started_at
+                    when 2
+                      @event.period2_started_at
+                  end
 
     set_meta_tags title: "イベント攻略率（#{event_period_to_text(@event, @period)}）"
 
     # 各提督の、攻略済み周回数を、難易度別に取得
     @statuses = {}
-    @event.levels.each do |level|
+    @event.levels_in_period(@period).each do |level|
       @statuses[level] = EventProgressStatus.find_by_sql(
           [ 'SELECT admiral_id, max(cleared_loop_counts) AS max_cleared_loop_counts ' +
                 'FROM event_progress_statuses WHERE event_no = ? AND period = ? AND level = ? GROUP BY admiral_id',
@@ -291,12 +298,12 @@ class GlobalController < ApplicationController
     cleared_ids = {}
     %w(KOU OTU HEI).each{|level| cleared_ids[level] = [] }
 
-    @event.levels.each do |level|
+    @event.levels_in_period(@period).each do |level|
       cleared_ids[level] = @statuses[level].select{|s| s.max_cleared_loop_counts > 0 }.map{|s| s.admiral_id }
     end
 
     # 攻略済みの比率を出すために、難易度間での重複を排除する（難易度が高いほうを優先する）
-    @event.levels.each do |level|
+    @event.levels_in_period(@period).each do |level|
       case level
         when 'KOU'
           # 甲の場合は全員をカウント
@@ -312,7 +319,7 @@ class GlobalController < ApplicationController
 
     # クリアした周回数
     @cleared_loop_counts = {}
-    @event.levels.each do |level|
+    @event.levels_in_period(@period).each do |level|
       @cleared_loop_counts[level] = []
       (0..9).each do |cnt|
         @cleared_loop_counts[level][cnt] = @statuses[level].select{|s| s.max_cleared_loop_counts == cnt }.size

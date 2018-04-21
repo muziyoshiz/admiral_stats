@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180227141417) do
+ActiveRecord::Schema.define(version: 20180421092212) do
 
   create_table "admiral_publications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "admiral_id", null: false
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 20180227141417) do
     t.string "event_name", limit: 32, null: false
     t.integer "no_of_periods", default: 1, null: false
     t.datetime "period1_started_at"
+    t.datetime "period2_started_at"
     t.datetime "started_at", null: false
     t.datetime "ended_at", null: false
     t.index ["area_id"], name: "index_event_masters_on_area_id", unique: true
@@ -148,11 +149,6 @@ ActiveRecord::Schema.define(version: 20180227141417) do
     t.string "stage_mission_name", limit: 32, null: false
     t.integer "ene_military_gauge_val", null: false
     t.index ["event_no", "level", "period", "stage_no"], name: "index_event_stage_masters", unique: true
-  end
-
-  create_table "level_exps", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.integer "level", null: false
-    t.integer "exp", null: false
   end
 
   create_table "ship_card_ownerships", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

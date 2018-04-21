@@ -174,7 +174,14 @@ class AdmiralInfoController < ApplicationController
     # 作戦の開始日を取得（後段作戦の場合は、後段作戦の開始日）
     # 前提1：後段作戦が開始しても、前段作戦をプレイできる
     # 前提2：前段作戦と後段作戦の終了日は同じである
-    @started_at = (@period == 1 ? @event.period1_started_at : @event.started_at)
+    @started_at = case @period
+                    when 0
+                      @event.started_at
+                    when 1
+                      @event.period1_started_at
+                    when 2
+                      @event.period2_started_at
+                  end
 
     set_meta_tags title: "イベントの進捗（#{event_period_to_text(@event, @period)}）"
 
@@ -196,7 +203,7 @@ class AdmiralInfoController < ApplicationController
     # 同じ意味のイベント進捗が複数ある場合は、一番エクスポート時刻が古いものだけ残す
     @statuses = []
 
-    @event.levels.each do |level|
+    @event.levels_in_period(@period).each do |level|
       prev_status = nil
 
       # 特定の難易度のイベント進捗情報を、エクスポート時刻が古い順に取得

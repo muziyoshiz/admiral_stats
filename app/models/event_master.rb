@@ -26,7 +26,9 @@ class EventMaster < ApplicationRecord
             length: { minimum: 1, maximum: 32 }
 
   # 作戦数（通常は1、多段作戦の場合は2以上）
-  # 第1回イベントは多段作戦ではない。第2回イベントは前段作戦/後段作戦
+  # 第1回イベントは多段作戦ではない
+  # 第2〜3回イベントは前段作戦/後段作戦
+  # 第4回イベントは前段作戦/後段作戦/EO
   validates :no_of_periods,
             numericality: {
                 only_integer: true,
@@ -41,16 +43,20 @@ class EventMaster < ApplicationRecord
   validates :ended_at,
             presence: true
 
-  # このイベントの難易度の一覧を返します。
-  # 難易度を返す順番は必ず HEI, OTU, KOU の順になります。
-  def levels
-    %w(HEI OTU KOU) & stages.map{|s| s.level }.uniq
-  end
-
-  # このイベントの作戦番号（0〜）のリストを返します。
-  # この event_master の no_of_periods が 2 以上でも、event_stage_master が未登録のものは除外して返します。
+  # このイベントの作戦段階のリストを返します。
   def periods
     (0..(self.no_of_periods - 1)).select{|period| stages.select{|s| s.period == period }.present? }
+  end
+
+  # このイベントの、特定の作戦番号で対応している難易度のリストを返します。
+  # リストの並び順は、HEI, OTU, KOU の順にソートした状態で返します。
+  #
+  # この event_master の no_of_periods が 2 以上でも、event_stage_master が未登録のものは除外して返します。
+  #
+  # 第4回イベントの EO は OTU と KOU にしか対応していないため、HEI をスキップしてインポートするために
+  # この関数が必要になりました。
+  def levels_in_period(period)
+    %w(HEI OTU KOU) & stages.select{|s| s.period == period }.map{|s| s.level }.uniq
   end
 
   # このイベントが多段作戦の場合は true を返します。

@@ -15,7 +15,14 @@ module EventPeriodHelper
   # 多段作戦でない場合は、イベント名のみを返します。
   def event_period_to_text(event, period)
     if event.multi_period?
-      period_name = (period == 0 ? '前段作戦' : '後段作戦')
+      period_name = case period
+                      when 0
+                        '前段作戦'
+                      when 1
+                        '後段作戦'
+                      when 2
+                        'Extra Operation'
+                    end
       "#{event.event_name} #{period_name}"
     else
       event.event_name

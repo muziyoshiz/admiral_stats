@@ -52,7 +52,7 @@
 <hr>
 
 <div class="row">
-  <% @event.levels.each do |level| %>
+  <% @event.levels_in_period(@period).each do |level| %>
       <div class="col-md-6">
         <div id="chart-cleared-loop-counts-<%= level.downcase %>" style="width:100%; height:400px;"></div>
       </div>
@@ -97,7 +97,7 @@
           }
         }
       },
-      series: [{ data: <%== data_chart_cleared_rate(@total_num, @cleared_nums, @event.levels) %> }]
+      series: [{ data: <%== data_chart_cleared_rate(@total_num, @cleared_nums, @event.levels_in_period(@period)) %> }]
     });
   });
 
@@ -144,11 +144,11 @@
           borderWidth: 0
         }
       },
-      series: <%== series_chart_cleared_loop_counts(@total_num, @cleared_loop_counts, @event.levels) %>
+      series: <%== series_chart_cleared_loop_counts(@total_num, @cleared_loop_counts, @event.levels_in_period(@period)) %>
     });
   });
 
-  <% @event.levels.each do |level| %>
+  <% @event.levels_in_period(@period).each do |level| %>
   $(function () {
     $('#chart-cleared-loop-counts-<%= level.downcase %>').highcharts({
       exporting: {

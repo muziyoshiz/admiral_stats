@@ -79,6 +79,7 @@ CSV.read('db/seeds/event_masters.utf8.csv', headers: true).each do |data|
       event_name: data['Event name'],
       no_of_periods: data['No. of periods'],
       period1_started_at: (data['Period1 started at'].blank? ? nil : data['Period1 started at']),
+      period2_started_at: (data['Period2 started at'].blank? ? nil : data['Period2 started at']),
       started_at: data['Started at'],
       ended_at: data['Ended at'],
   }
