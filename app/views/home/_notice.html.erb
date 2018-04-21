@@ -25,13 +25,24 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
-      2018年3月21日更新：<%= link_to_if_logged_in '艦娘一覧', controller: 'ship_list', action: 'index' %> に、オリジナルイラストカードの「実装日」表示を追加しました。4月12日に実装予定の「夕立改二」オリジナルイラストカード2枚目への対応です。
+      2018年4月22日更新(2)：4月19日以降、図鑑 No. 205（春雨）のカードが実際と異なる種類で表示されています。かなり難しい問題のため、修正にはしばらくお時間をください。
     </li>
     <li>
-      2018年2月28日更新：ケッコンカッコカリ状態のインポート、および艦娘一覧での表示に対応しました。
-    </li>
-    <li>
-      2018年2月23日更新：開発者のブログにて、<%= link_to '第3回イベントのプレイデータ解析結果', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %> を公開しました。是非ご覧ください！
+      2018年4月21日更新(1)：Extra Operation (EO) のプレイデータのインポートおよび表示に対応しました。
+      <ul>
+        <li>
+          <strong class="text-danger">【制限事項】</strong>
+          <ul>
+            <li>
+              SEGA 公式の提督情報ページの仕様で、最終戦クリア直後は、プレイデータを正しく取得できません。
+            </li>
+            <li>
+              例えば、1周目の最終戦クリア直後は、1周目のゲージが全回復したようなプレイデータになってしまいます。<br>
+              ここから EO に1回以上出撃すると、正しいプレイデータに戻り、周回数が2に増えます。
+            </li>
+          </ul>
+        </li>
+      </ul>
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
