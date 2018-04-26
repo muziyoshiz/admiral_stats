@@ -149,7 +149,7 @@ class ShipInfoController < ApplicationController
       # Lv 90 到達予想時間（Lv 90 の経験値は 545,500）
       if s_end.level < 90
         forecast[:lv90_at] = s_begin.exported_at + (545500 - s_begin.estimated_exp) / exp_per_sec
-        forecast[:lv90_rest] = 545000 - s_end.estimated_exp
+        forecast[:lv90_rest] = 545500 - s_end.estimated_exp
       end
 
       # Lv 99 到達予想時間（Lv 99 の経験値は 1,000,000）
