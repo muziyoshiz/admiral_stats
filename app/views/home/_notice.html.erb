@@ -25,6 +25,10 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2018年4月28日更新：ホーム画面の活動記録、<%= link_to_if_logged_in '艦娘一覧', controller: 'ship_list', action: 'index' %>、<%= link_to '艦娘カード入手率', controller: 'global', action: 'ship_card_ownership' %>で、春雨改および限定カードの表示に対応しました。
+      ただし、<%= link_to_if_logged_in 'レベル・経験値・★5艦娘数（艦種別）', controller: 'ship_info', action: 'level_summary' %>、<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %> の計算結果は未修正です。
+    </li>
+    <li>
       2018年4月22日更新(2)：4月19日以降、図鑑 No. 205（春雨）のカードが実際と異なる種類で表示されています。かなり難しい問題のため、修正にはしばらくお時間をください。
     </li>
     <li>
