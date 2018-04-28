@@ -1,4 +1,9 @@
 class ShipCardOwnership < ApplicationRecord
+  include ShipCard::Base
+
+  # 艦娘のマスタデータの登録が遅れても、集計だけはできるように、optional: true を設定
+  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no, optional: true
+
   # 艦娘図鑑の図鑑 No.
   validates :book_no,
             presence: true,

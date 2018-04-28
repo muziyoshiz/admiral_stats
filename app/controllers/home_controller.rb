@@ -37,18 +37,11 @@ class HomeController < ApplicationController
     end
 
     # 入手済みのカードのデータを全入手
-    ship_cards = ShipCard.where(admiral_id: current_admiral.id)
+    ship_cards = ShipCard.where(admiral_id: current_admiral.id).includes(:ship_master)
 
     # 艦娘図鑑データがない場合
     if ship_cards.blank?
       return
-    end
-
-    # 図鑑 No. と ship_master の対応関係
-    # TODO この対応関係を毎回データベースに問合せず、キャッシュから取得するように直す
-    ship_masters = {}
-    ShipMaster.all.each do |master|
-      ship_masters[master.book_no] = master
     end
 
     special_ship_masters = {}
@@ -71,105 +64,13 @@ class HomeController < ApplicationController
     index = 0
 
     ship_cards.sort_by{|c| [ c.first_exported_at, c.book_no ] }.each do |card|
-      desc, clazz = nil, nil
-      master = ship_masters[card.book_no]
-
-      # TODO (remodel_level, card_index) の組み合わせと、レアリティの対応テーブルを用意して、コード短縮する
-      case master.remodel_level
-        when 0
-          counters[card.card_index] += 1 if card.card_index.between?(0, 5)
-          case card.card_index
-            when 0
-              desc = "#{master.ship_name} が着任しました。"
-            when 1
-              desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[1]} 隻目のホロです。"
-              clazz = 'holo'
-            when 2
-              desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[2]} 隻目の中破です。"
-              clazz = 'chuha'
-            when 3
-              desc = "#{master.ship_name}改 が着任しました。通算 #{counters[3]} 隻目の改です。"
-              clazz = 'kai'
-            when 4
-              desc = "#{master.ship_name}改（ホロ） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。"
-              clazz = 'kai-holo'
-            when 5
-              desc = "#{master.ship_name}改（中破） が着任しました。通算 #{counters[5]} 隻目の改（中破）です。"
-              clazz = 'kai-chuha'
-          end
-        when 1
-          counters[card.card_index + 3] += 1 if card.card_index.between?(0, 2)
-          case card.card_index
-            when 0
-              desc = "#{master.ship_name} が着任しました。通算 #{counters[3]} 隻目の改です。"
-              clazz = 'kai'
-            when 1
-              desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。"
-              clazz = 'kai-holo'
-            when 2
-              desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[5]} 隻目の改（中破）です。"
-              clazz = 'kai-chuha'
-          end
-        when 2
-          counters[card.card_index + 6] += 1 if card.card_index.between?(0, 2)
-          case card.card_index
-            when 0
-              desc = "#{master.ship_name} が着任しました。通算 #{counters[6]} 隻目の改二です。"
-              clazz = 'kai2'
-            when 1
-              desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[7]} 隻目の改二（ホロ）です。"
-              clazz = 'kai2-holo'
-            when 2
-              desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[8]} 隻目の改二（中破）です。"
-              clazz = 'kai2-chuha'
-          end
-        when 3..5
-          # remodel_level が 3 以上の艦娘は、すべて「改三以上」として扱う
-          counters[(card.card_index % 3) + 9] += 1 if card.card_index.between?(0, 5)
-
-          # 艦娘名表示は、名前に「改」を付けるか付けないかを判断するために、remodel_level で処理を分岐する必要がある
-          case master.remodel_level
-            when 3
-              # 千歳航、千代田航、およびコンバート艦娘がここに該当
-              case card.card_index
-                when 0
-                  desc = "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
-                  clazz = 'kai3'
-                when 1
-                  desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
-                  clazz = 'kai3-holo'
-                when 2
-                  desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
-                  clazz = 'kai3-chuha'
-                when 3
-                  desc = "#{master.ship_name}改 が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
-                  clazz = 'kai3'
-                when 4
-                  desc = "#{master.ship_name}改（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
-                  clazz = 'kai3-holo'
-                when 5
-                  desc = "#{master.ship_name}改（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
-                  clazz = 'kai3-chuha'
-              end
-            when 5
-              # 千歳航改二、千代田航改二のみがここに該当
-              case card.card_index
-                when 0
-                  desc = "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。"
-                  clazz = 'kai3'
-                when 1
-                  desc = "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。"
-                  clazz = 'kai3-holo'
-                when 2
-                  desc = "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。"
-                  clazz = 'kai3-chuha'
-              end
-          end
-      end
+      # 活動記録への表示内容を取得する
+      desc, clazz = resolve_desc_and_clazz(card, counters)
 
       # 通常の艦娘カードのマスタデータに含まれない場合は、限定カードから探す
       # TODO 今後、限定カードのレアリティが増えたら、分岐を書き足す（コードが無駄に長くなるので、全パターンは書かない）
       unless desc
+        master = card.ship_master
         sp_master = special_ship_masters[card.book_no][card.card_index]
         if sp_master
           card_index = sp_master.remodel_level * 3 + sp_master.rarity
@@ -215,5 +116,100 @@ class HomeController < ApplicationController
         index += 1
       end
     end
+  end
+
+  private
+
+  # 艦娘カードの情報から、活動記録に表示する説明文と、CSS のクラス名を解決して返します。
+  # また、カウンターにカード枚数を加算します。
+  def resolve_desc_and_clazz(card, counters)
+    master = card.ship_master
+    card_index = card.card_index
+
+    if master.book_no == 205
+      case card_index
+        when 3
+          # 限定カードの場合はこの処理全体をスキップ
+          return nil, nil
+        when 4..6
+          # 春雨改の card_index を補正
+          card_index -= 1
+      end
+    end
+
+    # TODO (remodel_level, card_index) の組み合わせと、レアリティの対応テーブルを用意して、コード短縮する
+    case master.remodel_level
+      when 0
+        counters[card_index] += 1 if card_index.between?(0, 5)
+        case card_index
+          when 0
+            return "#{master.ship_name} が着任しました。", nil
+          when 1
+            return "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[1]} 隻目のホロです。", 'holo'
+          when 2
+            return "#{master.ship_name}（中破） が着任しました。通算 #{counters[2]} 隻目の中破です。", 'chuha'
+          when 3
+            return "#{master.ship_name}改 が着任しました。通算 #{counters[3]} 隻目の改です。", 'kai'
+          when 4
+            return "#{master.ship_name}改（ホロ） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。", 'kai-holo'
+          when 5
+            return "#{master.ship_name}改（中破） が着任しました。通算 #{counters[5]} 隻目の改（中破）です。", 'kai-chuha'
+        end
+      when 1
+        counters[card_index + 3] += 1 if card_index.between?(0, 2)
+        case card_index
+          when 0
+            return "#{master.ship_name} が着任しました。通算 #{counters[3]} 隻目の改です。", 'kai'
+          when 1
+            return "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[4]} 隻目の改（ホロ）です。", 'kai-holo'
+          when 2
+            return "#{master.ship_name}（中破） が着任しました。通算 #{counters[5]} 隻目の改（中破）です。", 'kai-chuha'
+        end
+      when 2
+        counters[card_index + 6] += 1 if card_index.between?(0, 2)
+        case card_index
+          when 0
+            return "#{master.ship_name} が着任しました。通算 #{counters[6]} 隻目の改二です。", 'kai2'
+          when 1
+            return "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[7]} 隻目の改二（ホロ）です。", 'kai2-holo'
+          when 2
+            return "#{master.ship_name}（中破） が着任しました。通算 #{counters[8]} 隻目の改二（中破）です。", 'kai2-chuha'
+        end
+      when 3..5
+        # remodel_level が 3 以上の艦娘は、すべて「改三以上」として扱う
+        counters[(card_index % 3) + 9] += 1 if card_index.between?(0, 5)
+
+        # 艦娘名表示は、名前に「改」を付けるか付けないかを判断するために、remodel_level で処理を分岐する必要がある
+        case master.remodel_level
+          when 3
+            # 千歳航、千代田航、およびコンバート艦娘がここに該当
+            case card_index
+              when 0
+                return "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。", 'kai3'
+              when 1
+                return "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。", 'kai3-holo'
+              when 2
+                return "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。", 'kai3-chuha'
+              when 3
+                return "#{master.ship_name}改 が着任しました。通算 #{counters[9]} 隻目の改三以上です。", 'kai3'
+              when 4
+                return "#{master.ship_name}改（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。", 'kai3-holo'
+              when 5
+                return "#{master.ship_name}改（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。", 'kai3-chuha'
+            end
+          when 5
+            # 千歳航改二、千代田航改二のみがここに該当
+            case card_index
+              when 0
+                return "#{master.ship_name} が着任しました。通算 #{counters[9]} 隻目の改三以上です。", 'kai3'
+              when 1
+                return "#{master.ship_name}（ホロ） が着任しました。通算 #{counters[10]} 隻目の改三以上（ホロ）です。", 'kai3-holo'
+              when 2
+                return "#{master.ship_name}（中破） が着任しました。通算 #{counters[11]} 隻目の改三以上（中破）です。", 'kai3-chuha'
+            end
+        end
+    end
+
+    return nil, nil
   end
 end

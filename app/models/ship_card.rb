@@ -1,4 +1,9 @@
 class ShipCard < ApplicationRecord
+  include ShipCard::Base
+
+  # 艦娘のマスタデータの登録が遅れても、インポートだけはできるように、optional: true を設定
+  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no, optional: true
+
   # 提督 ID
   validates :admiral_id,
             presence: true,

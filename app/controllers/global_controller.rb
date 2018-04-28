@@ -30,9 +30,6 @@ class GlobalController < ApplicationController
       end
     end
 
-    # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
-
     # 各カードについて、カードあり（取得済み）、カードあり（未取得）、カードなしのいずれかのフラグを格納するハッシュ
     # 未ログインの場合は、カードあり（未取得）、カードなしのいずれかを格納する
     @cards = {}
@@ -41,7 +38,7 @@ class GlobalController < ApplicationController
     # 取得済みは :acquired、未取得は :not_acquired、存在しない項目は nil を設定
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @ships.each do |ship|
-      if kai_book_numbers.include?(ship.book_no)
+      if ship.is_kai?
         @cards[ship.book_no] = [nil, nil, nil, :not_acquired, :not_acquired, :not_acquired]
       else
         @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
@@ -51,14 +48,15 @@ class GlobalController < ApplicationController
     # ログイン中の場合は、所持カードのフラグを立てる
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     if logged_in?
-      ShipCard.where(admiral_id: current_admiral.id).each do |card|
+      ShipCard.where(admiral_id: current_admiral.id).includes(:ship_master).each do |card|
         # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
         next unless @cards.keys.include?(card.book_no)
 
-        if kai_book_numbers.include?(card.book_no)
-          @cards[card.book_no][card.card_index + 3] = :acquired
-        else
-          @cards[card.book_no][card.card_index] = :acquired
+        # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
+        idx = card.index_for_ship_list
+        if idx
+          @cards[card.book_no][idx] = :acquired
+          @is_blank = false
         end
       end
     end
@@ -78,17 +76,16 @@ class GlobalController < ApplicationController
     @rates = {}
     @no_of_active_users = 0
     @cards.keys.each{|book_no| @rates[book_no] = [] }
-    ShipCardOwnership.where(def_of_active_users: @def_of_active_users, reported_at: @last_reported_at).each do |own|
+    ShipCardOwnership.where(def_of_active_users: @def_of_active_users, reported_at: @last_reported_at).includes(:ship_master).each do |own|
       # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
       next unless @rates.keys.include?(own.book_no)
 
       @no_of_active_users = own.no_of_active_users if @no_of_active_users == 0
 
-      rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
-      if kai_book_numbers.include?(own.book_no)
-        @rates[own.book_no][own.card_index + 3] = rate
-      else
-        @rates[own.book_no][own.card_index] = rate
+      # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
+      idx = own.index_for_ship_list
+      if idx
+        @rates[own.book_no][idx] = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       end
     end
 
@@ -149,9 +146,6 @@ class GlobalController < ApplicationController
       end
     end
 
-    # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
-
     # 各カードについて、カードあり（取得済み）、カードあり（未取得）、カードなしのいずれかのフラグを格納するハッシュ
     # 未ログインの場合は、カードあり（未取得）、カードなしのいずれかを格納する
     @cards = {}
@@ -160,7 +154,7 @@ class GlobalController < ApplicationController
     # 取得済みは :acquired、未取得は :not_acquired、存在しない項目は nil を設定
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @ships.each do |ship|
-      if kai_book_numbers.include?(ship.book_no)
+      if ship.is_kai?
         @cards[ship.book_no] = [nil, nil, nil, :not_acquired, :not_acquired, :not_acquired]
       else
         @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
@@ -170,20 +164,17 @@ class GlobalController < ApplicationController
     # ログイン中の場合は、所持カードのフラグを立てる
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     if logged_in?
-      ShipCard.where(admiral_id: current_admiral.id).each do |card|
+      ShipCard.where(admiral_id: current_admiral.id).includes(:ship_master).each do |card|
         # イベント期間中に実装されていなかった艦娘は除外する
         next unless @cards.keys.include?(card.book_no)
 
-        card_index =
-            if kai_book_numbers.include?(card.book_no)
-              card.card_index + 3
-            else
-              card.card_index
-            end
-
-        # そのイベント時に実装済みだった場合のみ、:acquired に設定
-        if @cards[card.book_no][card_index] == :not_acquired
-          @cards[card.book_no][card_index] = :acquired
+        # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
+        idx = card.index_for_ship_list
+        if idx
+          # そのイベント時に実装済みだった場合のみ、:acquired に設定
+          if @cards[card.book_no][idx] == :not_acquired
+            @cards[card.book_no][idx] = :acquired
+          end
         end
       end
     end
@@ -196,13 +187,13 @@ class GlobalController < ApplicationController
     @rates = {}
     @no_of_active_users = 0
     @cards.keys.each{|book_no| @rates[book_no] = [] }
-    EventShipCardOwnership.where(event_no: @event.event_no, reported_at: @last_reported_at).each do |own|
+    EventShipCardOwnership.where(event_no: @event.event_no, reported_at: @last_reported_at).includes(:ship_master).each do |own|
       @no_of_active_users = own.no_of_active_users if @no_of_active_users == 0
-      rate = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
-      if kai_book_numbers.include?(own.book_no)
-        @rates[own.book_no][own.card_index + 3] = rate
-      else
-        @rates[own.book_no][own.card_index] = rate
+
+      # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
+      idx = own.index_for_ship_list
+      if idx
+        @rates[own.book_no][idx] = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       end
     end
 

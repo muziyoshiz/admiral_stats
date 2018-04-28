@@ -20,9 +20,6 @@ class ShipListController < ApplicationController
       end
     end
 
-    # 1枚目のカードから「＊＊改」という名前になっている図鑑No. の配列を作成
-    kai_book_numbers = @ships.select{|s| s.remodel_level == 1 }.map{|s| s.book_no }
-
     # ship_cards および ship_statuses の両方が空の場合は true
     @is_blank = true
 
@@ -31,9 +28,10 @@ class ShipListController < ApplicationController
 
     # カードの枚数の配列
     # 取得済みは :acquired、未取得は :not_acquired、存在しない項目は nil を設定
-    # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
+    # ただし、表示名が「＊＊改」のカード（remodel_level = 1 のカード）については、
+    # index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
     @ships.each do |ship|
-      if kai_book_numbers.include?(ship.book_no)
+      if ship.is_kai?
         @cards[ship.book_no] = [nil, nil, nil, :not_acquired, :not_acquired, :not_acquired]
       else
         @cards[ship.book_no] = Array.new(ship.variation_num, :not_acquired)
@@ -42,16 +40,16 @@ class ShipListController < ApplicationController
 
     # 所持カードのフラグを立てる
     # ただし、表示名が「＊＊改」のカードについては、index に 3 加算して配列に入れる（「改」の列に表示されるようにする）
-    ShipCard.where(admiral_id: current_admiral.id).each do |card|
+    ShipCard.where(admiral_id: current_admiral.id).includes(:ship_master).each do |card|
       # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
       next unless @cards.keys.include?(card.book_no)
 
-      if kai_book_numbers.include?(card.book_no)
-        @cards[card.book_no][card.card_index + 3] = :acquired
-      else
-        @cards[card.book_no][card.card_index] = :acquired
+      # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
+      idx = card.index_for_ship_list
+      if idx
+        @cards[card.book_no][idx] = :acquired
+        @is_blank = false
       end
-      @is_blank = false
     end
 
     # 各艦娘の現在のレベルを調べるために、最後にエクスポートされたデータ（レベルも最大値のはず）を取得

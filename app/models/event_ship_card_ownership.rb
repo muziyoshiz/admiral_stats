@@ -1,4 +1,9 @@
 class EventShipCardOwnership < ApplicationRecord
+  include ShipCard::Base
+
+  # 艦娘のマスタデータの登録が遅れても、集計だけはできるように、optional: true を設定
+  belongs_to :ship_master, foreign_key: :book_no, primary_key: :book_no, optional: true
+
   # イベント No. （例：第壱回なら 1）
   validates :event_no,
             presence: true,

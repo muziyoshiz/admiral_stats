@@ -54,4 +54,9 @@ module ShipMaster::Base
     # カードの名前が base_ship_name と一致しない場合、改/改二以上しかない図鑑No.のカードである
     ship_name != base_ship_name
   end
+
+  # この図鑑No.が、改カード3枚のみを表す場合に true を返します。
+  def is_kai?
+    remodel_level == 1
+  end
 end
