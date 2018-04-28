@@ -53,14 +53,10 @@ class ShipListController < ApplicationController
     end
 
     # 各艦娘の現在のレベルを調べるために、最後にエクスポートされたデータ（レベルも最大値のはず）を取得
+    last_exported_at = ShipStatus.where(admiral_id: current_admiral.id).maximum(:exported_at)
+
     @statuses = {}
-    ShipStatus.find_by_sql(
-        [ 'SELECT * FROM ship_statuses AS s1 WHERE s1.admiral_id = ? AND NOT EXISTS ' +
-              '(SELECT 1 FROM ship_statuses AS s2 ' +
-              'WHERE s1.admiral_id = s2.admiral_id AND s1.book_no = s2.book_no ' +
-              'AND s1.remodel_level = s2.remodel_level AND s1.exported_at < s2.exported_at)',
-          current_admiral.id ]
-    ).each do |status|
+    ShipStatus.where(admiral_id: current_admiral.id, exported_at: last_exported_at).each do |status|
       # 未実装の艦娘のデータが不正にインポートされている場合は、単純にそのデータだけ無視する
       next unless @cards.keys.include?(status.book_no)
 
