@@ -46,7 +46,7 @@ class ShipListController < ApplicationController
 
       # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
       idx = card.index_for_ship_list
-      if idx
+      if idx && @cards[card.book_no][idx]
         @cards[card.book_no][idx] = :acquired
         @is_blank = false
       end

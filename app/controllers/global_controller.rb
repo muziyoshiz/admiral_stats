@@ -54,7 +54,7 @@ class GlobalController < ApplicationController
 
         # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
         idx = card.index_for_ship_list
-        if idx
+        if idx && @cards[card.book_no][idx]
           @cards[card.book_no][idx] = :acquired
           @is_blank = false
         end
@@ -84,7 +84,7 @@ class GlobalController < ApplicationController
 
       # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
       idx = own.index_for_ship_list
-      if idx
+      if idx && @cards[own.book_no][idx]
         @rates[own.book_no][idx] = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       end
     end
@@ -170,11 +170,8 @@ class GlobalController < ApplicationController
 
         # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
         idx = card.index_for_ship_list
-        if idx
-          # そのイベント時に実装済みだった場合のみ、:acquired に設定
-          if @cards[card.book_no][idx] == :not_acquired
-            @cards[card.book_no][idx] = :acquired
-          end
+        if idx && @cards[card.book_no][idx]
+          @cards[card.book_no][idx] = :acquired
         end
       end
     end
@@ -192,7 +189,7 @@ class GlobalController < ApplicationController
 
       # 艦娘一覧の表示範囲かどうかを判定し、必要に応じて表示位置を補正
       idx = own.index_for_ship_list
-      if idx
+      if idx && @cards[own.book_no][idx]
         @rates[own.book_no][idx] = (own.no_of_owners.to_f / own.no_of_active_users * 100).round(1)
       end
     end
