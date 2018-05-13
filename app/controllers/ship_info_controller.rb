@@ -310,7 +310,7 @@ class ShipInfoController < ApplicationController
     end
 
     # 入手済みのカードのデータを全入手
-    ship_cards = ShipCard.where(admiral_id: current_admiral.id)
+    ship_cards = ShipCard.where(admiral_id: current_admiral.id).includes(:ship_master)
 
     # 艦娘図鑑データがない場合
     if ship_cards.blank?
@@ -366,25 +366,13 @@ class ShipInfoController < ApplicationController
       # マスタデータも更新データもない場合は、未対応のデータとして無視する
       next unless ship_master
 
-      # マスタデータに登録されている要素数を、card_index が超えている場合は、無効なデータとして無視する
-      next if card.card_index >= ship_master.variation_num
+      # カード入手数・入手率の表示範囲か判定し、必要に応じて表示位置を補正
+      # 表示範囲ではない場合には nil が返される
+      idx = card.index_for_ship_card_info
 
-      case ship_master.remodel_level
-        when 0
-          gains[card.card_index][card.first_exported_at] ||= 0
-          gains[card.card_index][card.first_exported_at] += 1
-        when 1
-          # 改から始まる図鑑 No. の場合は、1枚目のカードを改と見なす
-          gains[card.card_index + 3][card.first_exported_at] ||= 0
-          gains[card.card_index + 3][card.first_exported_at] += 1
-        when 2
-          # 改二から始まる図鑑 No. の場合は、1枚目のカードを改二と見なす
-          gains[card.card_index + 6][card.first_exported_at] ||= 0
-          gains[card.card_index + 6][card.first_exported_at] += 1
-        else
-          # 改二より上のカードは、すべて「改三以上」として扱う
-          gains[(card.card_index % 3) + 9][card.first_exported_at] ||= 0
-          gains[(card.card_index % 3) + 9][card.first_exported_at] += 1
+      if idx
+        gains[idx][card.first_exported_at] ||= 0
+        gains[idx][card.first_exported_at] += 1
       end
     end
 
