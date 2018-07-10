@@ -25,17 +25,13 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2018年7月10日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> で、伊19改を潜水艦として数えていた不具合を修正しました（正しくは潜水空母）。
+    </li>
+    <li>
       2018年5月14日更新：まるゆを入手している場合に、艦娘図鑑および艦娘一覧がインポートできなくなる不具合を修正しました。
     </li>
     <li>
       2018年5月13日更新：<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %> のページで、春雨改の入手数が正しく表示されていなかった不具合を修正しました。
-    </li>
-    <li>
-      2018年5月12日更新：限定カード（夕立改二）の入手状況が、通常の艦娘一覧にも表示されてしまっていた不具合を修正しました。
-    </li>
-    <li>
-      2018年4月28日更新：ホーム画面の活動記録、<%= link_to_if_logged_in '艦娘一覧', controller: 'ship_list', action: 'index' %>、<%= link_to '艦娘カード入手率', controller: 'global', action: 'ship_card_ownership' %>で、春雨改および限定カードの表示に対応しました。
-      ただし、<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %> の計算結果は未修正です。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>

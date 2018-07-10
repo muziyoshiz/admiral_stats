@@ -6,6 +6,13 @@
   <h3>2018年</h3>
   <ul>
     <li>
+      2018年5月12日更新：限定カード（夕立改二）の入手状況が、通常の艦娘一覧にも表示されてしまっていた不具合を修正しました。
+    </li>
+    <li>
+      2018年4月28日更新：ホーム画面の活動記録、<%= link_to_if_logged_in '艦娘一覧', controller: 'ship_list', action: 'index' %>、<%= link_to '艦娘カード入手率', controller: 'global', action: 'ship_card_ownership' %>で、春雨改および限定カードの表示に対応しました。
+      ただし、<%= link_to_if_logged_in 'カード入手数・入手率', controller: 'ship_info', action: 'card' %> の計算結果は未修正です。
+    </li>
+    <li>
       2018年4月21日更新(2)：4月19日以降、図鑑 No. 205（春雨）のカードが実際と異なる種類で表示されています。かなり難しい問題のため、修正にはしばらくお時間をください。
     </li>
     <li>
