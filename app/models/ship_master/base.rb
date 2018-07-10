@@ -30,13 +30,17 @@ module ShipMaster::Base
   end
 
   # 図鑑 No. が同じなのに改造レベルによって艦種が変わる艦娘について、正しい艦種を返します。
-  # 現在、これに該当する艦娘は、扶桑(No.26), 山城(No.27), 伊58(No.127) です。
+  # 現在、これに該当する艦娘は以下の通り。
+  # No.26 扶桑(戦艦→航空戦艦)
+  # No.27 山城(戦艦→航空戦艦)
+  # No.123 伊19(潜水艦→潜水空母)
+  # No.127 伊58(潜水艦→潜水空母)
+  # No.128 伊8(潜水艦→潜水空母)
+  # No.283 伊26(潜水艦→潜水空母)
   def ship_type_by_status(status)
-    if status.book_no == 26 and status.remodel_level == 1
+    if [26, 27].include?(status.book_no) and status.remodel_level == 1
       '航空戦艦'
-    elsif status.book_no == 27 and status.remodel_level == 1
-      '航空戦艦'
-    elsif status.book_no == 127 and status.remodel_level == 1
+    elsif [123, 127, 128, 283].include?(status.book_no) and status.remodel_level == 1
       '潜水空母'
     else
       ship_type
