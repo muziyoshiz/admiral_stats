@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180421092212) do
+ActiveRecord::Schema.define(version: 20180806143756) do
 
   create_table "admiral_publications", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer "admiral_id", null: false
@@ -74,6 +74,25 @@ ActiveRecord::Schema.define(version: 20180421092212) do
     t.integer "blueprint_num", null: false
     t.datetime "exported_at", null: false
     t.index ["admiral_id", "book_no", "expiration_date", "exported_at"], name: "index_blueprint_statuses", unique: true
+  end
+
+  create_table "cop_event_masters", primary_key: "event_no", id: :integer, default: nil, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "area_id", null: false
+    t.string "event_name", limit: 32, null: false
+    t.datetime "started_at", null: false
+    t.datetime "ended_at", null: false
+  end
+
+  create_table "cop_event_progress_statuses", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer "admiral_id", null: false
+    t.integer "event_no", null: false
+    t.integer "numerator", null: false
+    t.integer "denominator", null: false
+    t.integer "achievement_number", null: false
+    t.boolean "area_achievement_claim", default: false, null: false
+    t.integer "limited_frame_num", null: false
+    t.datetime "exported_at", null: false
+    t.index ["admiral_id", "event_no", "exported_at"], name: "index_cop_event_progress_statuses", unique: true
   end
 
   create_table "equipment_card_timestamps", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

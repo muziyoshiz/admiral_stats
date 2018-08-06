@@ -98,3 +98,14 @@ CSV.read('db/seeds/event_stage_masters.utf8.csv', headers: true).each do |data|
   }
   EventStageMaster.where(event_no: record[:event_no], level: record[:level], period: record[:period], stage_no: record[:stage_no]).first_or_initialize.update(record)
 end
+
+CSV.read('db/seeds/cop_event_masters.utf8.csv', headers: true).each do |data|
+  record = {
+      event_no: data['Event No.'],
+      area_id: data['Area ID'],
+      event_name: data['Event name'],
+      started_at: data['Started at'],
+      ended_at: data['Ended at'],
+  }
+  CopEventMaster.where(event_no: record[:event_no]).first_or_initialize.update(record)
+end
