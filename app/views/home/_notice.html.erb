@@ -25,6 +25,9 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2018年8月7日更新：期間限定作戦の海域情報のインポートに対応しました。<%= link_to_if_logged_in '「輸送イベントの進捗」ページ', controller: 'admiral_info', action: 'cop_event' %> でインポート結果を確認できます。
+    </li>
+    <li>
       2018年7月24日更新：期間限定作戦の海域情報（Cop_info_yyyymmdd_hhmmss.json 形式）のエクスポートに対応しました。インポートには今後対応します。
       <ul>
         <li>
@@ -34,9 +37,6 @@
           PowerShell 版、Ruby 版：<%= link_to 'エクスポータの配布サイト(GitHub)', exporter_url, target: '_blank' %> から最新版にアップデートしてください。
         </li>
       </ul>
-    </li>
-    <li>
-      2018年7月10日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> で、伊19改を潜水艦として数えていた不具合を修正しました（正しくは潜水空母）。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
