@@ -61,7 +61,7 @@ class ImportController < ApplicationController
       json = file.read
 
       case params[:file_type]
-        when 'basic_info', 'ship_book', 'ship_list', 'event_info', 'blueprint_list', 'equip_book', 'equip_list'
+        when 'basic_info', 'ship_book', 'ship_list', 'event_info', 'blueprint_list', 'equip_book', 'equip_list', 'cop_info'
           file_type = params[:file_type].to_sym
         else
           # file_type が未知（'auto' 含む）の場合は、ファイル名からファイル種別の自動判別を行う
@@ -80,6 +80,8 @@ class ImportController < ApplicationController
               file_type = :equip_book
             when /^EquipList_info_/
               file_type = :equip_list
+            when /^Cop_info_/
+              file_type = :cop_info
             else
               @messages << "ファイル種別を自動判別できなかったため、無視されました。（ファイル名：#{file_name}）"
               next
@@ -101,6 +103,8 @@ class ImportController < ApplicationController
                      save_equipment_cards(current_admiral.id, exported_at, json, api_version)
                    when :equip_list
                      save_equipment_statuses(current_admiral.id, exported_at, json, api_version)
+                   when :cop_info
+                     save_cop_event_progress_statuses(current_admiral.id, exported_at, json, api_version)
                  end
 
       case res

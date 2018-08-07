@@ -34,6 +34,11 @@ module Import
   # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 260 = 1,898,000 とする。
   MAX_EQUIPMENT_STATUSES_COUNT = 1898000
 
+  # cop_event_progress_statuses テーブルの、1 提督あたりのレコード数上限
+  # イベント年4回、イベント期間1ヶ月、1日20回エクスポートしたと仮定して、
+  # 1年分で 4 * 30 * 20 = 2400 とする。
+  MAX_COP_EVENT_PROGRESS_STATUSES_COUNT = 2400
+
   private
 
   # yyyymmdd_hhmmss 形式の時刻を、Time オブジェクト（JST）に変換します。
@@ -425,5 +430,70 @@ module Import
     end
 
     return :created, '装備一覧のインポートに成功しました。'
+  end
+
+  # 輸送イベント進捗情報の JSON データを元に、cop_event_progress_statuses レコードの追加
+  def save_cop_event_progress_statuses(admiral_id, exported_at, json, api_version)
+    if CopEventProgressStatus.where(admiral_id: admiral_id, exported_at: exported_at).exists?
+      return :ok, '同じ時刻の輸送イベント進捗情報がインポート済みのため、無視されました。'
+    end
+
+    count = CopEventProgressStatus.where(admiral_id: admiral_id).count
+    if count >= MAX_COP_EVENT_PROGRESS_STATUSES_COUNT
+      logger.error("Max cop_event_progress_statuses count exceeded (admiral_id: #{admiral_id}, count: #{count})")
+      return :error, '輸送イベント進捗情報のアップロード数が上限に達しました。心当たりがない場合は、サイトの不具合の可能性がありますので開発者にお問い合わせください。'
+    end
+
+    begin
+      cop_info = AdmiralStatsParser.parse_cop_info(json, api_version)
+
+      # イベント開催期間でない場合、cop_info は nil になる
+      if cop_info.blank?
+        return :ok, '輸送イベント進捗情報が空のため、無視されました。'
+      end
+
+      # cop_event_master に登録されていない area_id は拒否する
+      area_id = cop_info.area_data_list.map{|area_data| area_data.area_id }.max
+      cop_event = CopEventMaster.where(area_id: area_id).first
+      unless cop_event
+        logger.warn("Unregistered area_id (admiral_id: #{admiral_id}, area_id: #{area_id})")
+        return :ok, 'Admiral Stats にこの輸送イベントの情報が未登録のため、無視されました。'
+      end
+
+      # データがインポートされたかどうか確認するためのフラグ
+      imported = false
+
+      CopEventProgressStatus.transaction do
+        # 上記の cop_info と同じ意味で、かつ exported_at が上記の cop_info よりも古い輸送イベント進捗情報が
+        # 存在する場合は、インポートを行わない
+        unless CopEventProgressStatus.where(
+            'admiral_id = ? AND event_no = ? AND numerator = ? AND denominator = ? AND achievement_number = ?' +
+                ' AND area_achievement_claim = ? AND limited_frame_num = ? AND exported_at <= ?',
+            admiral_id, cop_event.event_no, cop_info.numerator, cop_info.denominator, cop_info.achievement_number,
+            cop_info.area_achievement_claim, cop_info.limited_frame_num, exported_at).exists?
+
+          CopEventProgressStatus.create!(
+              admiral_id: admiral_id,
+              event_no: cop_event.event_no,
+              numerator: cop_info.numerator,
+              denominator: cop_info.denominator,
+              achievement_number: cop_info.achievement_number,
+              area_achievement_claim: cop_info.area_achievement_claim,
+              limited_frame_num: cop_info.limited_frame_num,
+              exported_at: exported_at,
+          )
+          imported = true
+        end
+      end
+
+      if imported
+        return :created, '輸送イベント進捗情報のインポートに成功しました。'
+      else
+        return :ok, '同じ意味を持つ、過去の輸送イベント進捗情報がインポート済みのため、無視されました。'
+      end
+    rescue => e
+      logger.error(e)
+      return :error, "輸送イベント進捗情報のインポートに失敗しました。（原因：#{e.message}）"
+    end
   end
 end

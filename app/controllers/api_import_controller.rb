@@ -14,7 +14,8 @@ class ApiImportController < ApplicationController
       'Event_info',
       'BlueprintList_info',
       'EquipBook_info',
-      'EquipList_info'
+      'EquipList_info',
+      'Cop_info'
   ]
 
   # Admiral Stats がインポート可能なファイル種別のリスト（パスの区切り / を _ に置換済み）を返します。
@@ -53,6 +54,8 @@ class ApiImportController < ApplicationController
         file_type = :equip_book
       when 'EquipList_info'
         file_type = :equip_list
+      when 'Cop_info'
+        file_type = :cop_info
       else
         msg = "Admiral Stats がインポートできないファイル種別のため、無視されました。（ファイル種別：#{params[:file_type]}）"
         record_api_request_log(:ok, msg)
@@ -89,6 +92,8 @@ class ApiImportController < ApplicationController
                    save_equipment_cards(jwt_current_admiral.id, exported_at, json, api_version)
                  when :equip_list
                    save_equipment_statuses(jwt_current_admiral.id, exported_at, json, api_version)
+                 when :cop_info
+                   save_cop_event_progress_statuses(jwt_current_admiral.id, exported_at, json, api_version)
                end
 
     record_api_request_log(res, msg)
