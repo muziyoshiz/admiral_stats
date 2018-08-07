@@ -33,7 +33,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info',
             'BlueprintList_info',
             'EquipBook_info',
-            'EquipList_info'
+            'EquipList_info',
+            'Cop_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -67,7 +68,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info',
             'BlueprintList_info',
             'EquipBook_info',
-            'EquipList_info'
+            'EquipList_info',
+            'Cop_info'
         ]), @response.body
 
     # ログがあることを確認
@@ -100,7 +102,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info',
             'BlueprintList_info',
             'EquipBook_info',
-            'EquipList_info'
+            'EquipList_info',
+            'Cop_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
@@ -130,7 +133,8 @@ class ApiImportControllerTest < ActionDispatch::IntegrationTest
             'Event_info',
             'BlueprintList_info',
             'EquipBook_info',
-            'EquipList_info'
+            'EquipList_info',
+            'Cop_info'
         ]), @response.body
 
     assert_equal '*', @response.headers['Access-Control-Allow-Origin']
