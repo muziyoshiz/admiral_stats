@@ -1,0 +1,87 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+  （開催期間：<%= @cop_event.started_at.to_s(:datetime) %> 〜 <%= @cop_event.ended_at.to_s(:datetime) %>）
+</div>
+
+<div class="container range-selector">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= @cop_event.event_name %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <% @cop_events.each do |cop_event| %>
+          <li><%= link_to cop_event.event_name, controller: 'admiral_info', action: 'cop_event', event_no: cop_event.event_no %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+  <div class="table-responsive-wrappable">
+    <table id="table-current-progress-status" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">突破周回数</th>
+        <th class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">限定フレーム数</th>
+        <th class="col-xl-6 col-lg-6 col-md-6 col-sm-4 col-xs-2">進捗</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% latest_status = @cop_statuses.first %>
+        <tr>
+          <td><%= latest_status.achievement_number - 1 %> 周</td>
+          <td><%= latest_status.limited_frame_num %> 個</td>
+          <td><%= cop_event_progress_status_to_text(latest_status) %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr>
+
+<div class="container">
+  <div class="table-responsive-wrappable">
+    <table id="table-history" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+      <tr>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-3 col-xs-4">日時</th>
+        <th class="hidden">日時（ソート用）</th>
+        <th class="text-left col-xl-10 col-lg-10 col-md-10 col-sm-9 col-xs-8">進捗</th>
+      </tr>
+      </thead>
+      <tfoot>
+      <tr>
+        <th class="text-left">日時</th>
+        <th class="hidden">日時（ソート用）</th>
+        <th class="text-left">進捗</th>
+      </tr>
+      </tfoot>
+      <tbody>
+      <% @cop_statuses.each do |status| %>
+          <tr>
+            <td class="text-left"><%= status.exported_at.to_s(:datetime) %></td>
+            <th class="hidden"><%= status.exported_at.to_s %></th>
+            <td class="text-left"><%= cop_event_progress_status_to_text(status) %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script type="application/javascript">
+  $(document).ready(function() {
+    $('#table-history').DataTable($.extend({}, ADMIRAL_STATS_DATATABLES_DEFAULT, {
+      "paging": true,
+      "sorting": [ 0, "desc" ],
+      <!-- 進捗履歴に検索は不要と思われるため、無効化 -->
+      "searching": false,
+      "aoColumnDefs": [
+        <!-- インデックスでソートするための設定 -->
+        { "iDataSort": 1, "aTargets": [ 0 ] },
+      ],
+    }));
+  } );
+</script>

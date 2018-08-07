@@ -45,6 +45,7 @@
                 <ul class="dropdown-menu">
                   <li><%= link_to '基本情報', controller: 'admiral_info' %></li>
                   <li><%= link_to 'イベントの進捗', controller: 'admiral_info', action: 'event' %></li>
+                  <li><%= link_to '輸送イベントの進捗', controller: 'admiral_info', action: 'cop_event' %></li>
                 </ul>
               </li>
               <li class="dropdown <%== 'active' if ['ship_list', 'ship_info'].include?(controller_name) %>">

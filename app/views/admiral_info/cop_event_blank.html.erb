@@ -1,0 +1,32 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+  （開催期間：<%= @cop_event.started_at.to_s(:datetime) %> 〜 <%= @cop_event.ended_at.to_s(:datetime) %>）
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h3 class="panel-title">このページについて</h3>
+      </div>
+      <div class="panel-body">
+        この輸送イベントの進捗情報はまだインポートされていません。<br>
+        過去の輸送イベントの進捗情報は、以下のリストを選択すると表示できます。
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container range-selector">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= @cop_event.event_name %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <% @cop_events.each do |cop_event| %>
+          <li><%= link_to cop_event.event_name, controller: 'admiral_info', action: 'cop_event', event_no: cop_event.event_no %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>

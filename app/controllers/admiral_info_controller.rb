@@ -209,7 +209,7 @@ class AdmiralInfoController < ApplicationController
       # 特定の難易度のイベント進捗情報を、エクスポート時刻が古い順に取得
       all_statuses.select{|s| s.level == level }.sort_by{|s| s.exported_at }.each do |s|
         # すでに同じ内容のイベント進捗情報がある場合は無視
-        next if prev_status and prev_status.is_comparable_with?(s)
+        next if prev_status && prev_status.is_comparable_with?(s)
 
         @statuses << s
         prev_status = s
@@ -266,6 +266,60 @@ class AdmiralInfoController < ApplicationController
                               current_admiral.id, sship.book_no, sship.card_index, @event.started_at, @event.ended_at).exists?
       @special_cards[sship.book_no] = exists ? :acquired : :not_acquired
     end
+  end
+
+  # 輸送イベント進捗情報のサマリを表示します。
+  def cop_event
+    # すでに開始しているイベントを全取得
+    @cop_events = CopEventMaster.where('started_at <= ?', Time.current).to_a
+    if @cop_events.size == 0
+      redirect_to root_url
+      return
+    end
+
+    # URLパラメータでイベント No. を指定されたらそれを表示し、指定されなければ最新のイベントを表示
+    if params[:event_no]
+      @cop_event = @cop_events.select{|e| e.event_no == params[:event_no].to_i }.first
+      unless @cop_event
+        redirect_to root_url
+        return
+      end
+    else
+      @cop_event = @cop_events.max{|e| e.event_no }
+    end
+
+    set_meta_tags title: "輸送イベントの進捗（#{@cop_event.event_name}）"
+
+    all_cop_statuses = CopEventProgressStatus.where(admiral_id: current_admiral.id, event_no: @cop_event.event_no).to_a
+
+    # イベント進捗情報がなければ、処理を終了
+    if all_cop_statuses.blank?
+      if CopEventProgressStatus.exists?(admiral_id: current_admiral.id)
+        # 他のイベントはアップロード済みなら、他のイベントへのリンクを表示する
+        render :action => 'cop_event_blank'
+      else
+        # どのイベントの結果もアップロードされていないなら、説明を表示する
+        render :action => 'cop_event_guide'
+      end
+      return
+    end
+
+    # イベント進捗の重複を排除した結果を @cop_statuses に格納する
+    # 同じ意味のイベント進捗が複数ある場合は、一番エクスポート時刻が古いものだけ残す
+    @cop_statuses = []
+
+    # 輸送イベント進捗情報を、エクスポート時刻が古い順に取得
+    prev_status = nil
+    all_cop_statuses.sort_by{|s| s.exported_at }.each do |s|
+      # すでに同じ内容の輸送イベント進捗情報がある場合は無視
+      next if prev_status && prev_status.is_comparable_with?(s)
+
+      @cop_statuses << s
+      prev_status = s
+    end
+
+    # 履歴表示のために、新しい順にソート
+    @cop_statuses = @cop_statuses.sort_by{|s| s.exported_at }.reverse
   end
 
   private

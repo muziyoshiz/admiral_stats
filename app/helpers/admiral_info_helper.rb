@@ -23,4 +23,9 @@ module AdmiralInfoHelper
 
     retval
   end
+
+  # 輸送イベント進捗情報のテキスト表現を返します。
+  def cop_event_progress_status_to_text(status)
+    "#{status.achievement_number} 周目（TPゲージ残り #{status.numerator}/#{status.denominator}）"
+  end
 end

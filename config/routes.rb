@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   # 提督情報
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
   get 'admiral_info/event(/:event_no(/:period))', to: 'admiral_info#event'
+  get 'admiral_info/cop_event(/:event_no)', to: 'admiral_info#cop_event'
 
   # 艦娘情報
   ## 表が主体のページ
