@@ -1,0 +1,87 @@
+<div class="page-header">
+  <h2><%= title %></h2>
+  （開催期間：<%= @cop_event.started_at.to_s(:datetime) %> 〜 <%= @cop_event.ended_at.to_s(:datetime) %>）
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h3 class="panel-title">このデータについて</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+          <li>輸送イベント開催中にプレイデータをアップロードした提督（<%= @total_num %>名）に対する、攻略済み周回数の割合です。</li>
+          <% if logged_in? %>
+              <li>あなたの攻略状況は <%= link_to '「輸送イベントの進捗」ページ', controller: 'admiral_info', action: 'cop_event', event_no: @cop_event.event_no %> で確認できます。</li>
+          <% else %>
+              <li>
+                是非あなたのプレイデータもアップロードしてみてください！　使い方については
+                <%= link_to 'ホーム画面', root_url %> や
+                <%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> をご覧ください。
+              </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container range-selector">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <%= @cop_event.event_name %>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <% @cop_events.each do |cop_event| %>
+          <li><%= link_to cop_event.event_name, controller: 'global', action: 'cop_event', event_no: cop_event.event_no %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<div id="chart-cleared-loop-counts" style="width:100%; height:400px;"></div>
+
+<script type="application/javascript">
+  // 引数で渡した UNIX タイムスタンプを、ローカルタイムで解釈するためのオプション
+  // このオプションを渡さないと、タイムスタンプを UTC で解釈した時間が表示される
+  Highcharts.setOptions({
+    global : {
+      useUTC : false
+    }
+  });
+
+  $(function () {
+    $('#chart-cleared-loop-counts').highcharts({
+      exporting: {
+        sourceHeight: 400,
+        sourceWidth: 800,
+      },
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+      },
+      title: {
+        text: '攻略済み周回数'
+      },
+      tooltip: {
+        headerFormat: '',
+        pointFormat: '<b>{point.name}:</b> {point.y} %'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: '{point.name}: {point.y} %',
+          }
+        }
+      },
+      series: [{ data: <%== data_chart_cop_cleared_loop_counts(@total_num, @cop_cleared_loop_counts) %> }]
+    });
+  });
+</script>

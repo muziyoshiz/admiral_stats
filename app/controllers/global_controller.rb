@@ -322,4 +322,55 @@ class GlobalController < ApplicationController
       @cleared_loop_counts[level][19] = @statuses[level].select{|s| s.max_cleared_loop_counts >= 100 }.size
     end
   end
+
+  # 輸送イベント周回数を表示する
+  def cop_event
+    # すでに開始している輸送イベントを全取得
+    @cop_events = CopEventMaster.where('started_at <= ?', Time.current).to_a
+    if @cop_events.size == 0
+      redirect_to root_url
+      return
+    end
+
+    # URLパラメータでイベント No. を指定されたらそれを表示し、指定されなければ最新の輸送イベントを表示
+    if params[:event_no]
+      @cop_event = @cop_events.select{|e| e.event_no == params[:event_no].to_i }.first
+      unless @cop_event
+        redirect_to root_url
+        return
+      end
+    else
+      @cop_event = @cop_events.max{|e| e.event_no }
+    end
+
+    set_meta_tags title: "輸送イベント周回数（#{@cop_event.event_name}）"
+
+    # 各提督の現在の周回数を取得
+    @cop_statuses = CopEventProgressStatus.find_by_sql(
+        [ 'SELECT admiral_id, max(achievement_number) AS max_achievement_number ' +
+              'FROM cop_event_progress_statuses WHERE event_no = ? GROUP BY admiral_id',
+          @cop_event.event_no ]
+    )
+
+    # アップロード済みの提督数
+    # distinct.count(:admiral_id) とすると、
+    # SELECT DISTINCT COUNT(DISTINCT admiral_id) FROM ...
+    # という SQL が生成されてしまう（DISTINCT が多く、全件サーチになってしまう）ため、以下の記法にした
+    @total_num = CopEventProgressStatus.where(event_no: @cop_event.event_no).count('DISTINCT admiral_id')
+
+    # クリア済み周回数（achievement_number - 1）
+    @cop_cleared_loop_counts = {}
+
+    (0..19).each do |cnt|
+      @cop_cleared_loop_counts[cnt] = @cop_statuses.select{|s| s.max_achievement_number - 1 == cnt }.size
+    end
+
+    # 周回数が20台〜90台の提督数
+    (2..9).each do |cnt10x|
+      @cop_cleared_loop_counts[10 * cnt10x] =
+          @cop_statuses.select{|s| s.max_achievement_number - 1 >= (10 * cnt10x) and s.max_achievement_number - 1 < (10 * (cnt10x + 1)) }.size
+    end
+
+    @cop_cleared_loop_counts[100] = @cop_statuses.select{|s| s.max_achievement_number - 1 >= 100 }.size
+  end
 end

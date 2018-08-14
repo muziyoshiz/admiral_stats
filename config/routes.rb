@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get 'global/ship_card_ownership/active/:def_of_active_users', to: 'global#ship_card_ownership'
   get 'global/ship_card_ownership/event/:event_no', to: 'global#event_ship_card_ownership'
   get 'global/event(/:event_no(/:period))', to: 'global#event'
+  get 'global/cop_event(/:event_no)', to: 'global#cop_event'
 
   get 'friend', to: 'friend#index'
 
