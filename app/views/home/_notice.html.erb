@@ -25,6 +25,9 @@
     <% end %>
     <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
+      2018年8月14日更新：期間限定作戦のレポート表示（<%= link_to '「輸送イベント攻略率」ページ', controller: 'global', action: 'cop_event' %>）を追加しました。
+    </li>
+    <li>
       2018年8月7日更新：期間限定作戦の海域情報のインポートに対応しました。<%= link_to_if_logged_in '「輸送イベントの進捗」ページ', controller: 'admiral_info', action: 'cop_event' %> でインポート結果を確認できます。
     </li>
     <li>

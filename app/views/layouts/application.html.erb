@@ -72,6 +72,7 @@
               <ul class="dropdown-menu">
                 <li><%= link_to '艦娘カード入手率', global_ship_card_ownership_url %></li>
                 <li><%= link_to 'イベント攻略率', controller: 'global', action: 'event' %></li>
+                <li><%= link_to '輸送イベント攻略率', controller: 'global', action: 'cop_event' %></li>
               </ul>
             </li>
             <% if logged_in? %>

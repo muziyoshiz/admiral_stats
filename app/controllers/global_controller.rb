@@ -323,7 +323,7 @@ class GlobalController < ApplicationController
     end
   end
 
-  # 輸送イベント周回数を表示する
+  # 輸送イベント攻略率を表示する
   def cop_event
     # すでに開始している輸送イベントを全取得
     @cop_events = CopEventMaster.where('started_at <= ?', Time.current).to_a
@@ -343,7 +343,7 @@ class GlobalController < ApplicationController
       @cop_event = @cop_events.max{|e| e.event_no }
     end
 
-    set_meta_tags title: "輸送イベント周回数（#{@cop_event.event_name}）"
+    set_meta_tags title: "輸送イベント攻略率（#{@cop_event.event_name}）"
 
     # 各提督の現在の周回数を取得
     @cop_statuses = CopEventProgressStatus.find_by_sql(
