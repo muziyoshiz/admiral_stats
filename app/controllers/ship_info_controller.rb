@@ -59,6 +59,10 @@ class ShipInfoController < ApplicationController
     statuses = statuses.to_a
     statuses.reject!{|s| masters[s.book_no].over_kai_only? }
 
+    # TODO この処理により、ノーマル艦娘を持っていない艦娘のレベルが、グラフに表示されないケースがある
+
+
+
     # キーは図鑑 No. で値は [時刻, レベル または 経験値] の配列
     levels = {}
     exps = {}

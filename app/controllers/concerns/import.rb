@@ -4,11 +4,13 @@ module Import
 
   # admiral_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、1年分で 365 * 20 = 7,300
-  MAX_ADMIRAL_STATUSES_COUNT = 7300
+  # 上限に到達したユーザーが居るテーブルは、2年に緩和
+  MAX_ADMIRAL_STATUSES_COUNT = 14600
 
   # ship_card_timestamps テーブルの、1 提督あたりのレコード数上限
-  # admiral_statuses テーブルと同じ理由で、7300 とする。
-  MAX_SHIP_CARD_TIMESTAMPS_COUNT = 7300
+  # admiral_statuses テーブルと同じ理由で、14600 とする。
+  # 上限に到達したユーザーが居るテーブルは、2年に緩和
+  MAX_SHIP_CARD_TIMESTAMPS_COUNT = 14600
 
   # ship_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
@@ -27,7 +29,8 @@ module Import
 
   # equipment_card_timestamps テーブルの、1 提督あたりのレコード数上限
   # admiral_statuses テーブルと同じ理由で、7300 とする。
-  MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT = 7300
+  # 上限に到達したユーザーが居るテーブルは、2年に緩和
+  MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT = 14600
 
   # equipment_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
