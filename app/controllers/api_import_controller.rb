@@ -127,6 +127,7 @@ class ApiImportController < ApplicationController
       )
     rescue => e
       logger.error(e)
+      logger.error("res: #{res}, msg: #{msg}")
     end
   end
 end
