@@ -6,6 +6,23 @@
   <h3>2018年</h3>
   <ul>
     <li>
+      2018年8月14日更新：期間限定作戦のレポート表示（<%= link_to '「輸送イベント攻略率」ページ', controller: 'global', action: 'cop_event' %>）を追加しました。
+    </li>
+    <li>
+      2018年8月7日更新：期間限定作戦の海域情報のインポートに対応しました。<%= link_to_if_logged_in '「輸送イベントの進捗」ページ', controller: 'admiral_info', action: 'cop_event' %> でインポート結果を確認できます。
+    </li>
+    <li>
+      2018年7月24日更新：期間限定作戦の海域情報（Cop_info_yyyymmdd_hhmmss.json 形式）のエクスポートに対応しました。インポートには今後対応します。
+      <ul>
+        <li>
+          ブックマークレット版：基本的には、特に何もする必要はありません。現時点では（すべてダウンロード）のエクスポータの場合のみ、エクスポートされるファイルが1個増えます。
+        </li>
+        <li>
+          PowerShell 版、Ruby 版：<%= link_to 'エクスポータの配布サイト(GitHub)', exporter_url, target: '_blank' %> から最新版にアップデートしてください。
+        </li>
+      </ul>
+    </li>
+    <li>
       2018年7月10日更新：<%= link_to_if_logged_in '「レベル・経験値・★5艦娘数（艦種別）」ページ', controller: 'ship_info', action: 'level_summary' %> で、伊19改を潜水艦として数えていた不具合を修正しました（正しくは潜水空母）。
     </li>
     <li>
