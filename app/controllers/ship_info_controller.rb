@@ -138,16 +138,10 @@ class ShipInfoController < ApplicationController
         forecast[:lv30_rest] = 43500 - s_end.estimated_exp
       end
 
-      # Lv 50 到達予想時間（Lv 50 の経験値は 122,500）
-      if s_end.level < 50
-        forecast[:lv50_at] = s_begin.exported_at + (122500 - s_begin.estimated_exp) / exp_per_sec
-        forecast[:lv50_rest] = 122500 - s_end.estimated_exp
-      end
-
-      # Lv 70 到達予想時間（Lv 70 の経験値は 265,000）
-      if s_end.level < 70
-        forecast[:lv70_at] = s_begin.exported_at + (265000 - s_begin.estimated_exp) / exp_per_sec
-        forecast[:lv70_rest] = 265000 - s_end.estimated_exp
+      # Lv 60 到達予想時間（Lv 60 の経験値は 181,500）
+      if s_end.level < 60
+        forecast[:lv60_at] = s_begin.exported_at + (181500 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv60_rest] = 181500 - s_end.estimated_exp
       end
 
       # Lv 90 到達予想時間（Lv 90 の経験値は 545,500）
@@ -168,10 +162,16 @@ class ShipInfoController < ApplicationController
         forecast[:lv135_rest] = 2210000 - s_end.estimated_exp
       end
 
-      # Lv 150 到達予想時間（Lv 150 の経験値は 4,360,000）
+      # Lv 150 到達予想時間（Lv 150 の経験値は 4,360,000。過去のレベル上限）
       if s_end.level < 150
         forecast[:lv150_at] = s_begin.exported_at + (4360000 - s_begin.estimated_exp) / exp_per_sec
         forecast[:lv150_rest] = 4360000 - s_end.estimated_exp
+      end
+
+      # Lv 155 到達予想時間（Lv 155 の経験値は 5,470,000）
+      if s_end.level < 155
+        forecast[:lv155_at] = s_begin.exported_at + (5470000 - s_begin.estimated_exp) / exp_per_sec
+        forecast[:lv155_rest] = 5470000 - s_end.estimated_exp
       end
     end
 
@@ -179,10 +179,8 @@ class ShipInfoController < ApplicationController
     # min_by の返り値は [ book_no, forecast ] という配列になる
     soon = @forecasts.select{|b, f| f[:lv30_at] }.min_by{|b, f| f[:lv30_at] }
     soon[1][:lv30_soon] = true if soon
-    soon = @forecasts.select{|b, f| f[:lv50_at] }.min_by{|b, f| f[:lv50_at] }
-    soon[1][:lv50_soon] = true if soon
-    soon = @forecasts.select{|b, f| f[:lv70_at] }.min_by{|b, f| f[:lv70_at] }
-    soon[1][:lv70_soon] = true if soon
+    soon = @forecasts.select{|b, f| f[:lv60_at] }.min_by{|b, f| f[:lv60_at] }
+    soon[1][:lv60_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv90_at] }.min_by{|b, f| f[:lv90_at] }
     soon[1][:lv90_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv99_at] }.min_by{|b, f| f[:lv99_at] }
@@ -191,6 +189,8 @@ class ShipInfoController < ApplicationController
     soon[1][:lv135_soon] = true if soon
     soon = @forecasts.select{|b, f| f[:lv150_at] }.min_by{|b, f| f[:lv150_at] }
     soon[1][:lv150_soon] = true if soon
+    soon = @forecasts.select{|b, f| f[:lv155_at] }.min_by{|b, f| f[:lv155_at] }
+    soon[1][:lv155_soon] = true if soon
   end
 
   # 艦種別のレベル・経験値表示

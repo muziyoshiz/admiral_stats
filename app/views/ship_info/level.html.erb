@@ -52,8 +52,8 @@
 
 <div class="container" style="margin-top: 10px;">
   <a class="toggle-ship-level btn btn-default">
-    <span class="toggle-text" style="display: none;">レベル99〜150を表示</span>
-    <span class="toggle-text">レベル30〜70を表示</span>
+    <span class="toggle-text" style="display: none;">レベル99〜155を表示</span>
+    <span class="toggle-text">レベル30〜99表示</span>
   </a>
 </div>
 
@@ -69,10 +69,8 @@
         <th class="hidden">経験値増加量（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 30</th>
         <th class="hidden">レベル 30 到達日（ソート用）</th>
-        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 50</th>
-        <th class="hidden">レベル 50 到達日（ソート用）</th>
-        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 70</th>
-        <th class="hidden">レベル 70 到達日（ソート用）</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 60</th>
+        <th class="hidden">レベル 60 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 90</th>
         <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 99</th>
@@ -81,6 +79,8 @@
         <th class="hidden">レベル 135 到達日（ソート用）</th>
         <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 150</th>
         <th class="hidden">レベル 150 到達日（ソート用）</th>
+        <th class="text-left col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">レベル 155</th>
+        <th class="hidden">レベル 155 到達日（ソート用）</th>
       </tr>
       </thead>
       <tfoot>
@@ -92,10 +92,8 @@
         <th class="hidden">経験値増加量（ソート用）</th>
         <th class="text-left">レベル 30</th>
         <th class="hidden">レベル 30 到達日（ソート用）</th>
-        <th class="text-left">レベル 50</th>
-        <th class="hidden">レベル 50 到達日（ソート用）</th>
-        <th class="text-left">レベル 70</th>
-        <th class="hidden">レベル 70 到達日（ソート用）</th>
+        <th class="text-left">レベル 60</th>
+        <th class="hidden">レベル 60 到達日（ソート用）</th>
         <th class="text-left">レベル 90</th>
         <th class="hidden">レベル 90 到達日（ソート用）</th>
         <th class="text-left">レベル 99</th>
@@ -104,6 +102,8 @@
         <th class="hidden">レベル 135 到達日（ソート用）</th>
         <th class="text-left">レベル 150</th>
         <th class="hidden">レベル 150 到達日（ソート用）</th>
+        <th class="text-left">レベル 155</th>
+        <th class="hidden">レベル 155 到達日（ソート用）</th>
       </tr>
       </tfoot>
       <tbody>
@@ -127,24 +127,15 @@
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
             <td class="hidden"><%= forecast[:lv30_at] %></td>
-            <% if forecast[:lv50_at] %>
-                <td class="text-left <%== 'soon success' if forecast[:lv50_soon] %>">
-                  <%= forecast[:lv50_at].to_s(:date) %>
-                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv50_rest]) %></span>
+            <% if forecast[:lv60_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv60_soon] %>">
+                  <%= forecast[:lv60_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv60_rest]) %></span>
                 </td>
             <% else %>
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
-            <td class="hidden"><%= forecast[:lv50_at] %></td>
-            <% if forecast[:lv70_at] %>
-                <td class="text-left <%== 'soon success' if forecast[:lv70_soon] %>">
-                  <%= forecast[:lv70_at].to_s(:date) %>
-                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv70_rest]) %></span>
-                </td>
-            <% else %>
-                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
-            <% end %>
-            <td class="hidden"><%= forecast[:lv70_at] %></td>
+            <td class="hidden"><%= forecast[:lv60_at] %></td>
             <% if forecast[:lv90_at] %>
                 <td class="text-left <%== 'soon success' if forecast[:lv90_soon] %>">
                   <%= forecast[:lv90_at].to_s(:date) %>
@@ -181,6 +172,15 @@
                 <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
             <% end %>
             <td class="hidden"><%= forecast[:lv150_at] %></td>
+            <% if forecast[:lv155_at] %>
+                <td class="text-left <%== 'soon success' if forecast[:lv155_soon] %>">
+                  <%= forecast[:lv155_at].to_s(:date) %>
+                  <br><span class="exp-to-next">あと <%= number_with_delimiter(forecast[:lv155_rest]) %></span>
+                </td>
+            <% else %>
+                <td class="achieved"><i class="glyphicon glyphicon-ok"></i></td>
+            <% end %>
+            <td class="hidden"><%= forecast[:lv155_at] %></td>
           </tr>
       <% end %>
       </tbody>
@@ -237,7 +237,7 @@
         { "iDataSort": 8, "aTargets": [ 7 ] },
         { "iDataSort": 10, "aTargets": [ 9 ] },
         { "iDataSort": 12, "aTargets": [ 11 ] },
-        <!-- デフォルト状態でレベル 30, 50, 70 の列を隠すための設定 -->
+        <!-- デフォルト状態でレベル 30, 60, 90 の列を隠すための設定 -->
         { "bVisible": false, "aTargets": [ 5, 7, 9 ] },
       ],
     }));
