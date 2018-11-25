@@ -47,12 +47,13 @@ class EventStatsExportBatch
     event.periods.each do |period|
       s_period = case period
                    when 0
-                     '前段作戦'
+                     '前段作戦 '
                    when 1
-                     '後段作戦'
+                     '後段作戦 '
                    when 2
-                     'EO'
+                     'EO '
                  end
+      s_period = '' if event.periods.size == 1
 
       event.levels_in_period(period).each do |level|
         s_level = case level
@@ -64,16 +65,16 @@ class EventStatsExportBatch
                       '甲'
                   end
 
-        row << "#{s_period} #{s_level} 提督数"
-        row << "#{s_period} #{s_level} 攻略済み提督数"
-        row << "#{s_period} #{s_level} 攻略率"
-        row << "#{s_period} #{s_level} 攻略済み周回数（合計）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（平均）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（分散）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（標準偏差）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（中央値）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（95パーセンタイル）"
-        row << "#{s_period} #{s_level} 攻略済み周回数（最大）"
+        row << "#{s_period}#{s_level} 提督数"
+        row << "#{s_period}#{s_level} 攻略済み提督数"
+        row << "#{s_period}#{s_level} 攻略率"
+        row << "#{s_period}#{s_level} 攻略済み周回数（合計）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（平均）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（分散）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（標準偏差）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（中央値）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（95パーセンタイル）"
+        row << "#{s_period}#{s_level} 攻略済み周回数（最大）"
       end
     end
 
