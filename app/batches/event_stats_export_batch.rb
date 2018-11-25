@@ -124,7 +124,7 @@ class EventStatsExportBatch
             row << cleared_admiral_num
 
             # その作戦および難易度をクリアした提督の割合
-            row << (admiral_num == 0 ? 0.0 : (cleared_admiral_num.to_f / admiral_num * 100).round(1))
+            row << (admiral_num == 0 ? 0.0 : (cleared_admiral_num.to_f / admiral_num).round(3))
 
             # その作戦および難易度の周回数の合計値
             loop_sum = (admiral_num == 0 ? 0 : max_cleared_loop_counts.sum)
