@@ -8,25 +8,35 @@ module Enumerable
   end
 
   def mean
+    return Float::NAN if self.length == 0
     self.sum / self.length.to_f
   end
 
   def sample_variance
+    return Float::NAN if self.length == 0
     m = self.mean
     sum = self.inject(0){|accum, i| accum + (i - m) ** 2 }
     sum / (self.length - 1).to_f
   end
 
   def standard_deviation
+    return Float::NAN if self.length == 0
     Math.sqrt(self.sample_variance)
   end
 
   def percentile(percentile)
+    case self.length
+      when 0
+        return Float::NAN
+      when 1
+        return self.first
+    end
+
     values_sorted = self.sort
     k = (percentile * (values_sorted.length - 1) + 1).floor - 1
     f = (percentile * (values_sorted.length - 1) + 1).modulo(1)
 
-    return values_sorted[k] + (f * (values_sorted[k + 1] - values_sorted[k]))
+    values_sorted[k] + (f * (values_sorted[k + 1] - values_sorted[k]))
   end
 end
 
@@ -103,40 +113,45 @@ class EventStatsExportBatch
 
           # その作戦および難易度のプレイデータをアップロードした提督数
           admiral_num = max_cleared_loop_counts.size
-          row << admiral_num
 
-          # その作戦および難易度をクリアした提督数
-          cleared_admiral_num = max_cleared_loop_counts.select{|c| c > 0 }.size
-          row << cleared_admiral_num
+          if admiral_num == 0
+            row += [''] * 10
+          else
+            row << admiral_num
 
-          # その作戦および難易度をクリアした提督の割合
-          row << (admiral_num == 0 ? 0 : (cleared_admiral_num.to_f / admiral_num * 100).round(1))
+            # その作戦および難易度をクリアした提督数
+            cleared_admiral_num = max_cleared_loop_counts.select{|c| c > 0 }.size
+            row << cleared_admiral_num
 
-          # その作戦および難易度の周回数の合計値
-          loop_sum = max_cleared_loop_counts.sum
-          row << loop_sum
+            # その作戦および難易度をクリアした提督の割合
+            row << (admiral_num == 0 ? 0.0 : (cleared_admiral_num.to_f / admiral_num * 100).round(1))
 
-          # その作戦および難易度の周回数の平均値
-          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.mean.round(1))
+            # その作戦および難易度の周回数の合計値
+            loop_sum = (admiral_num == 0 ? 0 : max_cleared_loop_counts.sum)
+            row << loop_sum
 
-          # その作戦および難易度の周回数の分散
-          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.sample_variance.round(2))
+            # その作戦および難易度の周回数の平均値
+            row << max_cleared_loop_counts.mean.round(1)
 
-          # その作戦および難易度の周回数の標準偏差
-          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.standard_deviation.round(2))
+            # その作戦および難易度の周回数の分散
+            row << max_cleared_loop_counts.sample_variance.round(2)
 
-          # その作戦および難易度の周回数の中央値
-          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.percentile(0.5).round(1))
+            # その作戦および難易度の周回数の標準偏差
+            row << max_cleared_loop_counts.standard_deviation.round(2)
 
-          # その作戦および難易度の周回数の95パーセンタイル
-          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.percentile(0.95).round(1))
+            # その作戦および難易度の周回数の中央値
+            row << max_cleared_loop_counts.percentile(0.5).round(1)
 
-          # その作戦および難易度の周回数の最大値
-          row << max_cleared_loop_counts.max
+            # その作戦および難易度の周回数の95パーセンタイル
+            row << max_cleared_loop_counts.percentile(0.95).round(1)
+
+            # その作戦および難易度の周回数の最大値
+            row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.max)
+          end
         end
       end
 
-      print row.join(',')
+      print row.map{|r| r.is_a?(Float) && r.nan? ? '' : r }.join(',')
       print "\n"
 
       day = day + 1.day
