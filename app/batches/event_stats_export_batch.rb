@@ -1,6 +1,35 @@
 # イベント攻略率を時系列に集計し、出力するバッチです。
 # 実行方法は以下の通りです。-e オプションを指定しない場合は、development で実行されます。
 # rails runner EventStatsExportBatch.execute -e (development|production)
+
+module Enumerable
+  def sum
+    self.inject(:+)
+  end
+
+  def mean
+    self.sum / self.length.to_f
+  end
+
+  def sample_variance
+    m = self.mean
+    sum = self.inject(0){|accum, i| accum + (i - m) ** 2 }
+    sum / (self.length - 1).to_f
+  end
+
+  def standard_deviation
+    Math.sqrt(self.sample_variance)
+  end
+
+  def percentile(percentile)
+    values_sorted = self.sort
+    k = (percentile * (values_sorted.length - 1) + 1).floor - 1
+    f = (percentile * (values_sorted.length - 1) + 1).modulo(1)
+
+    return values_sorted[k] + (f * (values_sorted[k + 1] - values_sorted[k]))
+  end
+end
+
 class EventStatsExportBatch
   def self.execute
     # エラーチェックは省略
@@ -40,6 +69,8 @@ class EventStatsExportBatch
         row << "#{s_period} #{s_level} 攻略率"
         row << "#{s_period} #{s_level} 攻略済み周回数（合計）"
         row << "#{s_period} #{s_level} 攻略済み周回数（平均）"
+        row << "#{s_period} #{s_level} 攻略済み周回数（分散）"
+        row << "#{s_period} #{s_level} 攻略済み周回数（標準偏差）"
         row << "#{s_period} #{s_level} 攻略済み周回数（中央値）"
         row << "#{s_period} #{s_level} 攻略済み周回数（95パーセンタイル）"
         row << "#{s_period} #{s_level} 攻略済み周回数（最大）"
@@ -81,17 +112,23 @@ class EventStatsExportBatch
           row << (admiral_num == 0 ? 0 : (cleared_admiral_num.to_f / admiral_num * 100).round(1))
 
           # その作戦および難易度の周回数の合計値
-          loop_sum = max_cleared_loop_counts.inject(:+)
+          loop_sum = max_cleared_loop_counts.sum
           row << loop_sum
 
           # その作戦および難易度の周回数の平均値
-          row << (admiral_num == 0 ? 0 : (loop_sum.to_f / admiral_num).round(1))
+          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.mean.round(1))
+
+          # その作戦および難易度の周回数の分散
+          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.sample_variance.round(2))
+
+          # その作戦および難易度の周回数の標準偏差
+          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.standard_deviation.round(2))
 
           # その作戦および難易度の周回数の中央値
-          row << (admiral_num == 0 ? 0 : percentile(max_cleared_loop_counts, 0.5).round(1))
+          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.percentile(0.5).round(1))
 
           # その作戦および難易度の周回数の95パーセンタイル
-          row << (admiral_num == 0 ? 0 : percentile(max_cleared_loop_counts, 0.95).round(1))
+          row << (admiral_num == 0 ? 0 : max_cleared_loop_counts.percentile(0.95).round(1))
 
           # その作戦および難易度の周回数の最大値
           row << max_cleared_loop_counts.max
@@ -103,13 +140,5 @@ class EventStatsExportBatch
 
       day = day + 1.day
     end
-  end
-
-  def self.percentile(values, percentile)
-    values_sorted = values.sort
-    k = (percentile*(values_sorted.length-1)+1).floor - 1
-    f = (percentile*(values_sorted.length-1)+1).modulo(1)
-
-    return values_sorted[k] + (f * (values_sorted[k+1] - values_sorted[k]))
   end
 end
