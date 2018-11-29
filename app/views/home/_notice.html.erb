@@ -23,15 +23,12 @@
           まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
         </li>
     <% end %>
-    <li><strong>トピックス</strong>：<%= link_to '第3回イベントのプレイデータ解析結果（開発者のブログ）', 'http://muziyoshiz.hatenablog.com/entry/2018/02/23/221856', target: '_blank' %>、<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
+    <li><strong>トピックス</strong>：<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
+    <li>
+      2018年11月29日更新：開発者のブログにて、<%= link_to '過去のイベント全5回分の攻略率・周回数の時系列データ（CSVファイル）', 'https://muziyoshiz.hatenablog.com/entry/2018/11/29/212922', target: '_blank' %>を公開しました。
+    </li>
     <li>
       2018年11月24日更新：新しいレベル上限（艦娘Lv.155）に対応できていなかった不具合を修正しました。またレベル上限到達予想の対象レベルを 30, 60, 90, 99, 135, 150, 155 に変更しました。
-    </li>
-    <li>
-      2018年10月13日更新：AL作戦／MI作戦のイベント進捗情報のインポートに対応しました。表示される後段・EOの開始日とイベント終了日は仮のものです。
-    </li>
-    <li>
-      2018年10月3日更新：10月4日からのレベル上限解放（艦隊司令部Lv.115、艦娘Lv.155）に対応しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
