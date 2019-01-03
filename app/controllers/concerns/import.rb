@@ -4,18 +4,19 @@ module Import
 
   # admiral_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、1年分で 365 * 20 = 7,300
-  # 上限に到達したユーザーが居るテーブルは、2年に緩和
-  MAX_ADMIRAL_STATUSES_COUNT = 14600
+  # 上限に到達したユーザーが居るテーブルは、3年に緩和
+  MAX_ADMIRAL_STATUSES_COUNT = 21900
 
   # ship_card_timestamps テーブルの、1 提督あたりのレコード数上限
   # admiral_statuses テーブルと同じ理由で、14600 とする。
-  # 上限に到達したユーザーが居るテーブルは、2年に緩和
-  MAX_SHIP_CARD_TIMESTAMPS_COUNT = 14600
+  # 上限に到達したユーザーが居るテーブルは、3年に緩和
+  MAX_SHIP_CARD_TIMESTAMPS_COUNT = 21900
 
   # ship_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
   # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 350 = 2,555,000 とする。
-  MAX_SHIP_STATUSES_COUNT = 2555000
+  # 上限に到達したユーザーが居るテーブルは、2年に緩和
+  MAX_SHIP_STATUSES_COUNT = 5110000
 
   # event_progress_statuses テーブルの、1 提督あたりのレコード数上限
   # イベント年4回、イベント期間1ヶ月、甲乙丙の3レベル、1日20回エクスポートしたと仮定して、
@@ -25,12 +26,13 @@ module Import
   # blueprint_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
   # これが図鑑 No. の数だけ増える可能性があるため、365 * 20 * 350 = 2,555,000 とする。
-  MAX_BLUEPRINT_STATUSES_COUNT = 2555000
+  # 上限に到達したユーザーが居るテーブルは、2年に緩和
+  MAX_BLUEPRINT_STATUSES_COUNT = 5110000
 
   # equipment_card_timestamps テーブルの、1 提督あたりのレコード数上限
   # admiral_statuses テーブルと同じ理由で、7300 とする。
-  # 上限に到達したユーザーが居るテーブルは、2年に緩和
-  MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT = 14600
+  # 上限に到達したユーザーが居るテーブルは、3年に緩和
+  MAX_EQUIPMENT_CARD_TIMESTAMPS_COUNT = 21900
 
   # equipment_statuses テーブルの、1 提督あたりのレコード数上限
   # 1日20回（1時間に1回、メンテ時間除く）エクスポートしたと仮定して、365 * 20 = 7,300
