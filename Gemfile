@@ -64,7 +64,7 @@ gem 'jquery-datatables-rails', '~> 3.4.0'
 # The gem version mirrors the included version of Highcharts
 gem 'highcharts-rails', '~> 4.2.5'
 
-gem 'admiral_stats_parser', '1.15.1'
+gem 'admiral_stats_parser', '1.17.1'
 
 # Ruby 2.4.1 で json gem v1.8.3 をビルドできない問題への対応 → gem 側の問題が解決したらこの行は削除する
 # http://qiita.com/shinichinomura/items/41e03d7e4fa56841e654
