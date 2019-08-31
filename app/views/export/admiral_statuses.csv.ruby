@@ -1,7 +1,7 @@
 require 'csv'
 require 'nkf'
 
-columns = %w(exported_at ammo steel bauxite bucket level room_item_coin result_point rank title_id strategy_point kou_medal)
+columns = %w(exported_at fuel ammo steel bauxite bucket level room_item_coin result_point rank title_id strategy_point kou_medal)
 time_columns = %w(exported_at)
 text_columns = %w(rank)
 
