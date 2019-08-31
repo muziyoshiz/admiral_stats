@@ -10,28 +10,8 @@
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
       </div>
     </li>
-    <% if false %>
-        <%# 大型アップデート前のみ表示するメッセージ %>
-        <li>
-          艦これアーケードのアップデート直後は、仕様変更により Admiral Stats や <%= link_to_exporter_url %> が動作しない可能性があります。
-          <br>
-          その場合は2〜3日お待ちいただくか、 <%= link_to_twitter_admiral_stats %> や <%= link_to 'Gitter のチャットルーム', gitter_url, :target => 'blank' %> まで不具合のご報告をお願いします。
-        </li>
-        <li>
-          <strong class="text-primary">【重要なお知らせ】</strong><br>
-          すべてのエクスポータに、Admiral Stats への自動アップロード機能を実装完了しました。<strong>Safari および iOS でもお使いいただけます</strong>。<br>
-          まだ使っていない提督さんは、<%= link_to '「使い方」ページ', controller: 'manual', action: 'exporter' %> の手順に従って、ぜひ使ってみてください！
-        </li>
-    <% end %>
-    <li><strong>トピックス</strong>：<%= link_to '艦らぼ様の Admiral Stats 解説記事', 'http://kancolle-arcade-labo.com/index.php?Admiral%20Stats%A4%CE%BB%C8%A4%A4%CA%FD', target: '_blank' %></li>
     <li>
       2019年7月27日更新：9月末をもって Admiral Stats のサービス提供を終了します。詳しいスケジュールは <%= link_to 'Admiral Stats のサービス提供のお知らせ', 'https://muziyoshiz.hatenablog.com/entry/2019/07/27/191007', target: '_blank' %>をご覧ください。
-    </li>
-    <li>
-      2018年11月29日更新：開発者のブログにて、<%= link_to '過去のイベント全5回分の攻略率・周回数の時系列データ（CSVファイル）', 'https://muziyoshiz.hatenablog.com/entry/2018/11/29/212922', target: '_blank' %>を公開しました。
-    </li>
-    <li>
-      2018年11月24日更新：新しいレベル上限（艦娘Lv.155）に対応できていなかった不具合を修正しました。またレベル上限到達予想の対象レベルを 30, 60, 90, 99, 135, 150, 155 に変更しました。
     </li>
     <li>
       <%= link_to '過去のお知らせ...', notice_url %>
