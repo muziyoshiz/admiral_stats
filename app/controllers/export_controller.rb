@@ -1,8 +1,17 @@
 class ExportController < ApplicationController
   before_action :authenticate
 
+  LIMIT = 100000
+
   def index
     set_meta_tags title: 'エクスポート'
+
+    @admiral_status_count = AdmiralStatus.where(admiral_id: current_admiral.id).count
+    @event_progress_status_count = EventProgressStatus.where(admiral_id: current_admiral.id).count
+    @cop_event_progress_status_count = CopEventProgressStatus.where(admiral_id: current_admiral.id).count
+    @ship_status_count = ShipStatus.where(admiral_id: current_admiral.id).count
+
+    @ship_status_pages = (@ship_status_count.to_f / LIMIT).ceil
   end
 
   def admiral_statuses
@@ -38,12 +47,27 @@ class ExportController < ApplicationController
   end
 
   def ship_statuses
-    @ship_statuses = ShipStatus.where(admiral_id: current_admiral.id).
-        order(:exported_at).order(:book_no).order(:remodel_level)
+    page = params[:page]
 
-    respond_to do |format|
-      format.csv do
-        send_data render_to_string, filename: 'ship_statuses.csv', type: :csv
+    if page
+      offset = (page.to_i - 1) * LIMIT
+
+      @ship_statuses = ShipStatus.where(admiral_id: current_admiral.id).
+          order(:exported_at).order(:book_no).order(:remodel_level).limit(LIMIT).offset(offset)
+
+      respond_to do |format|
+        format.csv do
+          send_data render_to_string, filename: "ship_statuses_#{page}.csv", type: :csv
+        end
+      end
+    else
+      @ship_statuses = ShipStatus.where(admiral_id: current_admiral.id).
+          order(:exported_at).order(:book_no).order(:remodel_level).limit(LIMIT)
+
+      respond_to do |format|
+        format.csv do
+          send_data render_to_string, filename: 'ship_statuses.csv', type: :csv
+        end
       end
     end
   end

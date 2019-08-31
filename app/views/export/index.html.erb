@@ -3,19 +3,56 @@
   <h2><%= title %></h2>
 </div>
 
+<div class="container" style="margin-top: 18px;">
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="panel panel-primary">
+        <div class="panel-heading">エクスポート方法</div>
+        <div class="panel-body">
+          <ul>
+            <li>
+              以下のリンクをクリックすると、プレイデータを CSV ファイルとしてダウンロードできます。
+            </li>
+            <li>
+              1ファイルのダウンロードに数分かかる場合があります。ファイルが1つダウンロードし終わってから、次のファイルのダウンロードをお願いします。
+            </li>
+            <li>
+              複数ファイルを同時にダウンロードすると、ダウンロードに失敗する場合があります（特に、プレイデータ量の多い方）。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="container">
   <ul>
     <li>
-      <%= link_to '提督情報 - 基本情報', export_admiral_statuses_path(format: :csv) %>
+      <%= link_to '提督情報 - 基本情報 (admiral_statuses.csv)', export_admiral_statuses_path(format: :csv) %> (<%= @admiral_status_count.to_s(:delimited) %> 件)
     </li>
     <li>
-      <%= link_to '提督情報 - イベントの進捗', export_event_progress_statuses_path(format: :csv) %>
+      <%= link_to '提督情報 - イベントの進捗 (event_progress_statuses.csv)', export_event_progress_statuses_path(format: :csv) %> (<%= @event_progress_status_count.to_s(:delimited) %> 件)
     </li>
     <li>
-      <%= link_to '提督情報 - 輸送イベントの進捗', export_cop_event_progress_statuses_path(format: :csv) %>
+      <%= link_to '提督情報 - 輸送イベントの進捗 (cop_event_progress_statuses.csv)', export_cop_event_progress_statuses_path(format: :csv) %> (<%= @cop_event_progress_status_count.to_s(:delimited) %> 件)
     </li>
-    <li>
-      <%= link_to '艦娘情報', export_ship_statuses_path(format: :csv) %>
-    </li>
+    <% if @ship_status_pages > 1 %>
+        <li>
+          艦娘情報 (<%= @ship_status_count.to_s(:delimited) %> 件)
+          <ul>
+            <% 1.upto @ship_status_pages do |page_num| %>
+                <li>
+                  <%= link_to "ship_statuses_#{page_num}.csv", export_ship_statuses_path(page: page_num, format: :csv) %>
+                </li>
+            <% end %>
+          </ul>
+        </li>
+    <% else %>
+        <li>
+          <%= link_to '艦娘情報 (ship_statuses.csv)', export_ship_statuses_path(format: :csv) %> (<%= @ship_status_count.to_s(:delimited) %> 件)
+        </li>
+    <% end %>
   </ul>
 </div>
