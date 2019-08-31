@@ -40,6 +40,9 @@
               <li <%== 'class="active"' if current_page?(controller: 'import') %>>
                 <%= link_to 'インポート', import_url %>
               </li>
+              <li <%== 'class="active"' if current_page?(controller: 'export') %>>
+                <%= link_to 'エクスポート', export_url %>
+              </li>
               <li <%== 'class="active"' if controller_name == 'admiral_info' %>>
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">提督情報 <span class="caret"></span></a>
                 <ul class="dropdown-menu">

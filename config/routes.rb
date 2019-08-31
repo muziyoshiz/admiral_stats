@@ -12,6 +12,13 @@ Rails.application.routes.draw do
   post 'import/file', to: 'import#file'
   post 'import/generate_token', to: 'import#generate_token'
 
+  # エクスポート
+  get 'export', to: 'export#index', as: :export
+  get 'export/admiral_statuses', to: 'export#admiral_statuses'
+  get 'export/event_progress_statuses', to: 'export#event_progress_statuses'
+  get 'export/cop_event_progress_statuses', to: 'export#cop_event_progress_statuses'
+  get 'export/ship_statuses', to: 'export#ship_statuses'
+
   # 提督情報
   match 'admiral_info', to: 'admiral_info#index', via: [ :get, :post ]
   get 'admiral_info/event(/:event_no(/:period))', to: 'admiral_info#event'

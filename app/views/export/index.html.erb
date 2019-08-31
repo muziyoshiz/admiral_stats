@@ -1,0 +1,21 @@
+<div class="page-header">
+  <%= render partial: 'messages', locals: {messages: @messages, error: @error} %>
+  <h2><%= title %></h2>
+</div>
+
+<div class="container">
+  <ul>
+    <li>
+      <%= link_to '提督情報 - 基本情報', export_admiral_statuses_path(format: :csv) %>
+    </li>
+    <li>
+      <%= link_to '提督情報 - イベントの進捗', export_event_progress_statuses_path(format: :csv) %>
+    </li>
+    <li>
+      <%= link_to '提督情報 - 輸送イベントの進捗', export_cop_event_progress_statuses_path(format: :csv) %>
+    </li>
+    <li>
+      <%= link_to '艦娘情報', export_ship_statuses_path(format: :csv) %>
+    </li>
+  </ul>
+</div>
