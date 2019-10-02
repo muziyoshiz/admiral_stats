@@ -1,8 +1,8 @@
 # Admiral Stats
 
-[![Build Status](https://travis-ci.org/muziyoshiz/admiral_stats.svg?branch=master)](https://travis-ci.org/muziyoshiz/admiral_stats) [![Join the chat at https://gitter.im/muziyoshiz/admiral_stats](https://badges.gitter.im/muziyoshiz/admiral_stats.svg)](https://gitter.im/muziyoshiz/admiral_stats?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/muziyoshiz/admiral_stats.svg?branch=master)](https://travis-ci.org/muziyoshiz/admiral_stats)
 
-艦これアーケードのプレイデータを可視化するための Web アプリケーションです。ユーザとして使いたい場合は https://www.admiral-stats.com/ で運用中のサービスをご利用ください。
+艦これアーケードのプレイデータを可視化するための Web アプリケーションです。現在は admiral-stats.com でのサービス提供を終了しています。
 
 これ以降は、Admiral Stats の開発に参加したい方や、動作の詳細に興味がある方に向けた情報です。
 
@@ -20,8 +20,6 @@ Pull request を送るか、issue に要望をお寄せください。
 
 ## 関連ページ
 
-- [Admiral Stats](https://www.admiral-stats.com/)
-    - このアプリケーションをホスティングしているサイト
 - [Twitter (@admiral_stats)](https://twitter.com/admiral_stats)
     - Admiral Stats の運用状況のお知らせ
 - [muziyoshiz/admiral_stats_exporter](https://github.com/muziyoshiz/admiral_stats_exporter) (Ruby, PowerShell)
