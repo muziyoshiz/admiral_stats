@@ -58,7 +58,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # Official Sass port of Bootstrap
-gem 'bootstrap-sass', '~> 3.3.6'
+gem 'bootstrap-sass', '~> 3.4.1'
 
 gem 'jquery-datatables-rails', '~> 3.4.0'
 # The gem version mirrors the included version of Highcharts
