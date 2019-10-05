@@ -1,10 +1,8 @@
 # Admiral Stats
 
-[![Build Status](https://travis-ci.org/muziyoshiz/admiral_stats.svg?branch=master)](https://travis-ci.org/muziyoshiz/admiral_stats)
+艦これアーケードのプレイデータを可視化するための Web アプリケーションです。
 
-艦これアーケードのプレイデータを可視化するための Web アプリケーションです。現在は www.admiral-stats.com でのサービス提供を終了しています。
-
-また、私自身による開発も終了しています。
+**このアプリケーションの開発および www.admiral-stats.com でのサービス提供はすでに終了しています。**
 
 これ以降は、Admiral Stats をローカルで動かしてみたい方に向けた情報です。
 
@@ -19,7 +17,7 @@ Vagrant を使った構築方法を [Vagrant guide](vagrant/README.md) で説明
 ## 関連ページ
 
 - [Twitter (@admiral_stats)](https://twitter.com/admiral_stats)
-    - Admiral Stats の運用状況のお知らせ（※すでに休止）
+    - Admiral Stats の運用状況のお知らせ（※すでに終了）
 - [muziyoshiz/admiral_stats_exporter](https://github.com/muziyoshiz/admiral_stats_exporter) (Ruby, PowerShell)
     - SEGA 公式のプレイヤーズサイトからプレイデータをエクスポートするツール（Ruby 版および PowerShell 版）
 - [muziyoshiz/admiral_stats_exporter_js](https://github.com/muziyoshiz/admiral_stats_exporter_js) (JavaScript)
